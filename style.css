@@ -3,6 +3,7 @@
   box-sizing: border-box;
 }
 
+/* BASE */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -10,10 +11,20 @@ body {
 
   background-color: #0b0b0f;
   color: #eaeaf0;
+  overflow-x: hidden;
 }
 
-/* LAYOUT */
+/* BACKGROUND LAYER (Aurora will attach here later) */
+#background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #0b0b0f;
+}
+
+/* CONTENT LAYER */
 main {
+  position: relative;
   max-width: 720px;
   margin: 0 auto;
   padding: 96px 24px;
@@ -51,9 +62,8 @@ p {
   color: #d4d4dc;
 }
 
-/* SUBTLE DIVIDER LOOK */
+/* SUBTLE SECTION DIVIDER */
 section:not(:first-child) {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 48px;
 }
-
