@@ -2,155 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>Itsmefeje — Roblox Developer</title>
-  <meta name="description" content="Itsmefeje — Roblox developer in the learning phase of LuaU, game design and game development. Building technical foundations and prototypes." />
-
-  <!-- Open Graph / social -->
-  <meta property="og:title" content="Itsmefeje — Roblox Developer" />
-  <meta property="og:description" content="Learning LuaU, game design and scalable game mechanics — portfolio and learning log." />
-  <!-- Replace with your preview image if you add one -->
-  <meta property="og:type" content="website" />
-
-  <!-- Theme & icons (add actual files to /public) -->
-  <link rel="icon" href="/favicon.ico" />
-  <meta name="theme-color" content="#0b0b0f" />
-
-  <!-- Structured data (replace URLs when you have them) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Itsmefeje",
-    "jobTitle": "Roblox Developer",
-    "description": "Roblox developer in the learning phase of LuaU, game design and game development.",
-    "url": "https://itsmefeje-portfolio.vercel.app",
-    "sameAs": [
-      "https://github.com/itsmefeje-max",
-      "https://www.roblox.com/users/5512860740/profile"
-    ]
-  }
-  </script>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Itsmefeje — Home</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- small accessibility helper -->
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- BACKGROUND LAYER -->
   <canvas id="background" aria-hidden="true"></canvas>
 
-  <!-- CONTENT LAYER -->
-  <main id="main">
+  <header>
+    <div class="logo">Itsmefeje</div>
+    <nav>
+      <a href="about.html">About Me</a>
+      <a href="goals.html">Goals</a>
+      <a href="contact.html" class="btn ghost">Contact</a>
+    </nav>
+  </header>
 
-    <!-- HERO -->
+  <main id="main" class="container">
     <section class="hero">
-      <h1>Itsmefeje</h1>
-      <h3>Roblox Developer</h3>
-      <p class="muted">Learning LuaU · Game Design · Game Development</p>
+      <h1>Hi — I’m Itsmefeje</h1>
+      <p class="muted">Roblox Developer • Learning LuaU, Game Design & Game Development</p>
+      <p>I build systems-first prototypes and document what I learn. This is my learning portfolio — honest, structured, and growing.</p>
+      <div class="links" style="justify-content:center; margin-top:18px">
+        <a href="about.html" class="btn">About Me</a>
+        <a href="goals.html" class="btn ghost">Goals</a>
+      </div>
     </section>
 
-    <!-- ABOUT -->
-    <section>
-      <h2>About Me</h2>
-      <p>
-        I am a Roblox developer currently in the learning phase of LuaU,
-        game design, and game development. My goal is to build solid technical
-        foundations before releasing full-scale public projects.
-      </p>
-      <p>
-        I focus on understanding how systems work internally rather than
-        relying on templates or shortcuts — aiming for maintainable and scalable
-        game mechanics.
-      </p>
-    </section>
-
-    <!-- DEVELOPMENT FOCUS -->
     <section>
       <h2>Development Focus</h2>
-      <div class="grid-cards">
+      <div class="grid-cards" aria-hidden="false">
         <article class="card">
           <h3>LuaU Fundamentals</h3>
-          <p class="muted">Scripting basics, OOP patterns, event handling, and performance-aware code.</p>
+          <p class="muted">Scripting basics, events, and readable code patterns.</p>
         </article>
 
         <article class="card">
           <h3>Gameplay Systems</h3>
-          <p class="muted">Player interactions, progression loops, rewards, and retention mechanics.</p>
+          <p class="muted">Progression loops, player interaction, and economy design.</p>
         </article>
 
         <article class="card">
           <h3>Tools & Workflows</h3>
-          <p class="muted">Roblox Studio workflows, debugging, and versioning prototypes.</p>
+          <p class="muted">Roblox Studio workflows and small internal prototypes.</p>
         </article>
-      </div>
-    </section>
-
-    <!-- CURRENT STATUS -->
-    <section>
-      <h2>Current Status</h2>
-      <p>
-        I'm building small internal prototypes to test core systems. Public projects
-        will appear here once they meet my standards for stability and structure.
-      </p>
-    </section>
-
-    <!-- PROJECTS -->
-    <section>
-      <h2>Projects</h2>
-      <p>
-        There are currently no public projects available. When I publish a project,
-        it will include a short case study that explains the problem, approach, and learnings.
-      </p>
-    </section>
-
-    <!-- GOALS -->
-    <section>
-      <h2>Goals</h2>
-      <ul>
-        <li>Master LuaU scripting fundamentals</li>
-        <li>Build complete gameplay loops</li>
-        <li>Ship a first public Roblox experience</li>
-        <li>Document technical decisions and learning notes</li>
-      </ul>
-    </section>
-
-    <!-- TECHNICAL INTERESTS (new high-quality detail) -->
-    <section>
-      <h2>Technical Interests</h2>
-      <p>
-        I study modular system architecture, data shape design (how player data is stored and synced),
-        and performance-conscious scripting patterns that scale to many players.
-      </p>
-    </section>
-
-    <!-- CONTACT / LINKS -->
-    <section>
-      <h2>Links & Contact</h2>
-      <p class="muted">Replace placeholders with your actual links in the HTML.</p>
-      <div class="links">
-        <a href="https://github.com/itsmefeje" target="_blank" rel="noopener" class="btn">GitHub</a>
-        <a href="https://www.roblox.com/users/YOUR_USER_ID/profile" target="_blank" rel="noopener" class="btn">Roblox</a>
-        <a href="mailto:your.email@example.com" class="btn ghost">Email</a>
       </div>
     </section>
 
     <footer class="footer">
       <small>© <span id="year"></span> Itsmefeje — Built with care</small>
     </footer>
-
   </main>
 
-  <!-- small helper: set year & reduced-motion flag for the canvas script -->
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-    // Expose prefersReducedMotion for background script
-    window.__prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  </script>
-
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script src="main.js"></script>
 </body>
 </html>
