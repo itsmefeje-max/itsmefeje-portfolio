@@ -1,6 +1,13 @@
 // main.js
-// This file will control advanced visuals later (Aurora background)
+// Foundation for advanced background effects (Aurora will be added here later)
 
-// For now, we just confirm JavaScript is connected
-console.log("Itsmefeje portfolio loaded successfully.");
+document.addEventListener("DOMContentLoaded", () => {
+  const background = document.getElementById("background");
 
+  if (!background) {
+    console.error("Background container not found.");
+    return;
+  }
+
+  console.log("Background container ready.");
+});
