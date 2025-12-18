@@ -1,50 +1,31 @@
 // main.js
-// Minimal WebGL background test using OGL
+// Safe animated background using Canvas (no libraries)
 
-document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("background");
+const canvas = document.getElementById("background");
+const ctx = canvas.getContext("2d");
 
-  if (!container) {
-    console.error("Background container not found.");
-    return;
-  }
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 
-  const renderer = new ogl.Renderer({
-    alpha: true,
-    antialias: true
-  });
+window.addEventListener("resize", resize);
+resize();
 
-  const gl = renderer.gl;
-  gl.clearColor(0.05, 0.05, 0.08, 1);
+let t = 0;
 
-  container.appendChild(gl.canvas);
+function animate() {
+  requestAnimationFrame(animate);
+  t += 0.01;
 
-  function resize() {
-    renderer.setSize(
-      container.clientWidth,
-      container.clientHeight
-    );
-  }
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, `hsl(${220 + Math.sin(t) * 20}, 80%, 20%)`);
+  gradient.addColorStop(1, `hsl(${260 + Math.cos(t) * 20}, 80%, 15%)`);
 
-  window.addEventListener("resize", resize);
-  resize();
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
 
-  function animate() {
-    requestAnimationFrame(animate);
+animate();
 
-    // subtle pulsing background color
-    const t = Date.now() * 0.0002;
-    gl.clearColor(
-      0.05 + Math.sin(t) * 0.02,
-      0.05,
-      0.08 + Math.cos(t) * 0.02,
-      1
-    );
-
-    renderer.render({ scene: null });
-  }
-
-  animate();
-
-  console.log("WebGL background initialized.");
-});
+console.log("Canvas background running.");
