@@ -11,22 +11,19 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// 2. SPOTLIGHT MOUSE TRACKING (For cards)
+// 2. SPOTLIGHT MOUSE TRACKING
 document.querySelectorAll('.spotlight-card').forEach(card => {
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    // We can use this to create a subtle gradient follow effect in CSS if desired
-    // For now, it adds a nice interactive layer
     card.style.setProperty('--mouse-x', `${x}px`);
     card.style.setProperty('--mouse-y', `${y}px`);
   });
 });
 
-
-// 3. CANVAS BACKGROUND (Moving Cyber Grid / Constellation)
+// 3. CANVAS BACKGROUND
 const canvas = document.getElementById("network-canvas");
 const ctx = canvas.getContext("2d");
 
@@ -40,7 +37,7 @@ function initCanvas() {
   canvas.height = height;
   
   particles = [];
-  const particleCount = width > 800 ? 50 : 25; // Reduce count on mobile for performance
+  const particleCount = width > 800 ? 50 : 25; 
   
   for(let i = 0; i < particleCount; i++) {
     particles.push({
@@ -56,12 +53,10 @@ function initCanvas() {
 function animate() {
   ctx.clearRect(0, 0, width, height);
   
-  // Update and Draw Particles
   particles.forEach((p, index) => {
     p.x += p.vx;
     p.y += p.vy;
     
-    // Bounce off walls
     if (p.x < 0 || p.x > width) p.vx *= -1;
     if (p.y < 0 || p.y > height) p.vy *= -1;
     
@@ -70,7 +65,6 @@ function animate() {
     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
     ctx.fill();
     
-    // Draw Lines between nearby particles
     for (let j = index + 1; j < particles.length; j++) {
       const p2 = particles[j];
       const dx = p.x - p2.x;
@@ -78,7 +72,7 @@ function animate() {
       const dist = Math.sqrt(dx*dx + dy*dy);
       
       if (dist < 150) {
-        ctx.strokeStyle = `rgba(99, 102, 241, ${0.15 - dist/1000})`; // Fade out lines
+        ctx.strokeStyle = `rgba(99, 102, 241, ${0.15 - dist/1000})`;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
@@ -98,3 +92,22 @@ animate();
 // 4. YEAR UPDATE
 const yearSpan = document.getElementById('year');
 if(yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+// 5. MOBILE MENU TOGGLE (NEW FIX)
+const mobileBtn = document.querySelector('.mobile-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+if (mobileBtn && navLinks) {
+  mobileBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+    mobileBtn.classList.toggle('open');
+  });
+
+  // Close menu when clicking a link
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+      mobileBtn.classList.remove('open');
+    });
+  });
+}
