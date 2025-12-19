@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Itsmefeje — Digital Craftsman</title>
+  <title>Itsmefeje — Systems Architect</title>
   <meta name="description" content="Roblox developer specializing in LuaU, systems architecture, and game design."/>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,64 +13,163 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
   <div class="noise-overlay"></div>
-  <canvas id="background" aria-hidden="true"></canvas>
+  
+  <canvas id="background"></canvas>
 
   <header>
-    <div class="logo"><a href="index.html">Itsmefeje</a></div>
+    <div class="logo"><a href="#home">Itsmefeje</a></div>
     <nav>
-      <a href="about.html" data-link="about.html">About</a>
-      <a href="goals.html" data-link="goals.html">Goals</a>
-      <a href="contact.html" data-link="contact.html" class="btn-nav">Contact</a>
+      <a href="#about">About</a>
+      <a href="#expertise">Expertise</a>
+      <a href="#goals">Roadmap</a>
+      <a href="#contact" class="btn-nav">Contact</a>
     </nav>
   </header>
 
-  <main id="main" class="container">
-    <section class="hero">
-      <div class="badge">Roblox Developer</div>
-      <h1>Building virtual<br><span class="text-gradient">worlds & systems.</span></h1>
-      <p class="hero-desc">I construct scalable gameplay systems and immersive interfaces in Roblox. Documenting the journey from prototype to production.</p>
-      
-      <div class="cta-group">
-        <a href="about.html" class="btn primary">Explore Work</a>
-        <a href="https://github.com/itsmefeje" target="_blank" rel="noopener" class="btn secondary">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-          GitHub
-        </a>
+  <main class="container">
+    
+    <section id="home" class="scroll-section hero-section">
+      <div class="reveal-content">
+        <div class="badge">Roblox Developer</div>
+        <h1>Building virtual<br><span class="text-gradient">worlds & systems.</span></h1>
+        <p class="hero-desc">I construct scalable gameplay systems and immersive interfaces. Documenting the journey from internal prototype to production-grade architecture.</p>
+        
+        <div class="cta-group">
+          <a href="#expertise" class="btn primary spotlight-item">
+            <span>Explore Work</span>
+          </a>
+          <a href="https://github.com/itsmefeje" target="_blank" class="btn secondary spotlight-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <span>GitHub</span>
+          </a>
+        </div>
       </div>
     </section>
 
-    <section>
-      <div class="section-header">
-        <h2>Expertise</h2>
-        <p>Core competencies and technical focus.</p>
+    <div class="spacer"></div>
+
+    <section id="about" class="scroll-section">
+      <div class="reveal-content">
+        <div class="section-header">
+          <h2>The Architect</h2>
+          <p>Philosophy & Background</p>
+        </div>
+        
+        <article class="prose spotlight-group">
+          <div class="glass-panel spotlight-item">
+            <p>I am a Roblox developer focused on the intersection of <strong>LuaU architecture</strong> and <strong>game design</strong>. My philosophy is simple: build small, prove the system, then scale.</p>
+            <p>While many jump straight into building massive worlds, I prefer to start with the mechanics. I build internal prototypes to stress-test gameplay loops, ensuring they are fun before a single asset is finalized.</p>
+            <p>My goal is to write code that is clean, maintainable, and modular—systems that don't just work today, but scale for the thousands of players of tomorrow.</p>
+            
+            <div class="tags">
+              <span>LuaU</span>
+              <span>Rojo</span>
+              <span>DataStore2</span>
+              <span>Fusion</span>
+            </div>
+          </div>
+        </article>
       </div>
-      
-      <div class="grid-cards spotlight-cards">
-        <article class="card">
-          <div class="card-content">
-            <div class="icon">⚡</div>
-            <h3>LuaU Systems</h3>
-            <p>Writing performant, modular code that handles complex game states and replication efficiently.</p>
-          </div>
-        </article>
+    </section>
 
-        <article class="card">
-          <div class="card-content">
-            <div class="icon">🎮</div>
-            <h3>Gameplay Loops</h3>
-            <p>Designing progression systems, economy balancing, and player retention mechanics.</p>
-          </div>
-        </article>
+    <div class="spacer"></div>
 
-        <article class="card">
-          <div class="card-content">
-            <div class="icon">🛠</div>
-            <h3>Tooling & UI</h3>
-            <p>Creating custom studio workflows and responsive user interfaces that feel native.</p>
+    <section id="expertise" class="scroll-section">
+      <div class="reveal-content">
+        <div class="section-header">
+          <h2>Expertise</h2>
+          <p>Technical Focus</p>
+        </div>
+
+        <div class="grid-cards spotlight-group">
+          <article class="card spotlight-item">
+            <div class="card-content">
+              <div class="icon">⚡</div>
+              <h3>LuaU Systems</h3>
+              <p>Writing performant, modular code that handles complex game states and replication efficiently.</p>
+            </div>
+          </article>
+
+          <article class="card spotlight-item">
+            <div class="card-content">
+              <div class="icon">🎮</div>
+              <h3>Gameplay Loops</h3>
+              <p>Designing progression systems, economy balancing, and player retention mechanics.</p>
+            </div>
+          </article>
+
+          <article class="card spotlight-item">
+            <div class="card-content">
+              <div class="icon">🛠</div>
+              <h3>Tooling & UI</h3>
+              <p>Creating custom studio workflows and responsive user interfaces that feel native.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <div class="spacer"></div>
+
+    <section id="goals" class="scroll-section">
+      <div class="reveal-content">
+        <div class="section-header">
+          <h2>Roadmap</h2>
+          <p>Current trajectory and future milestones</p>
+        </div>
+
+        <div class="goals-grid spotlight-group">
+          <div class="goal-column glass-panel spotlight-item">
+            <h3>Q1 / Q2 Focus</h3>
+            <ul class="goal-list">
+              <li class="done">Master LuaU basic syntax</li>
+              <li>Master scripting patterns (Maid, Signal)</li>
+              <li>Build three internal prototypes</li>
+              <li>Publish a small, stable experience</li>
+            </ul>
           </div>
-        </article>
+
+          <div class="goal-column glass-panel spotlight-item">
+            <h3>The Horizon</h3>
+            <ul class="goal-list">
+              <li>Ship multiplayer experiences with scalable systems</li>
+              <li>Document case studies and technical decisions</li>
+              <li>Establish a reusable open-source game framework</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="spacer"></div>
+
+    <section id="contact" class="scroll-section">
+      <div class="reveal-content">
+        <div class="contact-wrapper">
+          <div class="contact-info">
+            <h1>Let's build<br>something great.</h1>
+            <p class="hero-desc" style="margin-left:0;">Open to collaboration on prototypes and learning resources.</p>
+          </div>
+
+          <div class="contact-links spotlight-group">
+            <a href="https://github.com/itsmefeje" target="_blank" class="contact-card spotlight-item">
+              <span>GitHub</span>
+              <span class="arrow">↗</span>
+            </a>
+            <a href="https://www.roblox.com/users/search?keyword=itsmefeje" target="_blank" class="contact-card spotlight-item">
+              <span>Roblox Profile</span>
+              <span class="arrow">↗</span>
+            </a>
+            <a href="mailto:your.email@example.com" class="contact-card spotlight-item">
+              <span>Email Me</span>
+              <span class="arrow">→</span>
+            </a>
+            <div class="contact-card spotlight-item" style="cursor: default; opacity: 0.8;">
+              <span>Discord: <strong>itsmefeje</strong></span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
