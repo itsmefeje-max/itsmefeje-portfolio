@@ -3,61 +3,83 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Itsmefeje — Home</title>
-  <meta name="description" content="Itsmefeje — Roblox developer learning LuaU, game design and game development. Learning portfolio, goals and contact."/>
-  <link rel="canonical" href="./index.html" />
+  <title>Itsmefeje — Digital Craftsman</title>
+  <meta name="description" content="Roblox developer specializing in LuaU, systems architecture, and game design."/>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="noise-overlay"></div>
+  
   <canvas id="background" aria-hidden="true"></canvas>
 
   <header>
     <div class="logo">Itsmefeje</div>
     <nav>
-      <a href="about.html" data-link="about.html">About Me</a>
+      <a href="about.html" data-link="about.html">About</a>
       <a href="goals.html" data-link="goals.html">Goals</a>
-      <a href="contact.html" data-link="contact.html" class="btn ghost">Contact</a>
+      <a href="contact.html" data-link="contact.html" class="btn-nav">Contact</a>
     </nav>
   </header>
 
   <main id="main" class="container">
     <section class="hero">
-      <h1>Hi — I’m Itsmefeje</h1>
-      <p class="muted">Roblox Developer • Learning LuaU, Game Design & Game Development</p>
-      <p>I build systems-first prototypes and document what I learn. This portfolio is honest, structured, and growing.</p>
-      <div class="links" style="justify-content:center; margin-top:18px">
-        <a href="about.html" class="btn">About Me</a>
-        <a href="goals.html" class="btn ghost">Goals</a>
+      <div class="badge">Roblox Developer</div>
+      <h1>Building virtual<br><span class="text-gradient">worlds & systems.</span></h1>
+      <p class="hero-desc">I construct scalable gameplay systems and immersive interfaces in Roblox. Documenting the journey from prototype to production.</p>
+      
+      <div class="cta-group">
+        <a href="about.html" class="btn primary">Explore Work</a>
+        <a href="https://github.com/itsmefeje" target="_blank" class="btn secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          GitHub
+        </a>
       </div>
     </section>
 
     <section>
-      <h2>Development Focus</h2>
-      <div class="grid-cards" aria-hidden="false">
+      <div class="section-header">
+        <h2>Expertise</h2>
+        <p>Core competencies and technical focus.</p>
+      </div>
+      
+      <div class="grid-cards spotlight-cards">
         <article class="card">
-          <h3>LuaU Fundamentals</h3>
-          <p class="muted">Scripting basics, events, and readable code patterns.</p>
+          <div class="card-content">
+            <div class="icon">⚡</div>
+            <h3>LuaU Systems</h3>
+            <p>Writing performant, modular code that handles complex game states and replication efficiently.</p>
+          </div>
         </article>
 
         <article class="card">
-          <h3>Gameplay Systems</h3>
-          <p class="muted">Progression loops, player interaction, and economy design.</p>
+          <div class="card-content">
+            <div class="icon">🎮</div>
+            <h3>Gameplay Loops</h3>
+            <p>Designing progression systems, economy balancing, and player retention mechanics.</p>
+          </div>
         </article>
 
         <article class="card">
-          <h3>Tools & Workflows</h3>
-          <p class="muted">Roblox Studio workflows and small internal prototypes.</p>
+          <div class="card-content">
+            <div class="icon">🛠</div>
+            <h3>Tooling & UI</h3>
+            <p>Creating custom studio workflows and responsive user interfaces that feel native.</p>
+          </div>
         </article>
       </div>
     </section>
 
     <footer class="footer">
-      <small>© <span id="year"></span> Itsmefeje — Built with care</small>
+      <div class="separator"></div>
+      <p><small>© <span id="year"></span> Itsmefeje. Crafted with precision.</small></p>
     </footer>
   </main>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script src="main.js"></script>
 </body>
 </html>
