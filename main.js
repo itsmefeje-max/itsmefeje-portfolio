@@ -1,102 +1,81 @@
-// main.js
-
-// 1. SCROLL REVEAL & ACTIVE NAV SYSTEM
-const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
-
+// 1. SCROLL REVEAL
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      // Add 'visible' class to .reveal-content children
-      const revealItem = entry.target.querySelector('.reveal-content');
-      if(revealItem) revealItem.classList.add('visible');
-      
-      // Update Nav Active State
-      const id = entry.target.getAttribute('id');
-      if (id) {
-        document.querySelectorAll('nav a').forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === `#${id}`) link.classList.add('active');
-        });
-      }
+      entry.target.classList.add('active');
     }
   });
-}, { threshold: 0.3 }); // Trigger when 30% visible
+}, { threshold: 0.1 });
 
-document.querySelectorAll('section').forEach(section => observer.observe(section));
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// 2. SPOTLIGHT MOUSE TRACKING (The "React Bits" Effect)
-// We attach listeners to ".spotlight-group" containers
-document.querySelectorAll('.spotlight-group').forEach(group => {
-  group.addEventListener('mousemove', (e) => {
-    const cards = group.querySelectorAll('.spotlight-item');
-    cards.forEach(card => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
-    });
-  });
-});
-
-// Also enable spotlight for single buttons that are not in a group
-document.querySelectorAll('.spotlight-item:not(.spotlight-group .spotlight-item)').forEach(item => {
-  item.addEventListener('mousemove', (e) => {
-    const rect = item.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    item.style.setProperty('--mouse-x', `${x}px`);
-    item.style.setProperty('--mouse-y', `${y}px`);
-  });
-});
-
-// 3. CANVAS BACKGROUND (Moving Cyber Grid)
-const canvas = document.getElementById("background");
-const ctx = canvas.getContext("2d");
-
+// 2. CONSTELLATION CANVAS
+const canvas = document.getElementById('network-canvas');
+const ctx = canvas.getContext('2d');
 let width, height;
 let particles = [];
 
-function initCanvas() {
+function init() {
   width = window.innerWidth;
   height = window.innerHeight;
   canvas.width = width;
   canvas.height = height;
   
-  // Create grid points
   particles = [];
-  const spacing = 40;
-  for(let x = 0; x < width; x += spacing) {
-    for(let y = 0; y < height; y += spacing) {
-      particles.push({ x, y, baseAlpha: 0.1, phase: Math.random() * Math.PI * 2 });
-    }
+  const particleCount = width > 800 ? 60 : 30; // Fewer on mobile
+  
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      size: Math.random() * 2 + 1
+    });
   }
 }
 
-let time = 0;
 function animate() {
   ctx.clearRect(0, 0, width, height);
-  time += 0.02;
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.strokeStyle = 'rgba(99, 102, 241, 0.15)'; // Low opacity indigo lines
   
-  // Draw subtle moving dots
-  particles.forEach(p => {
-    // Oscillate alpha for "breathing" effect
-    const alpha = p.baseAlpha + Math.sin(time + p.phase) * 0.05;
+  particles.forEach((p, index) => {
+    // Move
+    p.x += p.vx;
+    p.y += p.vy;
     
-    ctx.fillStyle = `rgba(100, 110, 255, ${alpha > 0 ? alpha : 0})`;
+    // Bounce
+    if (p.x < 0 || p.x > width) p.vx *= -1;
+    if (p.y < 0 || p.y > height) p.vy *= -1;
+    
+    // Draw Dot
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Connect Lines
+    for (let j = index + 1; j < particles.length; j++) {
+      const p2 = particles[j];
+      const dx = p.x - p2.x;
+      const dy = p.y - p2.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      
+      if (dist < 150) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+    }
   });
   
   requestAnimationFrame(animate);
 }
 
-window.addEventListener('resize', initCanvas);
-initCanvas();
+window.addEventListener('resize', init);
+init();
 animate();
 
-// 4. YEAR UPDATE
-const yearSpan = document.getElementById('year');
-if(yearSpan) yearSpan.textContent = new Date().getFullYear();
+// 3. DYNAMIC YEAR
+document.getElementById('year').textContent = new Date().getFullYear();
