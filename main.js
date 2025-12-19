@@ -93,7 +93,7 @@ animate();
 const yearSpan = document.getElementById('year');
 if(yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-// 5. MOBILE MENU TOGGLE (NEW FIX)
+// 5. MOBILE MENU TOGGLE
 const mobileBtn = document.querySelector('.mobile-toggle');
 const navLinks = document.querySelector('.nav-links');
 
