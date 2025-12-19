@@ -1,23 +1,29 @@
 :root {
-  --bg: #050507; /* Deeper black */
+  /* --- COLORS & THEME --- */
+  --bg: #050507;          /* Deepest black/blue */
   --text-main: #ffffff;
   --text-muted: #94969f;
   
-  /* The "Brand" Glow */
+  /* Brand Accents */
   --accent: #6366f1;
   --accent-glow: #818cf8;
   
-  /* Glassmorphism Variables */
+  /* Glassmorphism System */
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-highlight: rgba(255, 255, 255, 0.15);
   
+  /* Typography */
   --font-body: 'Inter', sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
 }
 
-/* 1. RESET & BASE */
+/* --- RESET & BASE --- */
 * { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
 
 body {
   margin: 0;
@@ -29,24 +35,46 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* 2. NOISE TEXTURE (Gives it that "premium" film grain feel) */
+/* --- NOISE TEXTURE --- */
+/* This adds the cinematic "film grain" look */
 .noise-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  opacity: 0.03;
+  opacity: 0.035;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
 }
 
-/* 3. LAYOUT */
+/* --- CANVAS BACKGROUND --- */
+#background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* --- LAYOUT UTILITIES --- */
 .container {
   max-width: 1100px;
   margin: 0 auto;
   padding: 140px 24px 80px;
+  position: relative;
+  z-index: 1;
 }
 
-/* 4. HEADER & NAV */
+.skip-link {
+  position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+}
+.skip-link:focus {
+  left: 16px; top: 16px; width: auto; height: auto;
+  background: var(--text-main); color: var(--bg);
+  padding: 12px 18px; z-index: 10000; font-weight: bold; border-radius: 6px;
+}
+
+/* --- HEADER & NAV --- */
 header {
   position: fixed;
   top: 0; width: 100%;
@@ -55,16 +83,18 @@ header {
   justify-content: space-between;
   align-items: center;
   z-index: 100;
-  background: rgba(5, 5, 7, 0.6);
-  backdrop-filter: blur(12px);
+  background: rgba(5, 5, 7, 0.7);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--glass-border);
 }
 
-.logo {
+.logo a {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.1rem;
   letter-spacing: -0.02em;
+  color: var(--text-main);
+  text-decoration: none;
 }
 
 nav { display: flex; gap: 8px; align-items: center; }
@@ -73,7 +103,7 @@ nav a {
   color: var(--text-muted);
   text-decoration: none;
   padding: 8px 16px;
-  border-radius: 99px; /* Pill shape */
+  border-radius: 99px;
   font-size: 0.9rem;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -88,13 +118,16 @@ nav a.btn-nav {
   background: var(--text-main);
   color: var(--bg);
   font-weight: 600;
+  margin-left: 8px;
 }
 nav a.btn-nav:hover {
   background: #e0e0e0;
   transform: translateY(-1px);
 }
 
-/* 5. HERO SECTION */
+/* --- TYPOGRAPHY & HERO --- */
+h1, h2, h3 { font-family: var(--font-display); color: var(--text-main); margin-top: 0; }
+
 .hero {
   text-align: center;
   margin-bottom: 120px;
@@ -118,7 +151,6 @@ nav a.btn-nav:hover {
 }
 
 .hero h1 {
-  font-family: var(--font-display);
   font-size: clamp(3rem, 6vw, 4.5rem);
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -134,11 +166,11 @@ nav a.btn-nav:hover {
 .hero-desc {
   font-size: 1.15rem;
   color: var(--text-muted);
-  max-width: 500px;
+  max-width: 540px;
   margin: 0 auto 32px;
 }
 
-/* 6. BUTTONS */
+/* --- BUTTONS --- */
 .cta-group { display: flex; gap: 16px; justify-content: center; }
 
 .btn {
@@ -173,9 +205,9 @@ nav a.btn-nav:hover {
   border-color: var(--text-main);
 }
 
-/* 7. CARDS (The Spotlight Effect) */
+/* --- CARDS & SPOTLIGHT EFFECT --- */
 .section-header { margin-bottom: 40px; }
-.section-header h2 { font-family: var(--font-display); font-size: 2rem; margin: 0; }
+.section-header h2 { font-size: 2rem; margin: 0; }
 .section-header p { color: var(--text-muted); margin-top: 8px; }
 
 .grid-cards {
@@ -184,7 +216,6 @@ nav a.btn-nav:hover {
   gap: 20px;
 }
 
-/* The Card Itself */
 .card {
   position: relative;
   background: rgba(20, 20, 23, 0.4);
@@ -192,7 +223,7 @@ nav a.btn-nav:hover {
   border: 1px solid var(--glass-border);
   overflow: hidden;
   transition: transform 0.2s ease;
-  /* For the spotlight JS to work */
+  /* Required for spotlight JS */
   cursor: default;
 }
 
@@ -202,7 +233,7 @@ nav a.btn-nav:hover {
   height: 100%; width: 100%;
   top:0; left:0;
   border-radius: inherit;
-  /* The gradient that follows mouse (set by JS) */
+  /* Spotlight Gradient */
   background: radial-gradient(
     800px circle at var(--mouse-x) var(--mouse-y),
     rgba(255, 255, 255, 0.06),
@@ -223,18 +254,111 @@ nav a.btn-nav:hover {
 }
 
 .card .icon { font-size: 1.8rem; margin-bottom: 16px; }
-.card h3 { font-family: var(--font-display); font-size: 1.25rem; margin: 0 0 12px; }
+.card h3 { font-size: 1.25rem; margin: 0 0 12px; }
 .card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
 
-/* 8. FOOTER */
+/* --- PAGE: ABOUT (PROSE) --- */
+.prose {
+  max-width: 65ch; /* Optimal reading width */
+  margin: 0 auto;
+}
+.prose p {
+  font-size: 1.05rem;
+  color: #c0c2ce;
+  margin-bottom: 24px;
+  line-height: 1.75;
+}
+.prose strong {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* --- PAGE: GOALS --- */
+.goals-grid {
+  display: grid;
+  gap: 60px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.goal-column h3 {
+  font-size: 1.4rem;
+  margin-bottom: 24px;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 12px;
+}
+
+.goal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.goal-list li {
+  position: relative;
+  padding-left: 32px;
+  margin-bottom: 20px;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+.goal-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: bold;
+}
+.goal-list li.done {
+  color: var(--text-main);
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+  opacity: 0.5;
+}
+.goal-list li.done::before {
+  content: "✓";
+  color: #10b981; /* Success Green */
+}
+
+/* --- PAGE: CONTACT --- */
+.contact-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.contact-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+}
+.contact-card:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateX(4px);
+  border-color: var(--accent);
+}
+.contact-card span { font-weight: 600; font-size: 1.1rem; }
+.contact-card .arrow { color: var(--text-muted); font-size: 1.2rem; }
+
+/* --- FOOTER --- */
 .footer { margin-top: 100px; color: var(--text-muted); text-align: center; }
 .separator { height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin-bottom: 32px; }
 
-/* Responsive */
+/* --- RESPONSIVE --- */
 @media (max-width: 768px) {
   .grid-cards { grid-template-columns: 1fr; }
+  .contact-wrapper { grid-template-columns: 1fr; }
   .hero h1 { font-size: 2.8rem; }
   .container { padding-top: 120px; }
   header { padding: 16px 20px; }
-  nav a:not(.btn-nav) { display: none; } /* Hide text links on mobile, keep contact btn */
+  nav a:not(.btn-nav) { display: none; } /* Hide text links on mobile */
 }
