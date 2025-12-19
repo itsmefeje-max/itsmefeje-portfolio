@@ -1,5 +1,6 @@
 // main.js
-// Canvas background + small site helpers (active nav, 404-safe)
+
+// 1. CANVAS BACKGROUND (Keep your existing nice animation, just slight tweak on color)
 const canvas = document.getElementById("background");
 const ctx = canvas?.getContext?.("2d") || null;
 
@@ -11,54 +12,52 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-// Reduced motion support
-const prefersReduced = window.__prefersReducedMotion === true || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 let t = 0;
-let raf = null;
-
 function drawFrame() {
   if (!ctx) return;
-  if (prefersReduced) {
-    // static gradient for reduced-motion users
-    const g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    g.addColorStop(0, 'hsl(230,36%,15%)');
-    g.addColorStop(1, 'hsl(260,36%,12%)');
-    ctx.fillStyle = g;
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    return;
-  }
-
-  raf = requestAnimationFrame(drawFrame);
-  t += 0.01;
+  requestAnimationFrame(drawFrame);
+  t += 0.005; // Slower, more majestic
+  
+  // Clear
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // We just want subtle moving blobs, not a full fill
+  // This creates a "Northern Lights" effect at the top
   const g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  g.addColorStop(0, `hsl(${220 + Math.sin(t)*20},80%,20%)`);
-  g.addColorStop(1, `hsl(${260 + Math.cos(t)*20},80%,15%)`);
+  g.addColorStop(0, `hsla(${240 + Math.sin(t)*30}, 50%, 8%, 1)`); 
+  g.addColorStop(0.4, `hsla(0, 0%, 0%, 0)`); // Fade out quickly
+  
   ctx.fillStyle = g;
   ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 drawFrame();
 
-// Active nav highlighter
+// 2. SPOTLIGHT EFFECT
+// This looks for elements with class 'spotlight-cards' and applies the logic to children
+const spotlightWrappers = document.querySelectorAll('.spotlight-cards');
+
+spotlightWrappers.forEach(wrapper => {
+  wrapper.onmousemove = e => {
+    for(const card of wrapper.getElementsByClassName('card')) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }
+  }
+});
+
+// 3. AUTO-UPDATE YEAR
+const yearSpan = document.getElementById('year');
+if(yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+// 4. ACTIVE NAV STATE
 (function setActiveNav() {
   const links = document.querySelectorAll('nav a[data-link]');
-  if (!links.length) return;
   const current = location.pathname.split('/').pop() || 'index.html';
   links.forEach(a => {
-    const link = a.getAttribute('data-link');
-    if (link === current || (current === '' && link === 'index.html')) {
-      a.classList.add('active');
-    } else {
-      a.classList.remove('active');
-    }
+    if (a.getAttribute('data-link') === current) a.classList.add('active');
   });
-})();
-
-// Helpful debug: if landing on a missing page from server, show console hint.
-// Vercel sometimes serves 404 pages with custom IDs we saw earlier.
-// This is a noninvasive hint only.
-(function debugLinking() {
-  if (location.pathname === '/404' || document.title.includes('not found') || document.title.toLowerCase().includes('not found')) {
-    console.warn('Page not found — check that the file exists at the site root (e.g., about.html). If you see Vercel ID errors, ensure the files are in the repo root and redeploy.');
-  }
 })();
