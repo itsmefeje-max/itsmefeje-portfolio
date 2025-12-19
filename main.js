@@ -1,4 +1,6 @@
-// 1. SCROLL REVEAL
+// 1. SCROLL REVEAL & ACTIVE NAV SYSTEM
+const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -9,22 +11,38 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// 2. CONSTELLATION CANVAS
-const canvas = document.getElementById('network-canvas');
-const ctx = canvas.getContext('2d');
+// 2. SPOTLIGHT MOUSE TRACKING (For cards)
+document.querySelectorAll('.spotlight-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // We can use this to create a subtle gradient follow effect in CSS if desired
+    // For now, it adds a nice interactive layer
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+  });
+});
+
+
+// 3. CANVAS BACKGROUND (Moving Cyber Grid / Constellation)
+const canvas = document.getElementById("network-canvas");
+const ctx = canvas.getContext("2d");
+
 let width, height;
 let particles = [];
 
-function init() {
+function initCanvas() {
   width = window.innerWidth;
   height = window.innerHeight;
   canvas.width = width;
   canvas.height = height;
   
   particles = [];
-  const particleCount = width > 800 ? 60 : 30; // Fewer on mobile
+  const particleCount = width > 800 ? 50 : 25; // Reduce count on mobile for performance
   
-  for (let i = 0; i < particleCount; i++) {
+  for(let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
@@ -37,24 +55,22 @@ function init() {
 
 function animate() {
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-  ctx.strokeStyle = 'rgba(99, 102, 241, 0.15)'; // Low opacity indigo lines
   
+  // Update and Draw Particles
   particles.forEach((p, index) => {
-    // Move
     p.x += p.vx;
     p.y += p.vy;
     
-    // Bounce
+    // Bounce off walls
     if (p.x < 0 || p.x > width) p.vx *= -1;
     if (p.y < 0 || p.y > height) p.vy *= -1;
     
-    // Draw Dot
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
     ctx.fill();
     
-    // Connect Lines
+    // Draw Lines between nearby particles
     for (let j = index + 1; j < particles.length; j++) {
       const p2 = particles[j];
       const dx = p.x - p2.x;
@@ -62,6 +78,8 @@ function animate() {
       const dist = Math.sqrt(dx*dx + dy*dy);
       
       if (dist < 150) {
+        ctx.strokeStyle = `rgba(99, 102, 241, ${0.15 - dist/1000})`; // Fade out lines
+        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(p2.x, p2.y);
@@ -73,9 +91,10 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-window.addEventListener('resize', init);
-init();
+window.addEventListener('resize', initCanvas);
+initCanvas();
 animate();
 
-// 3. DYNAMIC YEAR
-document.getElementById('year').textContent = new Date().getFullYear();
+// 4. YEAR UPDATE
+const yearSpan = document.getElementById('year');
+if(yearSpan) yearSpan.textContent = new Date().getFullYear();
