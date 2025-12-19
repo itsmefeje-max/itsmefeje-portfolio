@@ -4,41 +4,57 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contact — Itsmefeje</title>
-  <meta name="description" content="Contact Itsmefeje — GitHub, Roblox and Discord usernames."/>
-  <link rel="canonical" href="./contact.html" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="noise-overlay"></div>
   <canvas id="background" aria-hidden="true"></canvas>
 
   <header>
-    <div class="logo"><a href="index.html" style="color:inherit; text-decoration:none">Itsmefeje</a></div>
+    <div class="logo"><a href="index.html">Itsmefeje</a></div>
     <nav>
-      <a href="about.html" data-link="about.html">About Me</a>
+      <a href="about.html" data-link="about.html">About</a>
       <a href="goals.html" data-link="goals.html">Goals</a>
-      <a href="contact.html" data-link="contact.html" class="active btn ghost">Contact</a>
+      <a href="contact.html" data-link="contact.html" class="btn-nav">Contact</a>
     </nav>
   </header>
 
   <main id="main" class="container">
-    <section>
-      <h1>Contact</h1>
-      <p>If you'd like to reach out, here's where to find me:</p>
-
-      <div class="links">
-        <a href="https://github.com/itsmefeje" target="_blank" rel="noopener" class="btn">GitHub</a>
-        <a href="https://www.roblox.com/users/search?keyword=itsmefeje" target="_blank" rel="noopener" class="btn ghost">Roblox (search)</a>
-        <a href="mailto:your.email@example.com" class="btn">Email</a>
+    <div class="contact-wrapper">
+      <div class="contact-info">
+        <div class="badge">Get in Touch</div>
+        <h1>Let's build<br>something great.</h1>
+        <p class="hero-desc" style="margin-left:0; margin-right:0;">I am currently open to collaboration on small prototypes and learning resources. Reach out via Discord or Email.</p>
       </div>
 
-      <p style="margin-top:14px" class="muted">
-        Discord: <strong>itsmefeje</strong> — send me a DM (I’ll respond when available).
-      </p>
-    </section>
+      <div class="contact-links">
+        <a href="https://github.com/itsmefeje" target="_blank" rel="noopener" class="contact-card">
+          <span>GitHub</span>
+          <span class="arrow">↗</span>
+        </a>
+        <a href="https://www.roblox.com/users/search?keyword=itsmefeje" target="_blank" rel="noopener" class="contact-card">
+          <span>Roblox Profile</span>
+          <span class="arrow">↗</span>
+        </a>
+        <a href="mailto:your.email@example.com" class="contact-card">
+          <span>Email Me</span>
+          <span class="arrow">→</span>
+        </a>
+        <div class="contact-card" style="cursor: default; opacity: 0.8;">
+          <span>Discord: <strong>itsmefeje</strong></span>
+        </div>
+      </div>
+    </div>
 
     <footer class="footer">
-      <small><a href="index.html" style="color:var(--muted)">← Back to Home</a></small>
+      <div class="separator"></div>
+      <p><small>© <span id="year"></span> Itsmefeje. Crafted with precision.</small></p>
     </footer>
   </main>
 
