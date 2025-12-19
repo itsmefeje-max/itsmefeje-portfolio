@@ -109,7 +109,7 @@ h1 {
 .glitch-text { position: relative; }
 .glitch-text::before, .glitch-text::after {
   content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  opacity: 0.8; display: none; /* Active on hover or animation if desired, kept subtle for now */
+  opacity: 0.8; display: none; /* Can be activated for animation if desired */
 }
 
 .gradient-text {
@@ -151,21 +151,32 @@ h1 {
 .section-header h2 { font-size: 3rem; margin-bottom: 16px; font-family: var(--font-display); }
 
 .bento-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  grid-auto-rows: minmax(280px, auto); 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); /* 3 Equal Columns */
+  gap: 24px;
+  grid-auto-rows: 1fr; 
 }
+
 .bento-card {
   background: var(--bg-panel); border: 1px solid var(--border); border-radius: 24px;
   padding: 32px; position: relative; overflow: hidden;
-  display: flex; flex-direction: column; justify-content: flex-end;
+  display: flex; flex-direction: column; justify-content: space-between;
   transition: all 0.4s ease;
+  height: 100%;
 }
-.bento-card:hover { border-color: rgba(255,255,255,0.2); background: var(--bg-panel-hover); transform: translateY(-4px); }
-.bento-card.large { grid-column: span 2; }
-.bento-card .card-content { z-index: 2; }
+
+.bento-card:hover { 
+  border-color: rgba(255,255,255,0.2); 
+  background: var(--bg-panel-hover); 
+  transform: translateY(-4px); 
+}
+
+/* Internal Card Styling */
+.bento-card .card-content { z-index: 2; margin-top: auto; }
 .bento-card h3 { font-size: 1.5rem; margin: 12px 0 8px; color: var(--text-main); }
 .bento-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
-.card-tags { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+
+.card-tags { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .card-tags span {
   font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
   background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 99px;
@@ -220,23 +231,21 @@ h1 {
 .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
 .reveal.active { opacity: 1; transform: translateY(0); }
 
-/* MOBILE RESPONSIVE */
-@media (max-width: 900px) {
+/* MOBILE & TABLET RESPONSIVE */
+@media (max-width: 1024px) {
+  /* RESPONSIVE TYPE */
   h1 { font-size: 3rem; }
   
+  /* NAV */
   .glass-nav { height: 70px; }
-  .nav-links {
-    /* Hide nav on mobile for this cleaner version, or could implement JS toggle */
-    display: none; 
-    /* If you want to make it visible, you would need JS to toggle a class here */
-  }
-  .mobile-toggle { display: block; } /* Show hamburger icon */
+  .nav-links { display: none; } /* Standard Mobile Menu behavior */
+  .mobile-toggle { display: block; } 
   
-  /* Stack Grids */
+  /* STACK GRIDS ON TABLETS/MOBILE SO THEY ARE BIG */
   .bento-grid, .goals-wrapper, .stats-row { grid-template-columns: 1fr; }
-  .bento-card.large { grid-column: span 1; }
+  .bento-card { min-height: 260px; } 
   
-  /* Spacing Adjustments */
+  /* SPACING */
   .stats-row { gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 24px; text-align: center; }
   .container { padding: 0 20px; }
