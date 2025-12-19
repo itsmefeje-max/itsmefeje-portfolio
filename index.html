@@ -1,226 +1,247 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Itsmefeje | Developer Journey</title>
-  <meta name="description" content="Personal hub of Itsmefeje - A Roblox developer documenting the journey of learning LuaU and systems architecture."/>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  
-  <canvas id="network-canvas"></canvas>
-  <div class="vignette"></div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>Itsmefeje — Developer Journey</title>
+    <meta name="description" content="Personal hub of Itsmefeje — a Roblox developer documenting the journey of learning LuaU, systems architecture, and best practices." />
 
-  <header class="glass-nav">
-    <div class="logo">
-      <div class="logo-mark">F</div>
-      <span>Itsmefeje</span>
-    </div>
-    <nav class="desktop-nav">
-      <a href="#about">About</a>
-      <a href="#learning">Learning</a>
-      <a href="#goals">Goals</a>
-      <a href="#contact" class="btn-primary">Contact</a>
-    </nav>
-  </header>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
-  <main>
-    <section id="home" class="hero-section">
-      <div class="hero-content reveal">
-        <div class="status-badge">
-          <span class="pulse-dot"></span>
-          <span>Welcome to my website. i am open for little to major comissions, im glad you visited Here </span>
-        </div>
-        
-        <h1 class="glitch-text">
-          Building the<br>
-          <span class="gradient-text">Foundation</span>
-        </h1>
-        
-        <p class="hero-sub">
-          Hello there, I'm <strong> Fejelude Laxamana </strong>. I am documenting my journey into 
-          <strong>Roblox Development</strong>. i am Currently mastering LuaU. a 
-          programming language, and learning. while building my first game prototypes
-        </p>
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+  </head>
 
-        <div class="cta-row">
-          <a href="#about" class="btn-glow">
-            Get to know me ( maybe you like me xD )
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-          </a>
-          <a href="https://www.roblox.com/users/5512860740/profile" target="_blank" class="link-sub">
-            <img src="https://cdn.simpleicons.org/roblox/white" alt="Roblox" width="20" height="20">
-            <span>Roblox Profile</span>
-          </a>
-        </div>
+  <body>
+    <!-- Decorative canvas for subtle network effect (keeps progressive enhancement) -->
+    <canvas id="network-canvas" aria-hidden="true"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <header class="glass-nav" role="banner">
+      <div class="container nav-inner">
+        <a href="#home" class="logo" aria-label="Itsmefeje home">
+          <span class="logo-mark" aria-hidden="true">F</span>
+          <span class="visually-hidden">Itsmefeje</span>
+          <span class="brand">Itsmefeje</span>
+        </a>
+
+        <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+
+        <nav id="main-nav" class="desktop-nav" role="navigation">
+          <a href="#about">About</a>
+          <a href="#learning">Learning</a>
+          <a href="#goals">Goals</a>
+          <a href="#contact" class="btn-primary">Contact</a>
+        </nav>
       </div>
-      
-    <section id="about" class="section-padding">
-      <div class="container narrow">
-        <div class="glass-panel profile-panel reveal">
-          <div class="profile-header">
-            <h2> About My Journey & Myself</h2>
-            <p>"The best way to predict the future is to create it is my Motto"</p>
-          </div>
-          <div class="profile-body">
-            <p> </strong>I am a developer focused on love.</strong> hehe, (not literal love like in a relationship like how she forgot me)
-            i Mean developing something i love and want to create that others might love too, I am currently in the <strong> the learning phase</strong>, dedicating my time to understand the fundamentals
-            and logic of Software and Game Developent. and, honestly. its more understandable than understanding a girl. LOL, and ofcourse
-            im allso understanding the he core principles of programming before rushing into building massive projects. xD </p>
-            
-            <p>My philosophy is to build small stuffs at these moments, and break things often, and understand every line of code I write. AI exist but understanding it makes me
-            even more handsome</p>
-            
-            <div class="stats-row">
-              <div class="stat">
-                <strong>LuaU</strong>
-                <span> MY FOCUS </span>
-              </div>
-              <div class="stat">
-                <strong> MY GIRLFRIEND </strong>
-                <span> No ONE </span>
-              </div>
-              <div class="stat">
-                <strong>Systems </strong>
-                <span> Learning Phase </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    </header>
 
-    <section id="learning" class="section-padding">
-      <div class="container">
-        <div class="section-header reveal">
-          <h2>Current Curriculum</h2>
-          <p>The technologies and concepts I am currently mastering.</p>
-        </div>
-
-        <div class="bento-grid reveal">
-          <article class="bento-card large spotlight-card">
-            <div class="card-bg" style="background: linear-gradient(45deg, #1a1a1a, #2a2a2a);"></div>
-            <div class="card-content">
-              <div class="card-tags">
-                <span>Core Language</span>
-                <span>Backend</span>
-              </div>
-              <h3>LuaU Deep Dive</h3>
-              <p>Studying data types, tables, metatables, and object-oriented programming (OOP) within Roblox. Learning to write clean, modular scripts.</p>
-            </div>
-            <div class="card-icon">
-              <img src="https://cdn.simpleicons.org/lua/white" width="40" height="40" alt="Lua">
-            </div>
-          </article>
-
-          <article class="bento-card spotlight-card">
-            <div class="card-content">
-              <div class="card-tags"><span>Workflow</span><span>Tools</span></div>
-              <h3>Professional Workflow</h3>
-              <p>Transitioning from standard Studio scripting to professional tools like <strong>Rojo</strong>, <strong>Git</strong>, and VS Code.</p>
-            </div>
-            <div class="card-icon">
-              <img src="https://cdn.simpleicons.org/git/white" width="30" height="30" alt="Git">
-            </div>
-          </article>
-
-          <article class="bento-card spotlight-card">
-            <div class="card-content">
-              <div class="card-tags"><span>User Interface</span><span>Design</span></div>
-              <h3>UI Architecture</h3>
-              <p>Exploring <strong>Fusion</strong> and state management to create reactive, 60FPS user interfaces.</p>
-            </div>
-            <div class="card-icon">
-               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="goals" class="section-padding">
-      <div class="container">
-        <div class="section-header reveal">
-          <h2>The Roadmap</h2>
-          <p>My targets for the upcoming quarter.</p>
-        </div>
-
-        <div class="goals-wrapper reveal">
-          <div class="goal-item">
-            <div class="goal-icon pending"></div>
-            <div class="goal-content">
-              <h3>Master DataStores</h3>
-              <p>Implement a secure Save/Load system with session locking and data serialization.</p>
-            </div>
+    <main id="main" role="main">
+      <!-- Hero -->
+      <section id="home" class="hero-section">
+        <div class="container hero-inner">
+          <div class="status-badge" role="status" aria-live="polite">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            <span>Open for commissions — thanks for visiting!</span>
           </div>
 
-          <div class="goal-item">
-            <div class="goal-icon pending"></div>
-            <div class="goal-content">
-              <h3>Build a Tycoon Prototype</h3>
-              <p>Create a basic button-based tycoon to practice OOP and economy balancing.</p>
-            </div>
-          </div>
+          <h1 class="hero-title">
+            Building the
+            <span class="gradient-text">Foundation</span>
+          </h1>
 
-          <div class="goal-item">
-            <div class="goal-icon pending"></div>
-            <div class="goal-content">
-              <h3>Contribute to Open Source</h3>
-              <p>Understand how to read other developers' code and make small contributions.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+          <p class="hero-sub">
+            Hi — I’m <strong>Fejelude Laxamana</strong>. I document my journey into <strong>Roblox development</strong>, learning LuaU and systems design while building game prototypes.
+          </p>
 
-    <section id="contact" class="section-padding footer-section">
-      <div class="container">
-        <div class="contact-box reveal">
-          <h2>Connect with me</h2>
-          <p>I am always open to chatting with other developers or discussing future opportunities.</p>
-          
-          <div class="contact-methods">
-            <a href="mailto:itsmefeje@gmail.com" class="method-card">
-              <div class="icon-circle">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              </div>
-              <div>
-                <span class="label">Email</span>
-                <span class="value">itsmefeje@gmail.com</span>
-              </div>
+          <div class="cta-row">
+            <a href="#about" class="btn btn-glow">Get to know me</a>
+
+            <a href="https://www.roblox.com/users/5512860740/profile" target="_blank" rel="noopener noreferrer" class="link-sub" aria-label="Open Roblox profile">
+              <img src="https://cdn.simpleicons.org/roblox/white" alt="Roblox icon" width="20" height="20">
+              <span>Roblox Profile</span>
             </a>
-            
-            <div class="method-card">
-              <div class="icon-circle">
-                <img src="https://cdn.simpleicons.org/discord/white" width="24" height="24">
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" class="section-padding">
+        <div class="container narrow">
+          <article class="glass-panel profile-panel">
+            <header class="profile-header">
+              <h2>About — My Journey</h2>
+              <p class="muted">“The best way to predict the future is to create it.”</p>
+            </header>
+
+            <div class="profile-body">
+              <p>
+                </strong>I am a developer focused on love.</strong> hehe — not literal relationship love (like how she forgot me). I mean building things I <em>actually</em> love and creating stuff others might love too. I’m currently in the <strong>learning phase</strong>, dedicating my time to understanding the fundamentals and logic of software and game development.
+              </p>
+
+              <p>
+                Honestly, this is more understandable than understanding a girl. LOL. Of course, I’m also learning the core principles of programming first instead of rushing into massive projects. Small builds, broken code, fixed mistakes — repeat. xD
+              </p>
+
+              <p>
+                My philosophy is to build small things right now, break them often, and understand every single line of code I write. AI exists, sure — but understanding the code myself somehow makes me even more handsome.
+              </p>
+
+              <div class="stats-row">
+                <div class="stat"><strong>LuaU</strong><span>MY FOCUS</span></div>
+                <div class="stat"><strong>MY GIRLFRIEND</strong><span>NO ONE</span></div>
+                <div class="stat"><strong>Systems</strong><span>Learning Phase</span></div>
               </div>
-              <div>
-                <span class="label">Discord</span>
-                <span class="value">itsmefeje</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Learning / Curriculum -->
+      <section id="learning" class="section-padding">
+        <div class="container">
+          <header class="section-header">
+            <h2>Current Curriculum</h2>
+            <p>The technologies and concepts I’m mastering right now.</p>
+          </header>
+
+          <div class="bento-grid">
+            <article class="bento-card spotlight-card">
+              <div class="card-content">
+                <div class="card-tags"><span>Core</span><span>Language</span></div>
+                <h3>LuaU Deep Dive</h3>
+                <p>Types, tables, metatables, OOP patterns, and writing clean modular scripts for Roblox.</p>
+              </div>
+              <div class="card-icon" aria-hidden="true">
+                <img src="https://cdn.simpleicons.org/lua/white" width="40" height="40" alt="Lua icon">
+              </div>
+            </article>
+
+            <article class="bento-card spotlight-card">
+              <div class="card-content">
+                <div class="card-tags"><span>Tools</span><span>Workflow</span></div>
+                <h3>Professional Workflow</h3>
+                <p>Using Rojo, Git, and VS Code to build maintainable projects and collaborate effectively.</p>
+              </div>
+              <div class="card-icon" aria-hidden="true">
+                <img src="https://cdn.simpleicons.org/git/white" width="30" height="30" alt="Git icon">
+              </div>
+            </article>
+
+            <article class="bento-card spotlight-card">
+              <div class="card-content">
+                <div class="card-tags"><span>UI</span><span>Design</span></div>
+                <h3>UI Architecture</h3>
+                <p>Exploring reactive UI patterns, performance, and state management (Fusion-inspired concepts).</p>
+              </div>
+              <div class="card-icon" aria-hidden="true">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Goals / Roadmap -->
+      <section id="goals" class="section-padding">
+        <div class="container">
+          <header class="section-header">
+            <h2>The Roadmap</h2>
+            <p>Targets for the upcoming quarter.</p>
+          </header>
+
+          <div class="goals-wrapper">
+            <div class="goal-item">
+              <div class="goal-icon pending" aria-hidden="true"></div>
+              <div class="goal-content">
+                <h3>Master DataStores</h3>
+                <p>Implement a secure save/load system with session locking and serialization.</p>
+              </div>
+            </div>
+
+            <div class="goal-item">
+              <div class="goal-icon pending" aria-hidden="true"></div>
+              <div class="goal-content">
+                <h3>Build a Tycoon Prototype</h3>
+                <p>Create a button-based tycoon to practice OOP and economy balancing.</p>
+              </div>
+            </div>
+
+            <div class="goal-item">
+              <div class="goal-icon pending" aria-hidden="true"></div>
+              <div class="goal-content">
+                <h3>Contribute to Open Source</h3>
+                <p>Read other projects' code, make small contributions, and learn good patterns.</p>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <footer>
-          <div class="footer-bottom">
-            <p>&copy; <span id="year"></span> Itsmefeje. Personal Website.</p>
-            <div class="footer-links">
-              <a href="https://www.roblox.com/users/5512860740/profile" target="_blank">Roblox</a>
+      <!-- Contact / Footer -->
+      <section id="contact" class="section-padding footer-section">
+        <div class="container">
+          <div class="contact-box">
+            <h2>Connect with me</h2>
+            <p>I’m open to collaborating, answering questions, or discussing opportunities.</p>
+
+            <div class="contact-methods">
+              <a href="mailto:itsmefeje@gmail.com" class="method-card">
+                <div class="icon-circle" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <div>
+                  <span class="label">Email</span>
+                  <span class="value">itsmefeje@gmail.com</span>
+                </div>
+              </a>
+
+              <div class="method-card">
+                <div class="icon-circle" aria-hidden="true">
+                  <img src="https://cdn.simpleicons.org/discord/white" width="24" height="24" alt="Discord icon">
+                </div>
+                <div>
+                  <span class="label">Discord</span>
+                  <span class="value">itsmefeje</span>
+                </div>
+              </div>
             </div>
           </div>
-        </footer>
-      </div>
-    </section>
 
-  </main>
+          <footer class="footer-bottom">
+            <p>&copy; <span id="year"></span> Itsmefeje. Personal website.</p>
+            <div class="footer-links">
+              <a href="https://www.roblox.com/users/5512860740/profile" target="_blank" rel="noopener noreferrer">Roblox</a>
+            </div>
+          </footer>
+        </div>
+      </section>
+    </main>
 
-  <script src="main.js"></script>
-</body>
+    <noscript>
+      <div class="no-js">This site works best with JavaScript enabled.</div>
+    </noscript>
+
+    <!-- Scripts -->
+    <script>
+      // small script to set the copyright year and handle mobile nav toggle
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      const toggle = document.getElementById('nav-toggle');
+      const nav = document.getElementById('main-nav');
+      toggle && toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        nav.classList.toggle('open');
+      });
+    </script>
+    <script src="main.js" defer></script>
+  </body>
 </html>
+
