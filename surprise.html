@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission Control | Itsmefeje</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Specific styles for the lobby */
+    .lobby-container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 10;
+      position: relative;
+    }
+    .input-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 16px 24px;
+      border-radius: 12px;
+      color: white;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 24px;
+      width: 300px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .input-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+    .error-msg {
+      color: #f43f5e;
+      height: 24px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="network-canvas"></canvas>
+  <div class="vignette"></div>
+
+  <div class="lobby-container reveal active">
+    <div class="status-badge" style="margin-bottom: 20px;">
+      <span class="pulse-dot"></span>
+      <span>HIDDEN PROJECT FOUND</span>
+    </div>
+
+    <h1 class="glitch-text" style="font-size: 3rem; margin-bottom: 10px;">Identify Yourself</h1>
+    <p class="hero-sub" style="margin-bottom: 40px;">Enter your callsign to begin the simulation.</p>
+
+    <div class="error-msg" id="error-msg">Name required, pilot.</div>
+    
+    <input type="text" id="player-name" class="input-box" placeholder="Capt. Feje..." maxlength="12" autocomplete="off">
+    
+    <button id="start-btn" class="btn-glow" style="cursor: pointer; border: none; font-size: 1.2rem;">
+      Launch Game 🚀
+    </button>
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+    // Simple Lobby Logic
+    const startBtn = document.getElementById('start-btn');
+    const input = document.getElementById('player-name');
+    const errorMsg = document.getElementById('error-msg');
+
+    function startGame() {
+      const name = input.value.trim();
+      if (!name) {
+        errorMsg.style.opacity = '1';
+        return;
+      }
+      // Save name for the game page
+      localStorage.setItem('flappy_username', name);
+      window.location.href = 'game.html';
+    }
+
+    startBtn.addEventListener('click', startGame);
+    
+    // Allow "Enter" key
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') startGame();
+    });
+    
+    input.addEventListener('input', () => errorMsg.style.opacity = '0');
+  </script>
+</body>
+</html>
