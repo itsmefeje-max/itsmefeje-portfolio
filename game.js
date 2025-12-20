@@ -1,4 +1,4 @@
-/* COSMIC FLAP GAME ENGINE (EASY MODE) */
+/* COSMIC FLAP GAME ENGINE (MOBILE READY + SPEED UP) */
 
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
@@ -13,8 +13,8 @@ let animationId = null;
 
 // Physics Configuration
 const gravity = 0.18;      
-const pipeGap = 220;       // MASSIVE GAP (Easier)
-const jumpStrength = 5.2;  // Taller Jump
+const pipeGap = 220;       // Wide gap for easy play
+const jumpStrength = 5.2;  // High jump
 
 // Set Internal Resolution
 canvas.width = 400;
@@ -71,7 +71,7 @@ class Pipe {
     this.width = 52;
     this.passed = false;
     
-    // Logic to ensure pipes are always passable
+    // Ensure pipes are passable
     const minHeight = 50;
     const maxTop = canvas.height - pipeGap - minHeight;
     
@@ -85,11 +85,9 @@ class Pipe {
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.lineWidth = 2;
 
-    // Top
     ctx.fillRect(this.x, 0, this.width, this.topHeight);
     ctx.strokeRect(this.x, 0, this.width, this.topHeight);
 
-    // Bottom
     ctx.fillRect(this.x, this.bottomY, this.width, this.bottomHeight);
     ctx.strokeRect(this.x, this.bottomY, this.width, this.bottomHeight);
   }
@@ -104,13 +102,17 @@ class Pipe {
       }
     }
 
-    // Score
+    // Score & Speed Up Logic
     if (this.x + this.width < bird.x && !this.passed) {
       score++;
       updateScoreDisplay();
       this.passed = true;
-      // Difficulty Scaling
-      if (score % 10 === 0) gamespeed += 0.2; 
+      
+      // PROGRESSIVE DIFFICULTY
+      // Every 5 points, increase speed by 0.1
+      if (score % 5 === 0) {
+        gamespeed += 0.1;
+      }
     }
   }
 }
@@ -126,7 +128,7 @@ function initGame() {
   bird.velocity = 0;
   pipes.length = 0;
   score = 0;
-  gamespeed = 1.5; 
+  gamespeed = 1.5; // Reset speed to slow start
   frames = 0;
   isGameOver = false;
   isPlaying = true;
@@ -148,8 +150,10 @@ function animate() {
   bird.update();
   bird.draw();
 
-  // Pipe Spawning (DISTANCE 2X FURTHER)
-  if (frames % 450 === 0) { // Changed from 230 to 450
+  // Pipe Spawning
+  // Frames needed between pipes = distance / speed
+  // We want roughly same distance, but as speed increases, they arrive faster.
+  if (frames % 450 === 0) { 
     pipes.push(new Pipe());
   }
 
@@ -180,16 +184,21 @@ function gameOver() {
   isPlaying = false;
   isGameOver = true;
   cancelAnimationFrame(animationId);
-  
   saveScore(score);
   
   document.getElementById('final-score-display').innerText = `Score: ${score}`;
   document.getElementById('game-overlay').classList.add('active');
 }
 
-// --- CONTROLS --- //
+// --- CONTROLS (MOBILE FIX) --- //
 
-function handleInput() {
+// Handle all interaction types
+function handleInput(e) {
+  // Prevent default behavior (stops mobile scrolling/zooming)
+  if(e.type !== 'keydown') {
+     e.preventDefault();
+  }
+  
   if (isGameOver) {
     initGame();
   } else if (!isPlaying) {
@@ -199,18 +208,26 @@ function handleInput() {
   }
 }
 
+// 1. Keyboard
 window.addEventListener('keydown', (e) => {
   if (e.code === 'Space') {
     e.preventDefault();
-    handleInput();
+    handleInput(e);
   }
 });
 
-canvas.addEventListener('click', (e) => {
-  e.preventDefault();
-  handleInput();
+// 2. Mouse Click
+canvas.addEventListener('mousedown', (e) => {
+  handleInput(e);
 });
 
+// 3. Touch (Critical for Mobile)
+// 'passive: false' allows us to use preventDefault()
+canvas.addEventListener('touchstart', (e) => {
+  handleInput(e);
+}, { passive: false });
+
+// Restart Button
 document.getElementById('restart-btn').addEventListener('click', (e) => {
   e.stopPropagation();
   if (isGameOver) initGame();
@@ -222,9 +239,7 @@ function saveScore(newScore) {
   let leaderboard = [];
   try {
     leaderboard = JSON.parse(localStorage.getItem('flappy_leaderboard')) || [];
-  } catch (e) {
-    leaderboard = [];
-  }
+  } catch (e) { leaderboard = []; }
 
   const existingIndex = leaderboard.findIndex(entry => entry.name === username);
 
@@ -290,6 +305,5 @@ function updateScoreDisplay() {
   if(bestEl) bestEl.innerText = highScore;
 }
 
-// Init
 renderLeaderboard();
 updateScoreDisplay();
