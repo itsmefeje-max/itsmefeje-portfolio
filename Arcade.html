@@ -4,13 +4,68 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arcade | Itsmefeje</title>
-  <meta name="description" content="The Arcade - Playable prototypes and games by Itsmefeje. Coming Soon."/>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* Simple Game Styles */
+    .game-area {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-top: 80px;
+    }
+    .game-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: 60px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    }
+    .score-display {
+      font-family: var(--font-display);
+      font-size: 5rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-shadow: 0 0 30px var(--primary-glow);
+      margin: 20px 0;
+    }
+    .clicker-btn {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--bg-dark), #1a1a2e);
+      border: 4px solid var(--primary);
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--primary-glow);
+      transition: all 0.1s;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      user-select: none;
+    }
+    .clicker-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+    .clicker-btn:hover {
+      box-shadow: 0 0 40px var(--primary-glow);
+      border-color: #fff;
+    }
+  </style>
 </head>
 <body>
   
@@ -25,38 +80,99 @@
             <span>Itsmefeje</span>
         </a>
       </div>
-      
       </div>
   </header>
 
   <main>
-    <section class="hero-section">
-      <div class="hero-content reveal">
-        <div class="status-badge">
-          <span class="pulse-dot"></span>
-          <span>COMING SOON</span>
-        </div>
-        
-        <h1 class="glitch-text" data-text="The Arcade">
-          The <span class="gradient-text">Arcade</span>
-        </h1>
-        
-        <p class="hero-sub">
-          This area is currently under development.
-          I am working on integrating playable game prototypes and experiments directly into this website.
-          Stay tuned for updates.
-        </p>
-
-        <div class="cta-row">
-          <a href="/" class="btn-glow">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Return Home
-          </a>
-        </div>
+    <section class="game-area reveal">
+      
+      <div class="status-badge" style="margin-bottom: 24px;">
+        <span class="pulse-dot"></span>
+        <span>PROTOTYPE v0.1</span>
       </div>
+
+      <h1 class="glitch-text" style="font-size: 2.5rem; margin-bottom: 40px;">Lumen <span class="gradient-text">Clicker</span></h1>
+
+      <div class="game-panel">
+        <p style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;">Current Lumens</p>
+        
+        <div id="score" class="score-display">0</div>
+        
+        <button id="lumen-btn" class="clicker-btn">
+          TAP
+        </button>
+
+        <p style="margin-top: 32px; font-size: 0.9rem; color: var(--text-muted);">
+          Collect Lumens to fund the<br>Tree Tycoon project.
+        </p>
+      </div>
+
+      <div class="cta-row" style="margin-top: 40px;">
+        <a href="/" class="btn-glow" style="background: transparent; border: 1px solid var(--border); box-shadow: none;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Return Home
+        </a>
+      </div>
+
     </section>
   </main>
 
   <script src="main.js"></script>
+  
+  <script>
+    // --- SIMPLE GAME LOGIC ---
+    
+    // 1. Select elements
+    const scoreEl = document.getElementById('score');
+    const btn = document.getElementById('lumen-btn');
+    
+    // 2. Load saved score from browser storage
+    let lumens = parseInt(localStorage.getItem('myLumens')) || 0;
+    scoreEl.innerText = lumens;
+
+    // 3. Handle Click
+    btn.addEventListener('click', () => {
+      // Add Lumen
+      lumens++;
+      
+      // Update Text
+      scoreEl.innerText = lumens;
+      
+      // Save to Storage (so they don't lose it on refresh)
+      localStorage.setItem('myLumens', lumens);
+      
+      // Fun visual effect: Create a floating "+1"
+      createFloatingText(btn);
+    });
+
+    // 4. Visual Effect Function
+    function createFloatingText(element) {
+      const floatEl = document.createElement('div');
+      floatEl.innerText = "+1";
+      floatEl.style.position = 'absolute';
+      floatEl.style.color = 'white';
+      floatEl.style.fontWeight = 'bold';
+      floatEl.style.pointerEvents = 'none';
+      
+      // Get button position
+      const rect = element.getBoundingClientRect();
+      const randomX = (Math.random() - 0.5) * 40;
+      
+      floatEl.style.left = (rect.left + rect.width/2 + randomX) + 'px';
+      floatEl.style.top = (rect.top) + 'px';
+      floatEl.style.transition = 'all 0.8s ease-out';
+      
+      document.body.appendChild(floatEl);
+
+      // Animate up and fade out
+      requestAnimationFrame(() => {
+        floatEl.style.transform = 'translateY(-50px)';
+        floatEl.style.opacity = '0';
+      });
+
+      // Remove after animation
+      setTimeout(() => floatEl.remove(), 800);
+    }
+  </script>
 </body>
 </html>
