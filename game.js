@@ -1,4 +1,4 @@
-/* COSMIC FLAP GAME ENGINE (PHYSICS UPDATE) */
+/* COSMIC FLAP GAME ENGINE (EASY MODE) */
 
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
@@ -13,8 +13,8 @@ let animationId = null;
 
 // Physics Configuration
 const gravity = 0.18;      
-const pipeGap = 160;       
-const jumpStrength = 5.2;  // Increased for Taller Jump
+const pipeGap = 220;       // MASSIVE GAP (Easier)
+const jumpStrength = 5.2;  // Taller Jump
 
 // Set Internal Resolution
 canvas.width = 400;
@@ -148,9 +148,8 @@ function animate() {
   bird.update();
   bird.draw();
 
-  // Pipe Spawning (DISTANCE INCREASED)
-  // 230 frames = further distance between blocks
-  if (frames % 230 === 0) {
+  // Pipe Spawning (DISTANCE 2X FURTHER)
+  if (frames % 450 === 0) { // Changed from 230 to 450
     pipes.push(new Pipe());
   }
 
