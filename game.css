@@ -1,0 +1,148 @@
+/* GAME SPECIFIC STYLES */
+body { overflow: hidden; /* Prevent scrolling while playing */ }
+
+.game-wrapper {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 20px;
+}
+
+/* GAME CANVAS CONTAINER */
+.game-container {
+  position: relative;
+  width: 400px;
+  height: 600px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(0,0,0,0.5);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* UI OVERLAYS */
+.score-board {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.score-item {
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.score-item .label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.score-item .value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 7, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.overlay h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.overlay p { color: var(--text-muted); margin-bottom: 30px; }
+
+.exit-link {
+  margin-top: 20px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.exit-link:hover { color: white; }
+
+/* LEADERBOARD PANEL */
+.leaderboard-panel {
+  width: 300px;
+  height: 600px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.leaderboard-panel h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+}
+
+.leaderboard-list {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.lb-entry {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.9rem;
+}
+.lb-entry:first-child { color: #fbbf24; font-weight: bold; } /* Gold for #1 */
+
+.btn-small {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 0.8rem;
+}
+.btn-small:hover { border-color: #f43f5e; color: #f43f5e; }
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+  .game-wrapper { flex-direction: column; height: auto; padding-top: 80px; }
+  .leaderboard-panel { width: 400px; height: auto; }
+}
