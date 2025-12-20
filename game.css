@@ -1,5 +1,8 @@
 /* GAME SPECIFIC STYLES */
-body { overflow: hidden; /* Prevent scrolling while playing */ }
+body { 
+  overflow: hidden; /* Prevent scrolling */
+  touch-action: none; /* Disable touch zoom */
+}
 
 .game-wrapper {
   display: flex;
@@ -15,7 +18,7 @@ body { overflow: hidden; /* Prevent scrolling while playing */ }
   position: relative;
   width: 400px;
   height: 600px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   border: 2px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
@@ -26,6 +29,7 @@ canvas {
   display: block;
   width: 100%;
   height: 100%;
+  cursor: pointer;
 }
 
 /* UI OVERLAYS */
@@ -64,7 +68,7 @@ canvas {
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(5, 5, 7, 0.85);
+  background: rgba(5, 5, 7, 0.9);
   backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
@@ -91,6 +95,13 @@ canvas {
 
 .overlay p { color: var(--text-muted); margin-bottom: 30px; }
 
+.hint-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  animation: pulse 2s infinite;
+}
+
 .exit-link {
   margin-top: 20px;
   color: var(--text-muted);
@@ -106,6 +117,9 @@ canvas {
   padding: 30px;
   display: flex;
   flex-direction: column;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
 }
 
 .leaderboard-panel h3 {
@@ -113,6 +127,8 @@ canvas {
   margin-bottom: 20px;
   border-bottom: 1px solid var(--border);
   padding-bottom: 20px;
+  color: var(--text-main);
+  font-family: var(--font-display);
 }
 
 .leaderboard-list {
@@ -120,29 +136,26 @@ canvas {
   overflow-y: auto;
 }
 
+/* Custom Scrollbar for Leaderboard */
+.leaderboard-list::-webkit-scrollbar { width: 6px; }
+.leaderboard-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+.leaderboard-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
 .lb-entry {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  font-size: 0.9rem;
-}
-.lb-entry:first-child { color: #fbbf24; font-weight: bold; } /* Gold for #1 */
-
-.btn-small {
-  background: transparent;
-  border: 1px solid var(--border);
+  font-size: 0.95rem;
   color: var(--text-muted);
-  padding: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 0.8rem;
 }
-.btn-small:hover { border-color: #f43f5e; color: #f43f5e; }
+.lb-entry:first-child { color: #fbbf24; font-weight: bold; font-size: 1.1rem; } 
+.lb-entry:nth-child(2) { color: #e2e8f0; }
+.lb-entry:nth-child(3) { color: #cbd5e1; }
 
 /* RESPONSIVE */
 @media (max-width: 800px) {
-  .game-wrapper { flex-direction: column; height: auto; padding-top: 80px; }
-  .leaderboard-panel { width: 400px; height: auto; }
+  .game-wrapper { flex-direction: column; height: auto; padding-top: 40px; }
+  .game-container { width: 100%; max-width: 400px; height: 500px; }
+  .leaderboard-panel { width: 100%; max-width: 400px; height: auto; min-height: 300px; }
 }
