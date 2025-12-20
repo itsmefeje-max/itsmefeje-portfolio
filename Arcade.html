@@ -1,264 +1,73 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arcade | Coming Soon</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@200;400;600&display=swap" rel="stylesheet">
+  <title>Arcade | Itsmefeje</title>
+  <meta name="description" content="The Arcade - Playable prototypes and games by Itsmefeje. Coming Soon."/>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* --- LIQUID AURA THEME --- */
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #050507;
-      overflow: hidden;
-      font-family: 'Inter', sans-serif;
-      color: white;
-    }
-
-    /* 1. THE LIQUID AURA BACKGROUND */
-    .aura-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      background: #0f172a;
-      overflow: hidden;
-    }
-
-    /* Moving Color Blobs */
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.6;
-      animation: float 20s infinite ease-in-out;
-    }
-
-    .orb-1 {
-      top: -10%; left: -10%;
-      width: 50vw; height: 50vw;
-      background: radial-gradient(circle, #4f46e5 0%, transparent 70%);
-      animation-delay: 0s;
-    }
-    .orb-2 {
-      bottom: -10%; right: -10%;
-      width: 60vw; height: 60vw;
-      background: radial-gradient(circle, #c026d3 0%, transparent 70%); /* Fuchsia */
-      animation-delay: -5s;
-    }
-    .orb-3 {
-      top: 40%; left: 40%;
-      width: 40vw; height: 40vw;
-      background: radial-gradient(circle, #06b6d4 0%, transparent 70%); /* Cyan */
-      animation-delay: -10s;
-      opacity: 0.4;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(30px, -50px) scale(1.1); }
-      66% { transform: translate(-20px, 20px) scale(0.9); }
-    }
-
-    /* 2. THE FLOW LINES CANVAS */
-    canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      opacity: 0.4; /* Subtle overlay */
-    }
-
-    /* 3. CONTENT CARD (Glassmorphism) */
-    .content-layer {
-      position: relative;
-      z-index: 10;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .glass-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 60px 40px;
-      border-radius: 32px;
-      max-width: 600px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-      transform: translateY(20px);
-      opacity: 0;
-      animation: revealCard 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-      animation-delay: 0.2s;
-    }
-
-    h1 {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 600;
-      font-size: 3rem;
-      margin: 0 0 16px 0;
-      background: linear-gradient(to right, #fff, #cbd5e1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    p {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      color: #94a3b8;
-      margin-bottom: 40px;
-      font-weight: 300;
-    }
-
-    .highlight {
-      color: #a5b4fc; /* Soft Indigo */
-      font-weight: 400;
-    }
-
-    .btn-flow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 32px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: white;
-      text-decoration: none;
-      border-radius: 99px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .btn-flow:hover {
-      background: white;
-      color: black;
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
-    }
-
-    /* Animation Keyframes */
-    @keyframes revealCard {
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
 </head>
 <body>
+  
+  <canvas id="network-canvas"></canvas>
+  <div class="vignette"></div>
 
-  <div class="aura-bg">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
-
-  <canvas id="flowCanvas"></canvas>
-
-  <div class="content-layer">
-    <div class="glass-card">
-      <h1>Coming Soon</h1>
-      <p>
-        The Arcade is currently under development.
-        I am working on bringing <span class="highlight">playable game prototypes</span> and experiments directly to this page. 
-        Please check back later!
-      </p>
+  <header class="glass-nav">
+    <div class="container nav-container">
+      <div class="logo">
+        <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+            <div class="logo-mark">F</div>
+            <span>Itsmefeje</span>
+        </a>
+      </div>
       
-      <a href="index.html" class="btn-flow">
-        <span>Return to Home</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-      </a>
+      <button class="mobile-toggle" aria-label="Toggle Menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links">
+        <a href="index.html#about">About</a>
+        <a href="index.html#learning">Learning</a>
+        <a href="index.html#goals">Goals</a>
+        <a href="index.html#contact" class="btn-primary">Contact</a>
+      </nav>
     </div>
-  </div>
+  </header>
 
-  <script>
-    /**
-     * FLOW LINES ENGINE
-     * Creates smooth, relaxing sine waves that drift across the screen.
-     */
-    const canvas = document.getElementById('flowCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    let width, height;
-    let lines = [];
-    
-    // Configuration
-    const CONFIG = {
-      lineCount: 15,
-      speed: 0.002,
-      amplitude: 50,
-      frequency: 0.01,
-      gap: 40
-    };
+  <main>
+    <section class="hero-section">
+      <div class="hero-content reveal">
+        <div class="status-badge">
+          <span class="pulse-dot"></span>
+          <span>COMING SOON</span>
+        </div>
+        
+        <h1 class="glitch-text" data-text="The Arcade">
+          The <span class="gradient-text">Arcade</span>
+        </h1>
+        
+        <p class="hero-sub">
+          This area is currently under development.
+          I am working on integrating playable game prototypes and experiments directly into this website.
+          Stay tuned for updates.
+        </p>
 
-    function resize() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-      initLines();
-    }
-    
-    window.addEventListener('resize', resize);
+        <div class="cta-row">
+          <a href="index.html" class="btn-glow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Return Home
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    class FlowLine {
-      constructor(yIndex) {
-        this.yBase = (height / CONFIG.lineCount) * yIndex + (height * 0.1);
-        this.offset = Math.random() * 100; // Random start phase
-        this.speed = CONFIG.speed + (Math.random() * 0.001); // Varied speed
-        this.color = `rgba(255, 255, 255, ${0.05 + Math.random() * 0.1})`; // Subtle opacity
-      }
-
-      draw(time) {
-        ctx.beginPath();
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 1.5;
-
-        for (let x = 0; x <= width; x += 10) { // Step size 10 for performance
-          // Sine Wave Calculation
-          // y = BaseY + Sin(x * frequency + time + offset) * amplitude
-          const y = this.yBase + 
-                    Math.sin(x * CONFIG.frequency + time * this.speed + this.offset) * CONFIG.amplitude +
-                    Math.sin(x * 0.005 + time * 0.5) * 20; // Secondary wave for complexity
-          
-          if (x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      }
-    }
-
-    function initLines() {
-      lines = [];
-      for (let i = 0; i < CONFIG.lineCount; i++) {
-        lines.push(new FlowLine(i));
-      }
-    }
-
-    let time = 0;
-    function animate() {
-      ctx.clearRect(0, 0, width, height);
-      
-      time += 1;
-      
-      lines.forEach(line => {
-        line.draw(time);
-      });
-
-      requestAnimationFrame(animate);
-    }
-
-    // Start
-    resize();
-    animate();
-
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
