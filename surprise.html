@@ -2,179 +2,308 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Mission Control | Itsmefeje</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You | Itsmefeje</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Lobby Styles */
-    .lobby-container {
-      height: 100vh;
-      min-height: 600px; /* Prevent squishing on small screens */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      z-index: 10;
+    /* OVERRIDE & CUSTOM STYLES */
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #050507;
+    }
+
+    /* Fullscreen Canvas */
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* The Content Overlay */
+    .thank-you-container {
       position: relative;
-      padding: 20px;
-    }
-    .input-box {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      padding: 16px 24px;
-      border-radius: 12px;
-      color: white;
-      font-family: var(--font-display);
-      font-size: 1.2rem; /* Size safe for mobile */
-      text-align: center;
-      margin-bottom: 16px;
-      width: 100%;
-      max-width: 320px;
-      outline: none;
-      transition: all 0.3s;
-    }
-    .input-box:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-    }
-    .input-box.error {
-      border-color: #f43f5e;
-      box-shadow: 0 0 20px rgba(244, 63, 94, 0.3);
-    }
-    
-    .status-msg {
-      height: 40px;
-      margin-bottom: 24px;
-      font-size: 0.95rem;
+      z-index: 10;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      gap: 8px;
+      align-items: center;
+      text-align: center;
+      pointer-events: none; /* Let clicks pass through to canvas */
     }
-    .text-error { color: #f43f5e; }
-    .text-success { color: #10b981; }
-    
-    .suggestion-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px dashed rgba(255,255,255,0.3);
-      padding: 6px 12px;
-      border-radius: 6px;
-      color: #fbbf24;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-      display: none;
+
+    /* Animated Text */
+    h1.mega-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 1.1;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 0 0 30px rgba(99, 102, 241, 0.8), 0 0 60px rgba(236, 72, 153, 0.5);
+      opacity: 0;
+      transform: scale(0.8) translateY(20px);
+      animation: popIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 0.5s;
     }
-    .suggestion-btn:hover {
-      background: rgba(251, 191, 36, 0.1);
-      border-color: #fbbf24;
+
+    p.subtitle {
+      font-size: 1.25rem;
+      color: #e2e8f0;
+      max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s ease forwards;
+      animation-delay: 1.2s;
+      background: rgba(5, 5, 7, 0.6);
+      backdrop-filter: blur(4px);
+      padding: 10px 20px;
+      border-radius: 12px;
+    }
+
+    /* The Button */
+    .return-btn {
+      pointer-events: auto; /* Re-enable clicks */
+      text-decoration: none;
+      padding: 16px 40px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      background: #ffffff;
+      color: #050507;
+      border: none;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards;
+      animation-delay: 2s;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .return-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Animations */
+    @keyframes popIn {
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <canvas id="network-canvas"></canvas>
-  <div class="vignette"></div>
 
-  <div class="lobby-container reveal active">
-    <div class="status-badge" style="margin-bottom: 20px;">
-      <span class="pulse-dot"></span>
-      <span>HIDDEN PROJECT FOUND</span>
-    </div>
+  <canvas id="fireworksCanvas"></canvas>
 
-    <h1 class="glitch-text" style="font-size: 2.5rem; margin-bottom: 10px;">Identify Yourself</h1>
-    <p class="hero-sub" style="margin-bottom: 30px;">Enter a unique callsign to begin the simulation.</p>
-
-    <input type="text" id="player-name" class="input-box" placeholder="Capt. Feje..." maxlength="12" autocomplete="off">
-    
-    <div class="status-msg" id="status-area">
-      <span id="msg-text"></span>
-      <button id="suggestion-btn" class="suggestion-btn">Use: Feje_Pilot?</button>
-    </div>
-    
-    <button id="start-btn" class="btn-glow" style="cursor: pointer; border: none; font-size: 1.2rem;">
-      Launch Game 🚀
-    </button>
+  <div class="thank-you-container">
+    <h1 class="mega-title">THANK YOU<br>FOR VISITING</h1>
+    <p class="subtitle">
+      Just like my code, you are awesome. Thanks for checking out my journey.
+      <br>Stay handsome/beautiful. 🚀
+    </p>
+    <a href="index.html" class="return-btn">Return to Base</a>
   </div>
 
-  <script src="main.js"></script>
   <script>
-    const startBtn = document.getElementById('start-btn');
-    const input = document.getElementById('player-name');
-    const msgText = document.getElementById('msg-text');
-    const suggestionBtn = document.getElementById('suggestion-btn');
+    /* INSANE FIREWORKS ENGINE */
+    const canvas = document.getElementById('fireworksCanvas');
+    const ctx = canvas.getContext('2d');
 
-    function getTakenNames() {
-      try {
-        const data = JSON.parse(localStorage.getItem('flappy_leaderboard')) || [];
-        return data.map(entry => entry.name.toLowerCase());
-      } catch (e) { return []; }
+    let width, height;
+    let particles = [];
+    let fireworks = [];
+
+    // Resize Logic
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
     }
+    window.addEventListener('resize', resize);
+    resize();
 
-    function checkName() {
-      const name = input.value.trim();
-      const takenNames = getTakenNames();
+    // Utility
+    const random = (min, max) => Math.random() * (max - min) + min;
 
-      input.classList.remove('error');
-      suggestionBtn.style.display = 'none';
-      msgText.className = '';
+    // Palette: Indigo, Pink, Cyan, Gold, White
+    const colors = ['#6366f1', '#ec4899', '#06b6d4', '#fbbf24', '#ffffff'];
 
-      if (!name) {
-        msgText.textContent = "Name required, pilot.";
-        msgText.classList.add('text-error');
-        return false;
-      }
-
-      if (takenNames.includes(name.toLowerCase())) {
-        input.classList.add('error');
-        msgText.textContent = `Callsign '${name}' is already active.`;
-        msgText.classList.add('text-error');
-        
-        const suggestion = generateSuggestion(name, takenNames);
-        suggestionBtn.textContent = `Use available: ${suggestion}`;
-        suggestionBtn.style.display = 'inline-block';
-        
-        suggestionBtn.onclick = () => {
-          input.value = suggestion;
-          checkName();
-        };
-        return false;
-      }
-
-      msgText.textContent = "Callsign available. Ready for launch.";
-      msgText.classList.add('text-success');
-      return true;
-    }
-
-    function generateSuggestion(base, takenList) {
-      let suggestion = "";
-      do {
-        const suffix = Math.floor(Math.random() * 999);
-        suggestion = `${base}_${suffix}`;
-      } while (takenList.includes(suggestion.toLowerCase()));
-      return suggestion;
-    }
-
-    function startGame() {
-      if (checkName()) {
-        localStorage.setItem('flappy_username', input.value.trim());
-        window.location.href = 'game.html';
-      }
-    }
-
-    startBtn.addEventListener('click', startGame);
+    // --- CLASSES ---
     
-    input.addEventListener('input', () => {
-       msgText.textContent = "";
-       suggestionBtn.style.display = 'none';
-       input.classList.remove('error');
+    class Firework {
+      constructor() {
+        this.x = width / 2; // Start center bottom (optional, can be random)
+        this.y = height;
+        this.targetX = random(width * 0.1, width * 0.9);
+        this.targetY = random(height * 0.1, height * 0.5);
+        this.speed = 2;
+        this.angle = Math.atan2(this.targetY - this.y, this.targetX - this.x);
+        this.velocity = {
+          x: Math.cos(this.angle) * 15, // Fast launch
+          y: Math.sin(this.angle) * 15
+        };
+        this.friction = 0.95;
+        this.hue = colors[Math.floor(Math.random() * colors.length)];
+        this.brightness = random(50, 70);
+        this.alpha = 1;
+        this.trail = [];
+      }
+
+      update(index) {
+        // Save trail position
+        this.trail.push({ x: this.x, y: this.y });
+        if(this.trail.length > 3) this.trail.shift();
+
+        // Move
+        this.velocity.x *= this.friction;
+        this.velocity.y *= this.friction;
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+
+        // Gravity affects launch slightly
+        this.velocity.y += 0.2;
+
+        // Check if reached target area or slowed down enough
+        const dist = Math.hypot(this.x - this.targetX, this.y - this.targetY);
+        if (dist < 30 || this.velocity.y > 0) {
+          createParticles(this.x, this.y, this.hue);
+          fireworks.splice(index, 1);
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        // Draw Trail
+        if(this.trail.length > 0) {
+          ctx.moveTo(this.trail[0].x, this.trail[0].y);
+          for(let point of this.trail) ctx.lineTo(point.x, point.y);
+        }
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = this.hue;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+    }
+
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        // Explosion burst
+        const angle = random(0, Math.PI * 2);
+        const velocity = random(2, 12); // Explosion force
+        this.vx = Math.cos(angle) * velocity;
+        this.vy = Math.sin(angle) * velocity;
+        this.friction = 0.92; // Slow down fast
+        this.gravity = 0.15;
+        this.alpha = 1;
+        this.decay = random(0.01, 0.02);
+        this.color = color;
+        this.size = random(1, 3);
+      }
+
+      update(index) {
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= this.decay;
+
+        if (this.alpha <= 0) {
+          particles.splice(index, 1);
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        
+        // Add "Glow"
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
+        
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // --- ENGINE ---
+
+    function createParticles(x, y, color) {
+      // Create explosion
+      const particleCount = 60; 
+      for (let i = 0; i < particleCount; i++) {
+        // Mix base color with white/gold for sparkle
+        const pColor = Math.random() > 0.7 ? '#ffffff' : color;
+        particles.push(new Particle(x, y, pColor));
+      }
+    }
+
+    function loop() {
+      // Clear with trail effect (alpha 0.2)
+      ctx.fillStyle = 'rgba(5, 5, 7, 0.2)';
+      ctx.fillRect(0, 0, width, height);
+
+      // "Bloom" effect
+      ctx.globalCompositeOperation = 'lighter';
+
+      // Update Fireworks (Rockets)
+      for (let i = fireworks.length - 1; i >= 0; i--) {
+        fireworks[i].update(i);
+        fireworks[i].draw();
+      }
+
+      // Update Particles (Explosions)
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update(i);
+        particles[i].draw();
+      }
+      
+      ctx.globalCompositeOperation = 'source-over';
+
+      // Auto Launch Logic
+      if (Math.random() < 0.05) { // 5% chance per frame to launch
+         fireworks.push(new Firework());
+      }
+      
+      // Launch on Click too!
+      
+
+      requestAnimationFrame(loop);
+    }
+
+    // Launch one immediately
+    fireworks.push(new Firework());
+
+    // Allow user to launch fireworks by clicking
+    window.addEventListener('mousedown', (e) => {
+        const fw = new Firework();
+        fw.x = e.clientX;
+        fw.y = height;
+        fw.targetX = e.clientX;
+        fw.targetY = e.clientY;
+        fw.velocity.x = 0; // Straight up
+        // Calculate speed to reach height
+        // v^2 = u^2 + 2as -> u = sqrt(2gh) roughly
+        fw.velocity.y = -Math.sqrt(2 * 0.2 * (height - e.clientY)) * 2.5; 
+        fireworks.push(fw);
     });
-    input.addEventListener('blur', checkName);
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') startGame();
-    });
+    
+    // Start
+    loop();
+
   </script>
 </body>
 </html>
