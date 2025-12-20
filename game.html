@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cosmic Flap | Itsmefeje</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="game.css"> </head>
+<body>
+  <div class="vignette"></div>
+  
+  <div class="game-wrapper">
+    <div class="game-container">
+      <div class="score-board">
+        <div class="score-item">
+          <span class="label">SCORE</span>
+          <span class="value" id="current-score">0</span>
+        </div>
+        <div class="score-item">
+          <span class="label">BEST</span>
+          <span class="value" id="best-score">0</span>
+        </div>
+      </div>
+      
+      <canvas id="game-canvas"></canvas>
+      
+      <div id="game-overlay" class="overlay">
+        <h2>SYSTEM FAILURE</h2>
+        <p id="final-score-display">Score: 0</p>
+        <button id="restart-btn" class="btn-glow">Reboot System</button>
+        <a href="index.html" class="exit-link">Abort Mission</a>
+      </div>
+
+      <div id="start-overlay" class="overlay active">
+        <h2>READY PILOT?</h2>
+        <p>Tap, Click, or Spacebar to Fly</p>
+        <p class="controls-hint">Avoid the corrupted data pipes.</p>
+      </div>
+    </div>
+
+    <div class="leaderboard-panel glass-panel">
+      <h3>🏆 Top Pilots</h3>
+      <div class="leaderboard-list" id="leaderboard-list">
+        <div class="loading-text">Loading Data...</div>
+      </div>
+      <button id="clear-data" class="btn-small">Reset Local Data</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
