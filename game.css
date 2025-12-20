@@ -1,10 +1,9 @@
 /* GAME SPECIFIC STYLES */
 body { 
   overflow: hidden; 
-  touch-action: none; /* Critical for mobile game controls */
+  touch-action: none; /* Stops pinch-zoom and scroll on mobile */
   background-color: #050507;
-  /* Prevent rubber-banding on iOS */
-  position: fixed; 
+  position: fixed; /* Lock screen */
   width: 100%;
   height: 100%;
 }
@@ -17,14 +16,17 @@ body {
   align-items: center;
   gap: 40px;
   padding: 20px;
-  overflow-y: auto; /* Allow scrolling only if needed vertically on tiny screens */
+  /* Allow vertical scrolling only for small screens if needed */
+  overflow-y: auto; 
 }
 
 /* GAME CANVAS CONTAINER */
 .game-container {
   position: relative;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   height: 600px;
+  max-height: 80vh; /* Responsive height */
   background: rgba(0, 0, 0, 0.6);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -37,7 +39,8 @@ canvas {
   display: block;
   width: 100%;
   height: 100%;
-  touch-action: none; /* Stops browser handling touch inside canvas */
+  /* Ensure canvas doesn't capture touches exclusively */
+  pointer-events: none; 
 }
 
 /* UI OVERLAYS */
@@ -92,6 +95,7 @@ canvas {
 .overlay.active {
   opacity: 1;
   pointer-events: all;
+  cursor: pointer; /* Indicates clickable */
 }
 
 .overlay h2 {
@@ -116,6 +120,7 @@ canvas {
   text-decoration: none;
   font-size: 0.9rem;
   border-bottom: 1px dashed rgba(255,255,255,0.2);
+  pointer-events: all; /* Ensure link is clickable */
 }
 .exit-link:hover { color: white; border-color: white; }
 
@@ -174,7 +179,7 @@ canvas {
   .game-container {
     width: 100%;
     max-width: 400px;
-    height: 60vh; /* Takes up 60% of vertical screen on mobile */
+    height: 60vh;
     min-height: 400px;
   }
   
@@ -183,6 +188,6 @@ canvas {
     max-width: 400px;
     height: auto;
     min-height: 250px;
-    margin-bottom: 40px; /* Space at bottom for scrolling */
+    margin-bottom: 40px; 
   }
 }
