@@ -211,6 +211,34 @@ h1 {
 .method-card .label { display: block; font-size: 0.75rem; color: var(--text-muted); text-align: left; }
 .method-card .value { display: block; font-size: 1rem; color: var(--text-main); font-weight: 500; }
 
+/* SURPRISE BUTTON */
+.surprise-wrapper {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+}
+.btn-surprise {
+  background: linear-gradient(135deg, #f43f5e, #ec4899); /* Pink/Red gradient */
+  color: white;
+  padding: 16px 32px;
+  border-radius: 99px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+  transition: all 0.3s ease;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+.btn-surprise:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 0 40px rgba(244, 63, 94, 0.6);
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
 .footer-bottom {
   margin-top: 80px; display: flex; justify-content: space-between;
   border-top: 1px solid var(--border); padding-top: 32px;
