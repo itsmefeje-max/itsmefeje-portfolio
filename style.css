@@ -200,9 +200,21 @@ h1 {
   border: 1px solid var(--border); border-radius: 32px; padding: 80px 24px;
 }
 
-/* ARCADE HIGHLIGHT SQUARE */
+.contact-methods {
+  display: flex; justify-content: center; gap: 32px; margin-top: 48px; flex-wrap: wrap;
+}
+.method-card {
+  display: flex; align-items: center; gap: 16px; text-decoration: none;
+  background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 12px 24px; border-radius: 16px;
+  transition: 0.3s;
+}
+.method-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.method-card .label { display: block; font-size: 0.75rem; color: var(--text-muted); text-align: left; }
+.method-card .value { display: block; font-size: 1rem; color: var(--text-main); font-weight: 500; }
+
+/* ARCADE HIGHLIGHT SQUARE - Modified Layout */
 .arcade-highlight {
-  margin: 32px auto;
+  margin: 32px auto 0 auto; /* Added margin top to separate from contact methods */
   max-width: 400px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
@@ -219,9 +231,22 @@ h1 {
 .arcade-highlight h3 {
   font-family: var(--font-display);
   font-size: 1.2rem;
-  color: var(--text-main);
   margin-bottom: 8px;
 }
+
+/* AURA TEXT ANIMATION (Independent from Button) */
+.aura-text {
+  background: linear-gradient(270deg, #6366f1, #a855f7, #ec4899, #6366f1);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: auraShift 4s linear infinite;
+}
+
+@keyframes auraShift {
+  to { background-position: 200% center; }
+}
+
 .arcade-highlight p {
   font-size: 0.95rem;
   color: var(--text-muted);
@@ -229,21 +254,9 @@ h1 {
   margin: 0;
 }
 
-.contact-methods {
-  display: flex; justify-content: center; gap: 32px; margin-top: 48px; flex-wrap: wrap;
-}
-.method-card {
-  display: flex; align-items: center; gap: 16px; text-decoration: none;
-  background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 12px 24px; border-radius: 16px;
-  transition: 0.3s;
-}
-.method-card:hover { border-color: var(--primary); transform: translateY(-2px); }
-.method-card .label { display: block; font-size: 0.75rem; color: var(--text-muted); text-align: left; }
-.method-card .value { display: block; font-size: 1rem; color: var(--text-main); font-weight: 500; }
-
 /* SURPRISE BUTTON */
 .surprise-wrapper {
-  margin-top: 48px;
+  margin-top: 32px; /* Adjusted spacing */
   display: flex;
   justify-content: center;
 }
