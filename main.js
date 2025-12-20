@@ -111,3 +111,48 @@ if (mobileBtn && navLinks) {
     });
   });
 }
+
+// 6. CLEAN URL ROUTER (For Vercel)
+document.addEventListener('DOMContentLoaded', () => {
+  
+  // A. Handle clicks on Nav Links (prevent reload, smooth scroll, change URL)
+  const links = document.querySelectorAll('.nav-links a');
+  
+  links.forEach(link => {
+    link.addEventListener('click', (e) => {
+      // Get the target path (e.g., "/#about" or "index.html#about")
+      const href = link.getAttribute('href');
+      
+      // If the link is pointing to an ID on this page
+      if (href && href.includes('#')) {
+        const targetId = href.split('#')[1];
+        const targetSection = document.getElementById(targetId);
+
+        if (targetSection) {
+          e.preventDefault(); // Stop the hard reload
+          
+          // Smooth scroll
+          targetSection.scrollIntoView({ behavior: 'smooth' });
+          
+          // Change URL to /about (without hash)
+          history.pushState(null, '', `/${targetId}`);
+        }
+      }
+    });
+  });
+
+  // B. Handle Page Load (if user refreshes on /about)
+  const path = window.location.pathname; // e.g., "/about"
+  if (path !== '/' && path !== '/index.html' && path !== '/Arcade.html') {
+    // Remove the slash to get the ID (e.g., "about")
+    const targetId = path.substring(1); 
+    const targetSection = document.getElementById(targetId);
+    
+    if (targetSection) {
+      // Small delay to ensure page layout is ready
+      setTimeout(() => {
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }
+});
