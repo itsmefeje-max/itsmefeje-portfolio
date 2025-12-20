@@ -11,7 +11,7 @@
     body {
       margin: 0;
       overflow: hidden;
-      background: #000000; /* Pure black for max contrast */
+      background: #000000;
     }
 
     /* Fullscreen Canvas */
@@ -34,7 +34,7 @@
       align-items: center;
       text-align: center;
       pointer-events: none;
-      mix-blend-mode: exclusion; /* Text looks cool over explosions */
+      mix-blend-mode: exclusion;
     }
 
     /* Animated Text */
@@ -61,7 +61,6 @@
       opacity: 0;
       animation: fadeUp 1s ease forwards;
       animation-delay: 1s;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
     /* The Button */
@@ -115,15 +114,30 @@
 
   <script>
     /**
-     * ELITE FIREWORKS ENGINE
-     * Features: Cluster bursts, Hue shifting, Gravity physics, Drag, Bloom
+     * HIGH-PERFORMANCE FIREWORKS ENGINE (60 FPS OPTIMIZED)
+     * Optimization: Removed shadowBlur, using additive blending + fillRect
      */
     const canvas = document.getElementById('fireworksCanvas');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false }); // Optimize for no transparency on base
 
     let width, height;
     
-    // Resize Logic
+    // Performance Settings based on screen size
+    const isMobile = window.innerWidth < 800;
+    const CONFIG = {
+      particleCount: isMobile ? 80 : 150, // Reduce particles on mobile
+      rocketSpawnRate: isMobile ? 0.04 : 0.07,
+      gravity: 0.12,
+      drag: 0.96,
+      colors: [
+        '#ff0055', '#ff9900', '#ffea00', '#99ff00', '#00ffcc', 
+        '#0099ff', '#5500ff', '#ff00ff', '#ffffff'
+      ]
+    };
+
+    let particles = [];
+    let rockets = [];
+
     function resize() {
       width = window.innerWidth;
       height = window.innerHeight;
@@ -133,58 +147,31 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // Configuration
-    const CONFIG = {
-      particleCount: 150,     // Particles per explosion
-      rocketSpawnRate: 0.08,  // Chance per frame (Higher = More Rockets)
-      gravity: 0.12,
-      drag: 0.96,             // Air resistance (Lower = Stops faster)
-      colors: [
-        '#ff0055', '#ff9900', '#ffea00', '#99ff00', '#00ffcc', 
-        '#0099ff', '#5500ff', '#ff00ff', '#ffffff'
-      ] // Neon Palette
-    };
-
-    let particles = [];
-    let rockets = [];
-
     // --- UTILS ---
     const random = (min, max) => Math.random() * (max - min) + min;
     const randomColor = () => CONFIG.colors[Math.floor(Math.random() * CONFIG.colors.length)];
 
-    // --- ROCKET (The thing that flies up) ---
+    // --- ROCKET ---
     class Rocket {
       constructor(isCluster = false, x, y) {
-        this.isCluster = isCluster; // Is this a secondary explosion?
-        
+        this.isCluster = isCluster;
         if (isCluster) {
             this.x = x;
             this.y = y;
-            this.velocity = { 
-              x: random(-5, 5), 
-              y: random(-5, -15) 
-            };
-            this.color = randomColor();
+            this.velocity = { x: random(-5, 5), y: random(-5, -15) };
         } else {
             this.x = random(width * 0.1, width * 0.9);
             this.y = height;
-            this.velocity = { 
-              x: random(-3, 3), 
-              y: random(-12, -22) // Fast launch speed
-            };
-            this.color = randomColor();
+            this.velocity = { x: random(-3, 3), y: random(-12, -22) };
         }
-        
-        this.alpha = 1;
+        this.color = randomColor();
         this.trail = [];
         this.exploded = false;
       }
 
       draw() {
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
+        // Rockets are few, so we can afford stroke()
         ctx.beginPath();
-        // Draw trail
         if (this.trail.length > 0) {
             ctx.moveTo(this.trail[0].x, this.trail[0].y);
             for (let t of this.trail) ctx.lineTo(t.x, t.y);
@@ -193,23 +180,19 @@
         ctx.strokeStyle = this.color;
         ctx.lineWidth = 3;
         ctx.stroke();
-        ctx.restore();
       }
 
       update(index) {
-        // Trail logic
         this.trail.push({ x: this.x, y: this.y });
         if (this.trail.length > 8) this.trail.shift();
 
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        this.velocity.y += CONFIG.gravity; // Gravity pulls it down
+        this.velocity.y += CONFIG.gravity;
 
-        // Explode when falling or hitting invisible ceiling
         if (this.velocity.y >= -1 && !this.exploded) {
             this.exploded = true;
             createExplosion(this.x, this.y, this.color);
-            // Chance for secondary "Cluster" rockets
             if (!this.isCluster && Math.random() > 0.7) {
                  for(let i=0; i<5; i++) rockets.push(new Rocket(true, this.x, this.y));
             }
@@ -218,52 +201,34 @@
       }
     }
 
-    // --- PARTICLE (The explosion bits) ---
+    // --- PARTICLE (Optimized) ---
     class Particle {
       constructor(x, y, color) {
         this.x = x;
         this.y = y;
         this.color = color;
-        // Explosion Physics
         const angle = random(0, Math.PI * 2);
-        const speed = random(1, 15); // Varied speed for depth
-        
-        this.velocity = {
-          x: Math.cos(angle) * speed,
-          y: Math.sin(angle) * speed
-        };
-        
+        const speed = random(1, 15);
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
         this.alpha = 1;
-        this.decay = random(0.005, 0.02); // Some fade fast, some slow
+        this.decay = random(0.01, 0.03);
         this.size = random(1, 4);
-        this.flicker = Math.random() > 0.5;
       }
 
       draw() {
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter'; // Makes overlapping colors glow white
         ctx.globalAlpha = this.alpha;
-        
-        // Flicker effect
-        if (this.flicker && Math.random() > 0.8) ctx.globalAlpha = 0.5;
-
         ctx.fillStyle = this.color;
-        ctx.shadowBlur = 15; // Massive Bloom
-        ctx.shadowColor = this.color;
-        
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+        // FAST DRAW: Use Rect instead of Arc
+        ctx.fillRect(this.x, this.y, this.size, this.size);
       }
 
       update(index) {
-        this.velocity.x *= CONFIG.drag;
-        this.velocity.y *= CONFIG.drag;
-        this.velocity.y += CONFIG.gravity;
-
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
+        this.vx *= CONFIG.drag;
+        this.vy *= CONFIG.drag;
+        this.vy += CONFIG.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
         this.alpha -= this.decay;
 
         if (this.alpha <= 0) {
@@ -272,76 +237,58 @@
       }
     }
 
-    // --- ENGINE LOGIC ---
-
     function createExplosion(x, y, color) {
-      // Sound effect visualizer (screen shake)
-      // canvas.style.transform = `translate(${random(-2,2)}px, ${random(-2,2)}px)`;
-      // setTimeout(() => canvas.style.transform = 'none', 50);
-
-      // Main burst
       for (let i = 0; i < CONFIG.particleCount; i++) {
         particles.push(new Particle(x, y, Math.random() > 0.3 ? color : '#fff'));
       }
     }
 
     function loop() {
-      // Create trails by not clearing screen completely
-      // Low opacity black fill = Long Trails
+      // Create trails efficiently
       ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; 
+      ctx.globalAlpha = 0.2; // Trail fade speed
+      ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, width, height);
+      
+      // Switch to additive blending for glow effect without shadowBlur
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 1;
 
-      // Update Rockets
       for (let i = rockets.length - 1; i >= 0; i--) {
         rockets[i].draw();
         rockets[i].update(i);
       }
 
-      // Update Particles
       for (let i = particles.length - 1; i >= 0; i--) {
         particles[i].draw();
         particles[i].update(i);
       }
 
-      // Random Spawns
       if (Math.random() < CONFIG.rocketSpawnRate) {
         rockets.push(new Rocket());
-      }
-      
-      // "Grand Finale" Randomizer - Launch a barrage occasionally
-      if (Math.random() < 0.005) {
-          for(let i=0; i<10; i++) rockets.push(new Rocket());
       }
 
       requestAnimationFrame(loop);
     }
 
-    // --- INTERACTION ---
-    window.addEventListener('mousedown', (e) => {
-        // Click to launch fireworks at mouse
+    // Interaction
+    const launchAt = (x, y) => {
         for(let i=0; i<3; i++) {
-             const r = new Rocket(true, e.clientX, height);
-             r.x = e.clientX + random(-50, 50); // Spread slightly
+             const r = new Rocket(true, x, height);
+             r.x = x + random(-30, 30);
              r.velocity.y = random(-15, -25);
              r.color = randomColor();
              rockets.push(r);
         }
-    });
+    };
 
-    // Touch support for mobile
+    window.addEventListener('mousedown', (e) => launchAt(e.clientX, e.clientY));
     window.addEventListener('touchstart', (e) => {
-        for(let i=0; i<e.touches.length; i++) {
-            const touch = e.touches[i];
-            const r = new Rocket(true, touch.clientX, height);
-            r.velocity.y = random(-15, -25);
-            rockets.push(r);
-        }
-    });
+        for(let i=0; i<e.touches.length; i++) launchAt(e.touches[i].clientX, e.touches[i].clientY);
+    }, {passive: true});
 
     // Start
     loop();
-
   </script>
 </body>
 </html>
