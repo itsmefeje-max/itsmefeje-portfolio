@@ -1,4 +1,4 @@
-/* COSMIC FLAP GAME ENGINE (OPTIMIZED) */
+/* COSMIC FLAP GAME ENGINE (OPTIMIZED & BALANCED) */
 
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
@@ -6,13 +6,15 @@ const ctx = canvas.getContext('2d');
 // Game Variables
 let frames = 0;
 let score = 0;
-let gamespeed = 2;
+let gamespeed = 1.5; // Starts slower (was 2)
 let isGameOver = false;
 let isPlaying = false;
-let animationId = null; // Stores the loop ID to prevent double loops
+let animationId = null;
 
-const gravity = 0.25;
-const pipeGap = 130; // Slightly wider for better playability
+// Physics Configuration (Tuned for Playability)
+const gravity = 0.18;      // Reduced from 0.25 (Floatier)
+const pipeGap = 160;       // Increased from 130 (Wider gap = Easier)
+const jumpStrength = 3.8;  // Adjusted for new gravity
 
 // Set Internal Resolution
 canvas.width = 400;
@@ -30,7 +32,6 @@ class Bird {
     this.velocity = 0;
     this.width = 24;
     this.height = 24;
-    this.jumpStrength = 4.6;
   }
 
   draw() {
@@ -58,7 +59,7 @@ class Bird {
   }
 
   flap() {
-    this.velocity = -this.jumpStrength;
+    this.velocity = -jumpStrength;
   }
 }
 
@@ -71,7 +72,7 @@ class Pipe {
     this.passed = false;
     
     // Logic to ensure pipes are always passable
-    const minHeight = 60;
+    const minHeight = 50;
     const maxTop = canvas.height - pipeGap - minHeight;
     
     this.topHeight = Math.floor(Math.random() * (maxTop - minHeight + 1)) + minHeight;
@@ -108,7 +109,8 @@ class Pipe {
       score++;
       updateScoreDisplay();
       this.passed = true;
-      if (score % 5 === 0) gamespeed += 0.2; // Increase speed slowly
+      // Difficulty Scaling: Slower ramp up
+      if (score % 10 === 0) gamespeed += 0.2; 
     }
   }
 }
@@ -118,21 +120,19 @@ const bird = new Bird();
 // --- CORE FUNCTIONS --- //
 
 function initGame() {
-  // CRITICAL FIX: Stop any existing loop first
   if (animationId) cancelAnimationFrame(animationId);
   
   bird.y = 200;
   bird.velocity = 0;
-  pipes.length = 0; // Clear pipes array
+  pipes.length = 0;
   score = 0;
-  gamespeed = 2;
+  gamespeed = 1.5; // Reset speed
   frames = 0;
   isGameOver = false;
   isPlaying = true;
   
   updateScoreDisplay();
   
-  // UI States
   document.getElementById('game-overlay').classList.remove('active');
   document.getElementById('start-overlay').classList.remove('active');
   
@@ -148,8 +148,9 @@ function animate() {
   bird.update();
   bird.draw();
 
-  // Pipe Spawning
-  if (frames % 120 === 0) {
+  // Pipe Spawning (Adjusted for speed)
+  // Spawns roughly every 2 seconds
+  if (frames % 150 === 0) {
     pipes.push(new Pipe());
   }
 
@@ -179,7 +180,7 @@ function drawBackground() {
 function gameOver() {
   isPlaying = false;
   isGameOver = true;
-  cancelAnimationFrame(animationId); // Stop loop immediately
+  cancelAnimationFrame(animationId);
   
   saveScore(score);
   
@@ -211,7 +212,6 @@ canvas.addEventListener('click', (e) => {
   handleInput();
 });
 
-// Restart Button - Only works if game is actually over to prevent loops
 document.getElementById('restart-btn').addEventListener('click', (e) => {
   e.stopPropagation();
   if (isGameOver) initGame();
@@ -224,20 +224,20 @@ function saveScore(newScore) {
   try {
     leaderboard = JSON.parse(localStorage.getItem('flappy_leaderboard')) || [];
   } catch (e) {
-    leaderboard = []; // Reset if corrupt
+    leaderboard = [];
   }
 
-  // Anti-Spam: Find existing entry for this user
+  // Name is guaranteed unique from lobby, UNLESS it's the same user playing again
   const existingIndex = leaderboard.findIndex(entry => entry.name === username);
 
   if (existingIndex !== -1) {
-    // Update ONLY if new score is better
+    // Updating existing user
     if (newScore > leaderboard[existingIndex].score) {
       leaderboard[existingIndex].score = newScore;
       leaderboard[existingIndex].date = new Date().toLocaleDateString();
     }
   } else {
-    // New Entry
+    // New User Entry
     leaderboard.push({ name: username, score: newScore, date: new Date().toLocaleDateString() });
   }
 
@@ -283,7 +283,7 @@ function renderLeaderboard() {
 
   list.innerHTML = data.map((entry, index) => `
     <div class="lb-entry">
-      <span>#${index + 1} ${entry.name.substring(0, 10)}</span>
+      <span>#${index + 1} ${entry.name.substring(0, 12)}</span>
       <span>${entry.score}</span>
     </div>
   `).join('');
