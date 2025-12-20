@@ -1,18 +1,23 @@
 /* GAME SPECIFIC STYLES */
 body { 
   overflow: hidden; 
-  touch-action: none;
+  touch-action: none; /* Critical for mobile game controls */
   background-color: #050507;
+  /* Prevent rubber-banding on iOS */
+  position: fixed; 
+  width: 100%;
+  height: 100%;
 }
 
 .game-wrapper {
   display: flex;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   justify-content: center;
   align-items: center;
   gap: 40px;
   padding: 20px;
+  overflow-y: auto; /* Allow scrolling only if needed vertically on tiny screens */
 }
 
 /* GAME CANVAS CONTAINER */
@@ -32,6 +37,7 @@ canvas {
   display: block;
   width: 100%;
   height: 100%;
+  touch-action: none; /* Stops browser handling touch inside canvas */
 }
 
 /* UI OVERLAYS */
@@ -157,9 +163,26 @@ canvas {
 
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-/* RESPONSIVE */
-@media (max-width: 800px) {
-  .game-wrapper { flex-direction: column; padding-top: 20px; height: 100vh; overflow-y: auto; justify-content: flex-start; }
-  .game-container { width: 100%; max-width: 400px; height: 500px; }
-  .leaderboard-panel { width: 100%; max-width: 400px; height: auto; min-height: 200px; margin-bottom: 20px; }
+/* RESPONSIVE LAYOUT */
+@media (max-width: 900px) {
+  .game-wrapper {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 20px;
+  }
+  
+  .game-container {
+    width: 100%;
+    max-width: 400px;
+    height: 60vh; /* Takes up 60% of vertical screen on mobile */
+    min-height: 400px;
+  }
+  
+  .leaderboard-panel {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    min-height: 250px;
+    margin-bottom: 40px; /* Space at bottom for scrolling */
+  }
 }
