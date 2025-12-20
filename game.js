@@ -1,4 +1,4 @@
-/* COSMIC FLAP GAME ENGINE (MOBILE READY + SPEED UP) */
+/* COSMIC FLAP GAME ENGINE (MOBILE TOUCH FIX) */
 
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
@@ -13,7 +13,7 @@ let animationId = null;
 
 // Physics Configuration
 const gravity = 0.18;      
-const pipeGap = 220;       // Wide gap for easy play
+const pipeGap = 220;       // Wide gap
 const jumpStrength = 5.2;  // High jump
 
 // Set Internal Resolution
@@ -102,14 +102,13 @@ class Pipe {
       }
     }
 
-    // Score & Speed Up Logic
+    // Score & Speed Up
     if (this.x + this.width < bird.x && !this.passed) {
       score++;
       updateScoreDisplay();
       this.passed = true;
       
-      // PROGRESSIVE DIFFICULTY
-      // Every 5 points, increase speed by 0.1
+      // Speed up every 5 points
       if (score % 5 === 0) {
         gamespeed += 0.1;
       }
@@ -128,7 +127,7 @@ function initGame() {
   bird.velocity = 0;
   pipes.length = 0;
   score = 0;
-  gamespeed = 1.5; // Reset speed to slow start
+  gamespeed = 1.5; // Reset speed
   frames = 0;
   isGameOver = false;
   isPlaying = true;
@@ -151,8 +150,6 @@ function animate() {
   bird.draw();
 
   // Pipe Spawning
-  // Frames needed between pipes = distance / speed
-  // We want roughly same distance, but as speed increases, they arrive faster.
   if (frames % 450 === 0) { 
     pipes.push(new Pipe());
   }
@@ -190,12 +187,16 @@ function gameOver() {
   document.getElementById('game-overlay').classList.add('active');
 }
 
-// --- CONTROLS (MOBILE FIX) --- //
+// --- CONTROLS (FIXED FOR MOBILE) --- //
 
-// Handle all interaction types
 function handleInput(e) {
-  // Prevent default behavior (stops mobile scrolling/zooming)
-  if(e.type !== 'keydown') {
+  // 1. Ignore if clicking a button (like Restart or Abort)
+  if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+    return;
+  }
+  
+  // 2. Prevent Scrolling on touch
+  if (e.type !== 'keydown') {
      e.preventDefault();
   }
   
@@ -208,24 +209,23 @@ function handleInput(e) {
   }
 }
 
-// 1. Keyboard
+// Touch Event (Global on Window to catch overlay taps)
+window.addEventListener('touchstart', (e) => {
+  handleInput(e);
+}, { passive: false }); // passive: false allows preventDefault
+
+// Mouse Event
+window.addEventListener('mousedown', (e) => {
+  handleInput(e);
+});
+
+// Keyboard Event
 window.addEventListener('keydown', (e) => {
   if (e.code === 'Space') {
-    e.preventDefault();
+    e.preventDefault(); // Stop page scrolling
     handleInput(e);
   }
 });
-
-// 2. Mouse Click
-canvas.addEventListener('mousedown', (e) => {
-  handleInput(e);
-});
-
-// 3. Touch (Critical for Mobile)
-// 'passive: false' allows us to use preventDefault()
-canvas.addEventListener('touchstart', (e) => {
-  handleInput(e);
-}, { passive: false });
 
 // Restart Button
 document.getElementById('restart-btn').addEventListener('click', (e) => {
