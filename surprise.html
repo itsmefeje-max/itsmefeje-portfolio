@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +27,8 @@
       font-family: var(--font-display);
       font-size: 1.5rem;
       text-align: center;
-      margin-bottom: 24px;
-      width: 300px;
+      margin-bottom: 16px;
+      width: 320px;
       outline: none;
       transition: all 0.3s;
     }
@@ -35,13 +36,38 @@
       border-color: var(--primary);
       box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
     }
-    .error-msg {
-      color: #f43f5e;
-      height: 24px;
-      margin-bottom: 12px;
+    .input-box.error {
+      border-color: #f43f5e;
+      box-shadow: 0 0 20px rgba(244, 63, 94, 0.3);
+    }
+    
+    .status-msg {
+      height: 40px;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .text-error { color: #f43f5e; }
+    .text-success { color: #10b981; }
+    
+    .suggestion-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px dashed rgba(255,255,255,0.3);
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: #fbbf24;
+      cursor: pointer;
       font-size: 0.9rem;
-      opacity: 0;
-      transition: opacity 0.3s;
+      transition: all 0.2s;
+      display: none; /* Hidden by default */
+    }
+    .suggestion-btn:hover {
+      background: rgba(251, 191, 36, 0.1);
+      border-color: #fbbf24;
     }
   </style>
 </head>
@@ -56,11 +82,14 @@
     </div>
 
     <h1 class="glitch-text" style="font-size: 3rem; margin-bottom: 10px;">Identify Yourself</h1>
-    <p class="hero-sub" style="margin-bottom: 40px;">Enter your callsign to begin the simulation.</p>
+    <p class="hero-sub" style="margin-bottom: 30px;">Enter a unique callsign to begin the simulation.</p>
 
-    <div class="error-msg" id="error-msg">Name required, pilot.</div>
-    
     <input type="text" id="player-name" class="input-box" placeholder="Capt. Feje..." maxlength="12" autocomplete="off">
+    
+    <div class="status-msg" id="status-area">
+      <span id="msg-text"></span>
+      <button id="suggestion-btn" class="suggestion-btn">Use: Feje_Pilot?</button>
+    </div>
     
     <button id="start-btn" class="btn-glow" style="cursor: pointer; border: none; font-size: 1.2rem;">
       Launch Game 🚀
@@ -71,26 +100,90 @@
   <script>
     const startBtn = document.getElementById('start-btn');
     const input = document.getElementById('player-name');
-    const errorMsg = document.getElementById('error-msg');
+    const msgText = document.getElementById('msg-text');
+    const suggestionBtn = document.getElementById('suggestion-btn');
+    const statusArea = document.getElementById('status-area');
+
+    // Load existing names from leaderboard
+    function getTakenNames() {
+      try {
+        const data = JSON.parse(localStorage.getItem('flappy_leaderboard')) || [];
+        return data.map(entry => entry.name.toLowerCase()); // Case insensitive check
+      } catch (e) { return []; }
+    }
+
+    function checkName() {
+      const name = input.value.trim();
+      const takenNames = getTakenNames();
+
+      // Reset UI
+      input.classList.remove('error');
+      suggestionBtn.style.display = 'none';
+      msgText.className = '';
+
+      if (!name) {
+        msgText.textContent = "Name required, pilot.";
+        msgText.classList.add('text-error');
+        return false;
+      }
+
+      if (takenNames.includes(name.toLowerCase())) {
+        // NAME TAKEN LOGIC
+        input.classList.add('error');
+        msgText.textContent = `Callsign '${name}' is already active.`;
+        msgText.classList.add('text-error');
+        
+        // Generate Suggestion
+        const suggestion = generateSuggestion(name, takenNames);
+        suggestionBtn.textContent = `Use available: ${suggestion}`;
+        suggestionBtn.style.display = 'inline-block';
+        
+        // Click to accept
+        suggestionBtn.onclick = () => {
+          input.value = suggestion;
+          checkName(); // Re-verify
+        };
+        return false;
+      }
+
+      // Valid
+      msgText.textContent = "Callsign available. Ready for launch.";
+      msgText.classList.add('text-success');
+      return true;
+    }
+
+    function generateSuggestion(base, takenList) {
+      let attempt = 1;
+      let suggestion = "";
+      do {
+        // Try appending numbers or "Pilot"
+        const suffix = Math.floor(Math.random() * 999);
+        suggestion = `${base}_${suffix}`;
+      } while (takenList.includes(suggestion.toLowerCase()));
+      return suggestion;
+    }
 
     function startGame() {
-      const name = input.value.trim() || "Anonymous";
-      if (name.length > 12) {
-         errorMsg.textContent = "Name too long!";
-         errorMsg.style.opacity = '1';
-         return;
+      if (checkName()) {
+        localStorage.setItem('flappy_username', input.value.trim());
+        window.location.href = 'game.html';
       }
-      localStorage.setItem('flappy_username', name);
-      window.location.href = 'game.html';
     }
 
     startBtn.addEventListener('click', startGame);
     
+    // Check on type (Debounced slightly for UX)
+    input.addEventListener('input', () => {
+       msgText.textContent = "";
+       suggestionBtn.style.display = 'none';
+       input.classList.remove('error');
+    });
+
+    input.addEventListener('blur', checkName); // Validate on click away
+
     input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') startGame();
     });
-    
-    input.addEventListener('input', () => errorMsg.style.opacity = '0');
   </script>
 </body>
 </html>
