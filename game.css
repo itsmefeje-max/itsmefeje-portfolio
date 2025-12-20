@@ -18,14 +18,14 @@ body {
 /* GAME CANVAS CONTAINER */
 .game-container {
   position: relative;
-  width: 400px; /* Fixed logical width */
-  height: 600px; /* Fixed logical height */
+  width: 400px;
+  height: 600px;
   background: rgba(0, 0, 0, 0.6);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 0 50px rgba(0,0,0,0.5);
-  flex-shrink: 0; /* Prevent squashing */
+  flex-shrink: 0;
 }
 
 canvas {
@@ -139,7 +139,6 @@ canvas {
   overflow-y: auto;
 }
 
-/* Custom Scrollbar */
 .leaderboard-list::-webkit-scrollbar { width: 6px; }
 .leaderboard-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
 .leaderboard-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
