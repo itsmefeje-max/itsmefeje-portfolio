@@ -5,23 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thank You | Itsmefeje</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
   <style>
-    /* OVERRIDE & CUSTOM STYLES */
+    :root{
+      --bg-1: #020007;
+      --bg-2: #080016;
+      --glass: rgba(255,255,255,0.04);
+      --accent: #ffffff;
+    }
+
+    /* Reset and base */
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body {
       margin: 0;
+      background: radial-gradient(1200px 800px at 10% 20%, #07102a 0%, transparent 15%),
+                  radial-gradient(1000px 700px at 90% 80%, #1b0033 0%, transparent 18%),
+                  linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 100%);
+      color:var(--accent);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
       overflow: hidden;
-      background: #000000;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Animated subtle background hue shift */
+    @keyframes bgShift{
+      0%{filter:hue-rotate(0deg)}
+      50%{filter:hue-rotate(15deg)}
+      100%{filter:hue-rotate(0deg)}
+    }
+    body::before{
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: linear-gradient(120deg, rgba(255,0,150,0.02), transparent 20%, rgba(0,200,255,0.02));
+      animation: bgShift 18s ease-in-out infinite;
     }
 
     /* Fullscreen Canvas */
-    canvas {
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
+    canvas { display:block; position:fixed; inset:0; z-index:1; }
 
     /* The Content Overlay */
     .thank-you-container {
@@ -34,69 +55,77 @@
       align-items: center;
       text-align: center;
       pointer-events: none;
-      mix-blend-mode: exclusion;
+      mix-blend-mode: screen; /* lets the glow sit nicely */
+      padding: 40px;
     }
 
     /* Animated Text */
     h1.mega-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(4rem, 10vw, 8rem);
+      font-size: clamp(3rem, 9vw, 7rem);
       line-height: 0.9;
-      margin-bottom: 20px;
+      margin: 0 0 18px 0;
       color: #fff;
       text-transform: uppercase;
-      letter-spacing: -4px;
+      letter-spacing: -3px;
+      pointer-events: auto;
+      /* multi-color aura via text-shadow */
+      text-shadow:
+        0 0 24px rgba(255,0,136,0.12),
+        0 0 40px rgba(0,200,255,0.08),
+        0 16px 40px rgba(0,0,0,0.6);
       opacity: 0;
-      animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transform: translateY(18px) scale(.98);
+      animation: intro 0.9s cubic-bezier(.16,1,.3,1) forwards;
       animation-delay: 0.2s;
     }
 
-    p.subtitle {
-      font-size: 1.5rem;
-      color: #fff;
-      font-weight: 600;
-      max-width: 700px;
-      line-height: 1.4;
-      margin-bottom: 50px;
-      opacity: 0;
-      animation: fadeUp 1s ease forwards;
-      animation-delay: 1s;
-    }
-
-    /* The Button */
-    .return-btn {
+    p.subtitle{
+      margin: 0 0 28px 0;
+      font-size: clamp(1rem, 1.8vw, 1.4rem);
+      max-width: 780px;
+      line-height: 1.35;
+      font-weight:600;
+      opacity:0;
+      transform: translateY(12px);
+      animation: intro 0.9s ease forwards;
+      animation-delay: 0.9s;
       pointer-events: auto;
-      text-decoration: none;
-      padding: 18px 48px;
-      border-radius: 99px;
-      font-weight: 800;
-      font-size: 1.2rem;
-      background: #ffffff;
-      color: #000;
-      border: 2px solid #fff;
-      opacity: 0;
-      animation: fadeUp 1s ease forwards;
-      animation-delay: 1.5s;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      mix-blend-mode: normal;
     }
 
-    .return-btn:hover {
-      transform: scale(1.1);
-      background: transparent;
-      color: #fff;
-      box-shadow: 0 0 60px rgba(255, 255, 255, 0.8);
+    .return-btn{
+      pointer-events: auto;
+      display:inline-block;
+      text-decoration:none;
+      padding:14px 44px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:1.05rem;
+      background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 6px 30px rgba(0,0,0,0.6), 0 0 40px rgba(255,255,255,0.02) inset;
+      transition: transform .2s ease, box-shadow .2s ease;
+      opacity:0; transform: translateY(10px);
+      animation: intro 0.9s ease forwards; animation-delay:1.4s;
+    }
+    .return-btn:hover{
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 60px rgba(0,0,0,0.7), 0 0 90px rgba(255,255,255,0.06) inset;
     }
 
-    /* Animations */
-    @keyframes zoomIn {
-      from { transform: scale(2); opacity: 0; filter: blur(20px); }
-      to { transform: scale(1); opacity: 1; filter: blur(0); }
+    @keyframes intro{
+      to { opacity:1; transform: translateY(0) scale(1); }
     }
-    @keyframes fadeUp {
-      from { transform: translateY(40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+
+    /* small screens */
+    @media (max-width:600px){
+      .thank-you-container{padding:24px}
+      h1.mega-title{font-size: clamp(2.2rem, 14vw, 4rem)}
     }
+
   </style>
 </head>
 <body>
@@ -105,189 +134,240 @@
 
   <div class="thank-you-container">
     <h1 class="mega-title">Thanks For <br> Visiting</h1>
-    <p class="subtitle">
-     Thankyousomuch for exploring my website <br>
-    You are A GOAT!!! you hear me??
-    </p>
+    <p class="subtitle">Thank you so much for exploring my website — you are a GOAT! You hear me??</p>
     <a href="index.html" class="return-btn">Return to Base</a>
   </div>
 
   <script>
-    /**
-     * HIGH-PERFORMANCE FIREWORKS ENGINE (60 FPS OPTIMIZED)
-     * Optimization: Removed shadowBlur, using additive blending + fillRect
-     */
+    // Respect reduced-motion
+    const PREFERS_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const canvas = document.getElementById('fireworksCanvas');
-    const ctx = canvas.getContext('2d', { alpha: false }); // Optimize for no transparency on base
+    const ctx = canvas.getContext('2d'); // keep alpha true so blend plays well with CSS BG
 
-    let width, height;
-    
-    // Performance Settings based on screen size
-    const isMobile = window.innerWidth < 800;
-    const CONFIG = {
-      particleCount: isMobile ? 80 : 150, // Reduce particles on mobile
-      rocketSpawnRate: isMobile ? 0.04 : 0.07,
-      gravity: 0.12,
-      drag: 0.96,
-      colors: [
-        '#ff0055', '#ff9900', '#ffea00', '#99ff00', '#00ffcc', 
-        '#0099ff', '#5500ff', '#ff00ff', '#ffffff'
-      ]
-    };
+    let width, height, dpr;
 
-    let particles = [];
-    let rockets = [];
-
-    function resize() {
+    function resize(){
+      dpr = window.devicePixelRatio || 1;
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     window.addEventListener('resize', resize);
     resize();
 
-    // --- UTILS ---
-    const random = (min, max) => Math.random() * (max - min) + min;
-    const randomColor = () => CONFIG.colors[Math.floor(Math.random() * CONFIG.colors.length)];
+    const isMobile = window.innerWidth < 800;
 
-    // --- ROCKET ---
-    class Rocket {
-      constructor(isCluster = false, x, y) {
+    // More aura colors added here (pastel/neon mix)
+    const CONFIG = {
+      particleCount: isMobile ? 60 : 140,
+      rocketSpawnRate: isMobile ? 0.04 : 0.08,
+      gravity: 0.12,
+      drag: 0.965,
+      colors: [
+        '#ff007f', '#ff6f00', '#ffd600', '#a8ff00', '#00ffd1', '#00b8ff', '#6b4bff', '#ff4bf0',
+        '#fff', '#9effc8', '#ffd1e6', '#c3d0ff', '#ffe5a8', '#ffb3a8', '#b8ffec'
+      ],
+      auraColors: [ // used by floating orbs for background aura
+        '255,7,111', '0,200,255', '255,169,0', '150,255,120', '185,130,255'
+      ]
+    };
+
+    // particles & rockets
+    let particles = [];
+    let rockets = [];
+
+    // subtle floating orbs that create the 'aura' behind the fireworks
+    const orbs = [];
+    function createOrbs(){
+      const orbCount = Math.max(6, Math.floor((width*height)/200000));
+      for(let i=0;i<orbCount;i++){
+        orbs.push({
+          x: Math.random()*width,
+          y: Math.random()*height,
+          vx: (Math.random()-0.5)*0.1,
+          vy: (Math.random()-0.5)*0.06,
+          r: Math.random()*70 + 40,
+          color: CONFIG.auraColors[Math.floor(Math.random()*CONFIG.auraColors.length)],
+          alpha: Math.random()*0.25 + 0.06
+        });
+      }
+    }
+    createOrbs();
+
+    // utilities
+    const random = (min, max) => Math.random()*(max-min)+min;
+    const randomColor = ()=> CONFIG.colors[Math.floor(Math.random()*CONFIG.colors.length)];
+
+    class Rocket{
+      constructor(isCluster=false,x,y){
         this.isCluster = isCluster;
-        if (isCluster) {
-            this.x = x;
-            this.y = y;
-            this.velocity = { x: random(-5, 5), y: random(-5, -15) };
+        if(isCluster){
+          this.x = x; this.y = y;
+          this.vx = random(-3.5,3.5); this.vy = random(-6,-14);
         } else {
-            this.x = random(width * 0.1, width * 0.9);
-            this.y = height;
-            this.velocity = { x: random(-3, 3), y: random(-12, -22) };
+          this.x = random(width*0.12, width*0.88);
+          this.y = height+10;
+          this.vx = random(-2.2,2.2); this.vy = random(-14,-26);
         }
         this.color = randomColor();
         this.trail = [];
         this.exploded = false;
       }
-
-      draw() {
-        // Rockets are few, so we can afford stroke()
+      draw(){
         ctx.beginPath();
-        if (this.trail.length > 0) {
-            ctx.moveTo(this.trail[0].x, this.trail[0].y);
-            for (let t of this.trail) ctx.lineTo(t.x, t.y);
+        if(this.trail.length>0){
+          ctx.moveTo(this.trail[0].x,this.trail[0].y);
+          for(let t of this.trail) ctx.lineTo(t.x,t.y);
         }
-        ctx.lineTo(this.x, this.y);
+        ctx.lineTo(this.x,this.y);
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2.4;
+        ctx.globalCompositeOperation = 'lighter';
         ctx.stroke();
+        ctx.globalCompositeOperation = 'source-over';
       }
-
-      update(index) {
-        this.trail.push({ x: this.x, y: this.y });
-        if (this.trail.length > 8) this.trail.shift();
-
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
-        this.velocity.y += CONFIG.gravity;
-
-        if (this.velocity.y >= -1 && !this.exploded) {
-            this.exploded = true;
-            createExplosion(this.x, this.y, this.color);
-            if (!this.isCluster && Math.random() > 0.7) {
-                 for(let i=0; i<5; i++) rockets.push(new Rocket(true, this.x, this.y));
-            }
-            rockets.splice(index, 1);
+      update(i){
+        this.trail.push({x:this.x,y:this.y});
+        if(this.trail.length>10) this.trail.shift();
+        this.x += this.vx; this.y += this.vy;
+        this.vy += CONFIG.gravity*0.85;
+        if(this.vy >= -1 && !this.exploded){
+          this.exploded = true;
+          createExplosion(this.x,this.y,this.color);
+          if(!this.isCluster && Math.random()>0.66) for(let k=0;k<4;k++) rockets.push(new Rocket(true,this.x,this.y));
+          rockets.splice(i,1);
         }
       }
     }
 
-    // --- PARTICLE (Optimized) ---
-    class Particle {
-      constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        const angle = random(0, Math.PI * 2);
-        const speed = random(1, 15);
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed;
+    class Particle{
+      constructor(x,y,color){
+        this.x = x; this.y = y; this.color = color;
+        const angle = random(0, Math.PI*2);
+        const speed = random(1, 13);
+        this.vx = Math.cos(angle)*speed;
+        this.vy = Math.sin(angle)*speed;
         this.alpha = 1;
-        this.decay = random(0.01, 0.03);
-        this.size = random(1, 4);
+        this.decay = random(0.015, 0.035);
+        this.size = random(1.2, 4.4);
+        this.wobble = Math.random()*0.8;
       }
-
-      draw() {
-        ctx.globalAlpha = this.alpha;
+      draw(){
+        ctx.globalAlpha = Math.max(0, this.alpha);
+        // make a small square with aura by drawing multiple times with additive blending
+        ctx.globalCompositeOperation = 'lighter';
         ctx.fillStyle = this.color;
-        // FAST DRAW: Use Rect instead of Arc
         ctx.fillRect(this.x, this.y, this.size, this.size);
-      }
-
-      update(index) {
-        this.vx *= CONFIG.drag;
-        this.vy *= CONFIG.drag;
-        this.vy += CONFIG.gravity;
-        this.x += this.vx;
-        this.y += this.vy;
-        this.alpha -= this.decay;
-
-        if (this.alpha <= 0) {
-          particles.splice(index, 1);
+        // faint halo
+        if(this.size>2){
+          ctx.globalAlpha = Math.min(0.12, this.alpha*0.08);
+          ctx.fillRect(this.x-2, this.y-2, this.size+4, this.size+4);
         }
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+      }
+      update(i){
+        this.vx *= CONFIG.drag; this.vy *= CONFIG.drag;
+        this.vy += CONFIG.gravity*0.9;
+        this.x += this.vx + Math.sin(this.wobble)*0.3;
+        this.y += this.vy + Math.cos(this.wobble)*0.2;
+        this.alpha -= this.decay;
+        if(this.alpha<=0) particles.splice(i,1);
       }
     }
 
-    function createExplosion(x, y, color) {
-      for (let i = 0; i < CONFIG.particleCount; i++) {
-        particles.push(new Particle(x, y, Math.random() > 0.3 ? color : '#fff'));
+    function createExplosion(x,y,color){
+      const count = CONFIG.particleCount;
+      for(let i=0;i<count;i++){
+        particles.push(new Particle(x, y, Math.random()>0.35 ? color : '#ffffff'));
       }
     }
 
-    function loop() {
-      // Create trails efficiently
+    // draw floating orbs (aura) behind everything
+    function drawOrbs(){
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for(let o of orbs){
+        const grd = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+        grd.addColorStop(0, `rgba(${o.color}, ${o.alpha})`);
+        grd.addColorStop(0.35, `rgba(${o.color}, ${o.alpha*0.22})`);
+        grd.addColorStop(1, `rgba(${o.color}, 0)`);
+        ctx.fillStyle = grd;
+        ctx.fillRect(o.x - o.r, o.y - o.r, o.r*2, o.r*2);
+      }
+      ctx.restore();
+    }
+
+    function updateOrbs(){
+      for(let o of orbs){
+        o.x += o.vx; o.y += o.vy;
+        if(o.x < -o.r) o.x = width + o.r; if(o.x > width + o.r) o.x = -o.r;
+        if(o.y < -o.r) o.y = height + o.r; if(o.y > height + o.r) o.y = -o.r;
+      }
+    }
+
+    // main loop
+    function loop(){
+      // trail fade & base clear
       ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = 0.2; // Trail fade speed
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, width, height);
-      
-      // Switch to additive blending for glow effect without shadowBlur
+      ctx.globalAlpha = 0.18; // trail persistence
+      ctx.fillStyle = 'rgba(0,0,0,1)';
+      ctx.fillRect(0,0,width,height);
+
+      // draw orbs first (behind)
+      drawOrbs();
+      updateOrbs();
+
+      // switch to additive for fireworks + glow
       ctx.globalCompositeOperation = 'lighter';
       ctx.globalAlpha = 1;
 
-      for (let i = rockets.length - 1; i >= 0; i--) {
-        rockets[i].draw();
-        rockets[i].update(i);
+      for(let i = rockets.length-1; i>=0; i--){
+        rockets[i].draw(); rockets[i].update(i);
       }
 
-      for (let i = particles.length - 1; i >= 0; i--) {
-        particles[i].draw();
-        particles[i].update(i);
+      for(let i = particles.length-1; i>=0; i--){
+        particles[i].draw(); particles[i].update(i);
       }
 
-      if (Math.random() < CONFIG.rocketSpawnRate) {
+      // spawn rockets randomly
+      if(!PREFERS_REDUCED && Math.random() < CONFIG.rocketSpawnRate){
         rockets.push(new Rocket());
       }
 
       requestAnimationFrame(loop);
     }
 
-    // Interaction
-    const launchAt = (x, y) => {
-        for(let i=0; i<3; i++) {
-             const r = new Rocket(true, x, height);
-             r.x = x + random(-30, 30);
-             r.velocity.y = random(-15, -25);
-             r.color = randomColor();
-             rockets.push(r);
-        }
-    };
+    // Interaction: launch cluster at pointer
+    function launchAt(x,y){
+      const screenY = Math.min(y, height*0.85);
+      for(let i=0;i<3;i++){
+        const r = new Rocket(true, x + random(-40,40), screenY + random(0,30));
+        r.vy = random(-12,-24); r.color = randomColor();
+        rockets.push(r);
+      }
+    }
 
-    window.addEventListener('mousedown', (e) => launchAt(e.clientX, e.clientY));
-    window.addEventListener('touchstart', (e) => {
-        for(let i=0; i<e.touches.length; i++) launchAt(e.touches[i].clientX, e.touches[i].clientY);
-    }, {passive: true});
+    window.addEventListener('mousedown', (e)=>{ launchAt(e.clientX, e.clientY); });
+    window.addEventListener('touchstart', (e)=>{
+      for(let i=0;i<e.touches.length;i++) launchAt(e.touches[i].clientX, e.touches[i].clientY);
+    }, {passive:true});
 
-    // Start
+    // initial rocket bursts for atmosphere
+    for(let i=0;i<6;i++) rockets.push(new Rocket());
+
+    // mobile-friendly: reduce load if small
+    if(isMobile){
+      CONFIG.particleCount = Math.floor(CONFIG.particleCount * 0.7);
+      CONFIG.rocketSpawnRate *= 0.9;
+      orbs.length = Math.min(orbs.length, 6);
+    }
+
     loop();
   </script>
 </body>
