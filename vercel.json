@@ -1,1 +1,10 @@
-
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/about", "destination": "/index.html" },
+    { "source": "/learning", "destination": "/index.html" },
+    { "source": "/goals", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" },
+    { "source": "/arcade", "destination": "/Arcade.html" }
+  ]
+}
