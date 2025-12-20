@@ -1,15 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Mission Control | Itsmefeje</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
+    /* Lobby Styles */
     .lobby-container {
       height: 100vh;
+      min-height: 600px; /* Prevent squishing on small screens */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -17,6 +18,7 @@
       text-align: center;
       z-index: 10;
       position: relative;
+      padding: 20px;
     }
     .input-box {
       background: rgba(255, 255, 255, 0.05);
@@ -25,10 +27,11 @@
       border-radius: 12px;
       color: white;
       font-family: var(--font-display);
-      font-size: 1.5rem;
+      font-size: 1.2rem; /* Size safe for mobile */
       text-align: center;
       margin-bottom: 16px;
-      width: 320px;
+      width: 100%;
+      max-width: 320px;
       outline: none;
       transition: all 0.3s;
     }
@@ -63,7 +66,7 @@
       cursor: pointer;
       font-size: 0.9rem;
       transition: all 0.2s;
-      display: none; /* Hidden by default */
+      display: none;
     }
     .suggestion-btn:hover {
       background: rgba(251, 191, 36, 0.1);
@@ -81,7 +84,7 @@
       <span>HIDDEN PROJECT FOUND</span>
     </div>
 
-    <h1 class="glitch-text" style="font-size: 3rem; margin-bottom: 10px;">Identify Yourself</h1>
+    <h1 class="glitch-text" style="font-size: 2.5rem; margin-bottom: 10px;">Identify Yourself</h1>
     <p class="hero-sub" style="margin-bottom: 30px;">Enter a unique callsign to begin the simulation.</p>
 
     <input type="text" id="player-name" class="input-box" placeholder="Capt. Feje..." maxlength="12" autocomplete="off">
@@ -102,13 +105,11 @@
     const input = document.getElementById('player-name');
     const msgText = document.getElementById('msg-text');
     const suggestionBtn = document.getElementById('suggestion-btn');
-    const statusArea = document.getElementById('status-area');
 
-    // Load existing names from leaderboard
     function getTakenNames() {
       try {
         const data = JSON.parse(localStorage.getItem('flappy_leaderboard')) || [];
-        return data.map(entry => entry.name.toLowerCase()); // Case insensitive check
+        return data.map(entry => entry.name.toLowerCase());
       } catch (e) { return []; }
     }
 
@@ -116,7 +117,6 @@
       const name = input.value.trim();
       const takenNames = getTakenNames();
 
-      // Reset UI
       input.classList.remove('error');
       suggestionBtn.style.display = 'none';
       msgText.className = '';
@@ -128,35 +128,29 @@
       }
 
       if (takenNames.includes(name.toLowerCase())) {
-        // NAME TAKEN LOGIC
         input.classList.add('error');
         msgText.textContent = `Callsign '${name}' is already active.`;
         msgText.classList.add('text-error');
         
-        // Generate Suggestion
         const suggestion = generateSuggestion(name, takenNames);
         suggestionBtn.textContent = `Use available: ${suggestion}`;
         suggestionBtn.style.display = 'inline-block';
         
-        // Click to accept
         suggestionBtn.onclick = () => {
           input.value = suggestion;
-          checkName(); // Re-verify
+          checkName();
         };
         return false;
       }
 
-      // Valid
       msgText.textContent = "Callsign available. Ready for launch.";
       msgText.classList.add('text-success');
       return true;
     }
 
     function generateSuggestion(base, takenList) {
-      let attempt = 1;
       let suggestion = "";
       do {
-        // Try appending numbers or "Pilot"
         const suffix = Math.floor(Math.random() * 999);
         suggestion = `${base}_${suffix}`;
       } while (takenList.includes(suggestion.toLowerCase()));
@@ -172,15 +166,12 @@
 
     startBtn.addEventListener('click', startGame);
     
-    // Check on type (Debounced slightly for UX)
     input.addEventListener('input', () => {
        msgText.textContent = "";
        suggestionBtn.style.display = 'none';
        input.classList.remove('error');
     });
-
-    input.addEventListener('blur', checkName); // Validate on click away
-
+    input.addEventListener('blur', checkName);
     input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') startGame();
     });
