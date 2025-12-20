@@ -1,4 +1,4 @@
-/* COSMIC FLAP GAME ENGINE (OPTIMIZED & BALANCED) */
+/* COSMIC FLAP GAME ENGINE (PHYSICS UPDATE) */
 
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
@@ -6,15 +6,15 @@ const ctx = canvas.getContext('2d');
 // Game Variables
 let frames = 0;
 let score = 0;
-let gamespeed = 1.5; // Starts slower (was 2)
+let gamespeed = 1.5; 
 let isGameOver = false;
 let isPlaying = false;
 let animationId = null;
 
-// Physics Configuration (Tuned for Playability)
-const gravity = 0.18;      // Reduced from 0.25 (Floatier)
-const pipeGap = 160;       // Increased from 130 (Wider gap = Easier)
-const jumpStrength = 3.8;  // Adjusted for new gravity
+// Physics Configuration
+const gravity = 0.18;      
+const pipeGap = 160;       
+const jumpStrength = 5.2;  // Increased for Taller Jump
 
 // Set Internal Resolution
 canvas.width = 400;
@@ -109,7 +109,7 @@ class Pipe {
       score++;
       updateScoreDisplay();
       this.passed = true;
-      // Difficulty Scaling: Slower ramp up
+      // Difficulty Scaling
       if (score % 10 === 0) gamespeed += 0.2; 
     }
   }
@@ -126,7 +126,7 @@ function initGame() {
   bird.velocity = 0;
   pipes.length = 0;
   score = 0;
-  gamespeed = 1.5; // Reset speed
+  gamespeed = 1.5; 
   frames = 0;
   isGameOver = false;
   isPlaying = true;
@@ -148,9 +148,9 @@ function animate() {
   bird.update();
   bird.draw();
 
-  // Pipe Spawning (Adjusted for speed)
-  // Spawns roughly every 2 seconds
-  if (frames % 150 === 0) {
+  // Pipe Spawning (DISTANCE INCREASED)
+  // 230 frames = further distance between blocks
+  if (frames % 230 === 0) {
     pipes.push(new Pipe());
   }
 
@@ -227,27 +227,22 @@ function saveScore(newScore) {
     leaderboard = [];
   }
 
-  // Name is guaranteed unique from lobby, UNLESS it's the same user playing again
   const existingIndex = leaderboard.findIndex(entry => entry.name === username);
 
   if (existingIndex !== -1) {
-    // Updating existing user
     if (newScore > leaderboard[existingIndex].score) {
       leaderboard[existingIndex].score = newScore;
       leaderboard[existingIndex].date = new Date().toLocaleDateString();
     }
   } else {
-    // New User Entry
     leaderboard.push({ name: username, score: newScore, date: new Date().toLocaleDateString() });
   }
 
-  // Sort and Trim
   leaderboard.sort((a, b) => b.score - a.score);
   leaderboard = leaderboard.slice(0, 10);
   
   localStorage.setItem('flappy_leaderboard', JSON.stringify(leaderboard));
 
-  // Personal Best
   if (newScore > highScore) {
     highScore = newScore;
     localStorage.setItem('flappy_best', btoa("feje_" + highScore));
