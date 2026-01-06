@@ -1,166 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Itsmefeje | Developer Journey</title>
-  <meta name="description" content="Personal hub of Itsmefeje - A Roblox developer documenting the journey of learning LuaU and systems architecture."/>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  
-  <canvas id="network-canvas"></canvas>
-  <div class="vignette"></div>
-
-  <header class="glass-nav">
-    <div class="container nav-container">
-      <div class="logo">
-        <div class="logo-mark">F</div>
-        <span>Itsmefeje</span>
-      </div>
-      
-      <button class="mobile-toggle" aria-label="Toggle Menu">
-        <span></span><span></span><span></span>
-      </button>
-
-      <nav class="nav-links">
-        <a href="#about">About</a>
-        <a href="#learning">Learning</a>
-        <a href="#goals">Goals</a>
-        <a href="#contact" class="btn-primary">Contact</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section id="home" class="hero-section">
-      <div class="hero-content reveal">
-        <div class="status-badge">
-          <span class="pulse-dot"></span>
-          <span>Welcome to my website. I am open for little to major commissions, I'm glad you visited Here</span>
-        </div>
-        
-        <h1 class="glitch-text" data-text="Building the Foundation">
-          Building the<br>
-          <span class="gradient-text">Foundation</span>
-        </h1>
-        
-        <p class="hero-sub">
-          Hello there, I'm <strong>Fejelude Laxamana</strong>. I am documenting my journey into 
-          <strong>Roblox Development</strong>. I am currently mastering LuaU, a 
-          programming language, and learning while building my first game prototypes.
-        </p>
-
-        <div class="cta-row">
-          <a href="#about" class="btn-glow">
-            Get to know me (maybe you like me xD)
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-          </a>
-          <a href="https://www.roblox.com/users/5512860740/profile" target="_blank" class="link-sub">
-            <img src="https://cdn.simpleicons.org/roblox/white" alt="Roblox" width="20" height="20">
-            <span>Roblox Profile</span>
-          </a>
-        </div>
-      </div>
-    </section>
-      
-    <section id="about" class="section-padding">
-      <div class="container narrow">
-        <div class="glass-panel profile-panel reveal">
-          <div class="profile-header">
-            <h2>About My Journey & Myself</h2>
-            <p>"The best way to predict the future is to create it is my Motto"</p>
-          </div>
-          <div class="profile-body">
-            <p><strong>I am a developer focused on love.</strong> hehe, (not literal love like in a relationship like how she forgot me)
-            I mean developing something I love and want to create that others might love too. I am currently in the <strong>learning phase</strong>, dedicating my time to understand the fundamentals
-            and logic of Software and Game Development. And, honestly, it's more understandable than understanding a girl. LOL, and of course
-            I'm also understanding the core principles of programming before rushing into building massive projects. xD</p>
-            
-            <p>My philosophy is to build small stuff at these moments, break things often, and understand every line of code I write. AI exists but understanding it makes me
-            even more handsome.</p>
-            
-            <div class="stats-row">
-              <div class="stat">
-                <strong>LuaU</strong>
-                <span>MY FOCUS</span>
-              </div>
-              <div class="stat">
-                <strong>MY GIRLFRIEND</strong>
-                <span>No ONE</span>
-              </div>
-              <div class="stat">
-                <strong>Systems</strong>
-                <span>WHAT I'M LEARNING</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="learning" class="section-padding">
-      <div class="container">
-        <div class="section-header reveal">
-          <h2>Current Curriculum</h2>
-          <p>The technologies and concepts I am currently Learning.
-            I might as well Read and Learn books in terms of understanding a girl.</p>
-        </div>
-
-        <div class="bento-grid reveal">
-          <article class="bento-card spotlight-card">
-            <div class="card-bg" style="background: linear-gradient(45deg, #1a1a1a, #2a2a2a);"></div>
-            <div class="card-content">
-              <div class="card-tags">
-                <span>Core Language</span>
-                <span>Backend</span>
-              </div>
-              <h3>About LuaU</h3>
-              <p>I'm studying coding in this language so I can be good at it and truly know what I am doing. I'm learning to write clean, modular scripts.</p>
-            </div>
-            <div class="card-icon">
-              <img src="https://cdn.simpleicons.org/lua/white" width="40" height="40" alt="Lua">
-            </div>
-          </article>
-
-          <article class="bento-card spotlight-card">
-            <div class="card-content">
-              <div class="card-tags"><span>Workflow</span><span>Tools</span></div>
-              <h3>Professional Workflow</h3>
-              <p>I am gonna use professional tools soon, particularly <strong>VS Code</strong>, <strong>Rojo</strong>, and a more understanding of <strong>GitHub</strong>.</p>
-            </div>
-            <div class="card-icon">
-              <img src="https://cdn.simpleicons.org/git/white" width="30" height="30" alt="Git">
-            </div>
-          </article>
-
-          <article class="bento-card spotlight-card">
-            <div class="card-content">
-              <div class="card-tags"><span>User Interface</span><span>Design</span></div>
-              <h3>UI Architecture</h3>
-              <p>I'm upgrading my skills in <strong>UI</strong> and making it even better.</p>
-            </div>
-            <div class="card-icon">
-               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="goals" class="section-padding">
-      <div class="container">
-        <div class="section-header reveal">
-          <h2>The Roadmap</h2>
-          <p>My Goals for the next upcoming Months / Years.</p>
-        </div>
-
-        <div class="goals-wrapper reveal">
+<div class="goals-wrapper reveal">
           <div class="goal-item">
             <div class="goal-icon pending"></div>
             <div class="goal-content">
@@ -170,10 +8,15 @@
           </div>
 
           <div class="goal-item">
-            <div class="goal-icon pending"></div>
+            <div class="goal-icon" style="background: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);"></div>
             <div class="goal-content">
-              <h3>Build a Game Prototype</h3>
-              <p>Create a basic functional Game. Maybe a Tycoon or some cool Passion Projects.</p>
+              <h3>
+                Build a Game Prototype 
+                <span style="color: #22c55e; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-left: 8px; vertical-align: middle;">
+                  • Ongoing
+                </span>
+              </h3>
+              <p>I am currently making my own game! Creating a basic functional prototype and working on passion projects.</p>
             </div>
           </div>
 
@@ -188,58 +31,13 @@
       </div>
     </section>
 
-    <section id="contact" class="section-padding footer-section">
-      <div class="container">
-        <div class="contact-box reveal">
-          <h2>Contact and Connect with me</h2>
-          <p>If you want to talk to me go ahead, it is okay. I am always open to make some cool developer friends too. hehe</p>
-          
-          <div class="contact-methods">
-            <a href="mailto:itsmefeje@gmail.com" class="method-card">
-              <div class="icon-circle">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              </div>
-              <div>
-                <span class="label">Email</span>
-                <span class="value">itsmefeje@gmail.com</span>
-              </div>
-            </a>
-            
-            <div class="method-card">
-              <div class="icon-circle">
-                <img src="https://cdn.simpleicons.org/discord/white" width="24" height="24">
-              </div>
-              <div>
-                <span class="label">Discord</span>
-                <span class="value">itsmefeje</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="arcade-highlight">
-             <h3 class="aura-text">Play Games</h3>
-             <p>I have also set up a place in this website where you can play the specific games I make. It's the Arcade.</p>
-          </div>
-
-          <div class="surprise-wrapper">
-             <a href="Arcade.html" class="btn-surprise"> Click me to play the games </a>
-          </div>
-
-        </div>
-
-        <footer>
+<footer>
           <div class="footer-bottom">
             <p>&copy; <span id="year"></span> Itsmefeje. Personal Website.</p>
             <div class="footer-links">
-              <a href=" https://www.fejelude.xyz/ " target="_blank">Website Updated Recently on 12/21/2025</a>
+              <a href=" https://www.fejelude.xyz/ " target="_blank">Website Updated Recently on 01/07/2025</a>
             </div>
           </div>
         </footer>
       </div>
     </section>
-
-  </main>
-
-  <script src="main.js"></script>
-</body>
-</html>
