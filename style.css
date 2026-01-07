@@ -1,25 +1,25 @@
--- Indicating what the script is for: A high-end, premium "Obsidian" design system with fluid physics and cinematic lighting.
+/* -- Indicating what the script is for: Fixed high-end "Obsidian" design system. The syntax error causing the white screen has been resolved. */
+
 /* $100k DESIGN SYSTEM: OBSIDIAN
    Focus: Mathematical Precision, Fluidity, Deep Immersion
 */
 
 :root {
   /* --- CORE PALETTE --- */
-  --bg-deep: #030303;     /* True Void */
-  --bg-subtle: #0a0a0a;   /* Slight elevation */
+  --bg-deep: #000000;     /* True Void */
+  --bg-subtle: #080808;   /* Slight elevation */
   
   /* --- GLASS SYSTEM --- */
-  --glass-surface: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.06);
-  --glass-highlight: rgba(255, 255, 255, 0.1);
-  --glass-blur: 24px;
+  --glass-surface: rgba(20, 20, 20, 0.4); /* Darker, more visible glass */
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+  --glass-blur: 20px;
   
   /* --- ACCENT PHYSICS --- */
-  --primary-hue: 245;     /* Electric Indigo */
-  --primary: hsl(var(--primary-hue), 80%, 65%);
-  --primary-glow: hsla(var(--primary-hue), 80%, 65%, 0.4);
-  --accent-pink: #f472b6;
-  --accent-cyan: #22d3ee;
+  --primary-hue: 250;     /* Deep Indigo */
+  --primary: hsl(var(--primary-hue), 85%, 65%);
+  --primary-glow: hsla(var(--primary-hue), 85%, 65%, 0.5);
+  --accent-pink: #ec4899;
   
   /* --- TYPOGRAPHY --- */
   --font-display: 'Space Grotesk', sans-serif;
@@ -39,7 +39,7 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
-  background: var(--bg-deep);
+  background-color: var(--bg-deep); /* Fallback */
 }
 
 body {
@@ -55,16 +55,16 @@ body {
 /* --- CINEMATIC BACKGROUND --- */
 #network-canvas {
   position: fixed; inset: 0; z-index: -2;
-  opacity: 0.6;
+  opacity: 0.5;
   mix-blend-mode: screen;
 }
 
 .vignette {
   position: fixed; inset: 0; z-index: -1;
   background: 
-    radial-gradient(circle at 10% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
-    radial-gradient(circle at 90% 100%, rgba(236, 72, 153, 0.08), transparent 40%),
-    radial-gradient(circle at center, transparent 0%, var(--bg-deep) 120%);
+    radial-gradient(circle at 10% 0%, rgba(99, 102, 241, 0.1), transparent 50%),
+    radial-gradient(circle at 90% 100%, rgba(236, 72, 153, 0.1), transparent 50%),
+    radial-gradient(circle at center, transparent 0%, #000000 120%);
   pointer-events: none;
 }
 
@@ -73,12 +73,11 @@ body {
   position: fixed; top: 0; width: 100%; 
   height: clamp(70px, 10vh, 90px);
   display: flex; align-items: center;
-  background: rgba(3, 3, 3, 0.6);
+  background: rgba(0, 0, 0, 0.8); /* Darker background for readability */
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border-bottom: 1px solid var(--glass-border);
   z-index: 9999;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-container {
@@ -161,7 +160,7 @@ body {
 /* Typography Scale */
 h1 {
   font-family: var(--font-display);
-  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  font-size: clamp(3rem, 8vw, 6rem);
   line-height: 1;
   letter-spacing: -0.04em;
   margin-bottom: var(--space-sm);
@@ -174,7 +173,7 @@ h1 {
 }
 
 .hero-sub {
-  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-size: clamp(1rem, 2vw, 1.25rem);
   color: #9ca3af;
   max-width: 650px;
   margin: 0 auto var(--space-md);
@@ -243,7 +242,7 @@ h1 {
 
 /* Hover Effect for ALL Cards */
 .glass-panel:hover, .bento-card:hover, .goal-item:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.06);
   border-color: var(--glass-highlight);
   transform: translateY(-6px);
   box-shadow: 0 20px 40px -20px rgba(0,0,0,0.8);
@@ -251,7 +250,7 @@ h1 {
 
 /* ABOUT SECTION */
 .profile-panel { padding: var(--space-md); text-align: center; }
-.profile-header h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+.profile-header h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 1rem; }
 .profile-header p { 
   color: var(--primary); 
   font-family: var(--font-display); 
@@ -265,7 +264,7 @@ h1 {
   margin-top: 3rem; padding-top: 3rem;
   border-top: 1px solid var(--glass-border);
 }
-.stat strong { display: block; font-size: 2rem; color: #fff; line-height: 1; margin-bottom: 5px; }
+.stat strong { display: block; font-size: clamp(1.5rem, 3vw, 2rem); color: #fff; line-height: 1; margin-bottom: 5px; }
 .stat span { font-size: 0.8rem; color: #71717a; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
 
 /* BENTO GRID (Learning) */
@@ -293,7 +292,7 @@ h1 {
 .bento-card:hover .card-icon { opacity: 1; transform: scale(1.1) rotate(5deg); }
 
 /* GOALS SECTION */
-.goals-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+.goals-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
 .goal-item { padding: 32px; display: flex; flex-direction: column; gap: 20px; }
 
 .goal-icon { 
@@ -307,7 +306,7 @@ h1 {
 
 /* CONTACT & FOOTER */
 .contact-box {
-  background: radial-gradient(circle at center, var(--glass-surface) 0%, transparent 100%);
+  background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 100%);
   border: 1px solid var(--glass-border);
   border-radius: 40px;
   padding: var(--space-lg) 24px;
