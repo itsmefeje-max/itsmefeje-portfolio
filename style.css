@@ -1,14 +1,15 @@
+-- Indicating what the script is for: Upgrading the website styling to a premium, aesthetic black theme.
 :root {
-  /* PALETTE: Deep Space System */
-  --bg-dark: #050507;
-  --bg-panel: rgba(255, 255, 255, 0.03);
-  --bg-panel-hover: rgba(255, 255, 255, 0.05);
-  --border: rgba(255, 255, 255, 0.08);
+  /* PALETTE: Void Aesthetic System */
+  --bg-dark: #000000; /* Pure Black */
+  --bg-panel: rgba(255, 255, 255, 0.02); /* Ultra-thin glass */
+  --bg-panel-hover: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.12); /* Crisper, thinner borders */
   
-  --primary: #6366f1; /* Indigo */
-  --primary-glow: rgba(99, 102, 241, 0.4);
+  --primary: #818cf8; /* Soft Indigo */
+  --primary-glow: rgba(129, 140, 248, 0.3);
   --text-main: #ffffff;
-  --text-muted: #94a3b8;
+  --text-muted: #a1a1aa; /* Cool Gray */
   
   /* FONTS */
   --font-display: 'Space Grotesk', sans-serif;
@@ -32,10 +33,17 @@ body {
 #network-canvas {
   position: fixed; inset: 0; z-index: -2;
   width: 100%; height: 100%;
+  opacity: 0.7; /* Slightly dimmed for better text contrast */
 }
+
+/* AESTHETIC VIGNETTE & AMBIENT GLOW */
 .vignette {
   position: fixed; inset: 0; z-index: -1;
-  background: radial-gradient(circle at center, transparent 0%, var(--bg-dark) 120%);
+  /* Complex background: Vignette + Ambient Glows */
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.15), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.15), transparent 40%),
+    radial-gradient(circle at center, transparent 20%, #000000 130%);
   pointer-events: none;
 }
 
@@ -43,8 +51,8 @@ body {
 .glass-nav {
   position: fixed; top: 0; width: 100%; height: 80px;
   display: flex; align-items: center;
-  background: rgba(5, 5, 7, 0.8);
-  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.7); /* Darker nav */
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   z-index: 1000;
 }
@@ -69,9 +77,9 @@ body {
   background: var(--text-main); color: var(--bg-dark) !important;
   padding: 10px 24px; border-radius: 99px; font-weight: 600;
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,255,255,0.2); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(255,255,255,0.3); }
 
-/* MOBILE MENU TOGGLE (HIDDEN ON DESKTOP) */
+/* MOBILE MENU TOGGLE */
 .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1001; }
 .mobile-toggle span { 
   display: block; width: 24px; height: 2px; background: white; margin: 5px 0; 
@@ -91,14 +99,14 @@ body {
 .status-badge {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 8px 16px; border-radius: 99px;
-  background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);
+  background: rgba(129, 140, 248, 0.08); border: 1px solid rgba(129, 140, 248, 0.2);
   color: var(--primary); font-size: 0.8rem; font-weight: 600; margin-bottom: 32px;
 }
 .pulse-dot {
   width: 8px; height: 8px; background: currentColor; border-radius: 50%;
-  box-shadow: 0 0 8px currentColor; animation: pulse 2s infinite;
+  box-shadow: 0 0 12px currentColor; animation: pulse 2s infinite;
 }
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
 /* GLITCH TEXT EFFECT */
 h1 {
@@ -121,9 +129,9 @@ h1 {
 .btn-glow {
   background: var(--primary); color: white; padding: 16px 32px; border-radius: 12px;
   text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;
-  box-shadow: 0 0 20px var(--primary-glow); transition: all 0.3s ease;
+  box-shadow: 0 0 25px var(--primary-glow); transition: all 0.3s ease;
 }
-.btn-glow:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--primary-glow); }
+.btn-glow:hover { transform: translateY(-2px); box-shadow: 0 0 40px var(--primary-glow); }
 .link-sub { display: flex; align-items: center; gap: 8px; color: var(--text-main); text-decoration: none; font-weight: 500; transition: color 0.2s; }
 .link-sub:hover { color: #fff; }
 
@@ -131,7 +139,8 @@ h1 {
 .profile-panel {
   background: var(--bg-panel); border: 1px solid var(--border);
   border-radius: 32px; padding: 60px; text-align: center;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 .profile-header h2 { margin-bottom: 12px; }
 .profile-header p { color: var(--primary); font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 32px; }
@@ -162,9 +171,10 @@ h1 {
   height: 100%;
 }
 .bento-card:hover { 
-  border-color: rgba(255,255,255,0.2); 
+  border-color: rgba(255,255,255,0.25); 
   background: var(--bg-panel-hover); 
   transform: translateY(-4px); 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 .bento-card .card-content { z-index: 2; margin-top: auto; }
 .bento-card h3 { font-size: 1.5rem; margin: 12px 0 8px; color: var(--text-main); }
@@ -188,7 +198,7 @@ h1 {
   padding: 32px; border-radius: 20px;
   display: flex; flex-direction: column; gap: 16px; transition: transform 0.3s;
 }
-.goal-item:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+.goal-item:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.25); }
 .goal-icon { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 .goal-icon.pending { background: #fbbf24; box-shadow: 0 0 10px rgba(251, 191, 36, 0.4); }
 .goal-content h3 { font-size: 1.2rem; margin-bottom: 8px; }
@@ -196,8 +206,10 @@ h1 {
 
 /* CONTACT & FOOTER */
 .contact-box {
-  text-align: center; background: linear-gradient(180deg, var(--bg-panel), transparent);
+  text-align: center; 
+  background: linear-gradient(180deg, var(--bg-panel), rgba(0,0,0,0));
   border: 1px solid var(--border); border-radius: 32px; padding: 80px 24px;
+  backdrop-filter: blur(5px);
 }
 
 .contact-methods {
@@ -205,18 +217,18 @@ h1 {
 }
 .method-card {
   display: flex; align-items: center; gap: 16px; text-decoration: none;
-  background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 12px 24px; border-radius: 16px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 12px 24px; border-radius: 16px;
   transition: 0.3s;
 }
-.method-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.method-card:hover { border-color: var(--primary); transform: translateY(-2px); background: rgba(255,255,255,0.05); }
 .method-card .label { display: block; font-size: 0.75rem; color: var(--text-muted); text-align: left; }
 .method-card .value { display: block; font-size: 1rem; color: var(--text-main); font-weight: 500; }
 
-/* ARCADE HIGHLIGHT SQUARE - Modified Layout */
+/* ARCADE HIGHLIGHT SQUARE */
 .arcade-highlight {
-  margin: 32px auto 0 auto; /* Added margin top to separate from contact methods */
+  margin: 32px auto 0 auto;
   max-width: 400px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 24px;
@@ -226,7 +238,7 @@ h1 {
 .arcade-highlight:hover {
   transform: translateY(-2px);
   border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
 }
 .arcade-highlight h3 {
   font-family: var(--font-display);
@@ -234,7 +246,7 @@ h1 {
   margin-bottom: 8px;
 }
 
-/* AURA TEXT ANIMATION (Independent from Button) */
+/* AURA TEXT */
 .aura-text {
   background: linear-gradient(270deg, #6366f1, #a855f7, #ec4899, #6366f1);
   background-size: 200% auto;
@@ -242,10 +254,7 @@ h1 {
   -webkit-text-fill-color: transparent;
   animation: auraShift 4s linear infinite;
 }
-
-@keyframes auraShift {
-  to { background-position: 200% center; }
-}
+@keyframes auraShift { to { background-position: 200% center; } }
 
 .arcade-highlight p {
   font-size: 0.95rem;
@@ -256,12 +265,12 @@ h1 {
 
 /* SURPRISE BUTTON */
 .surprise-wrapper {
-  margin-top: 32px; /* Adjusted spacing */
+  margin-top: 32px;
   display: flex;
   justify-content: center;
 }
 .btn-surprise {
-  background: linear-gradient(135deg, #f43f5e, #ec4899); /* Pink/Red gradient */
+  background: linear-gradient(135deg, #f43f5e, #ec4899);
   color: white;
   padding: 16px 32px;
   border-radius: 99px;
@@ -295,52 +304,31 @@ h1 {
 .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
 .reveal.active { opacity: 1; transform: translateY(0); }
 
-/* --- MOBILE RESPONSIVE FIXES --- */
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 1024px) {
-  /* RESPONSIVE TYPE */
   h1 { font-size: 3rem; }
-  
-  /* NAV BAR FIX */
   .glass-nav { height: 70px; }
   .mobile-toggle { display: block; }
   
-  /* Mobile Menu Styles (The Dropdown) */
   .nav-links {
     position: absolute;
-    top: 70px; /* Below the header */
-    left: 0;
-    width: 100%;
-    background: rgba(5, 5, 7, 0.95);
+    top: 70px; left: 0; width: 100%;
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(20px);
-    flex-direction: column;
-    padding: 30px;
-    gap: 24px;
+    flex-direction: column; padding: 30px; gap: 24px;
     border-bottom: 1px solid var(--border);
-    
-    /* Animation State: Hidden by default */
-    transform: translateY(-150%);
-    opacity: 0;
+    transform: translateY(-150%); opacity: 0;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: -1;
   }
+  .nav-links.active { transform: translateY(0); opacity: 1; display: flex; }
   
-  /* When Active (Added by JS) */
-  .nav-links.active {
-    transform: translateY(0);
-    opacity: 1;
-    display: flex;
-  }
-  
-  /* Mobile Button Animation to X */
   .mobile-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
   .mobile-toggle.open span:nth-child(2) { opacity: 0; }
   .mobile-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
   
-  /* STACK GRIDS */
   .bento-grid, .goals-wrapper, .stats-row { grid-template-columns: 1fr; }
   .bento-card { min-height: 260px; } 
-  
-  /* SPACING */
   .stats-row { gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 24px; text-align: center; }
   .container { padding: 0 20px; }
