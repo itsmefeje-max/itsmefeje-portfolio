@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Itsmefeje | Developer Journey</title>
-  <meta name="description" content="Personal hub of Itsmefeje - A Roblox developer documenting the journey of learning LuaU and systems architecture."/>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,11 +13,7 @@
 </head>
 <body>
   
-  <div class="aurora-container">
-    <div class="aurora-blob aurora-1"></div>
-    <div class="aurora-blob aurora-2"></div>
-    <div class="aurora-blob aurora-3"></div>
-  </div>
+  <div id="liquid-ether-bg"></div>
 
   <header class="glass-nav">
     <div class="container nav-container">
@@ -75,12 +70,10 @@
     <section id="about" class="section-padding">
       <div class="container narrow">
         <div class="glass-panel profile-panel reveal spotlight-card">
-          
           <div class="profile-header">
             <h2 style="background: linear-gradient(to right, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; letter-spacing: -0.02em;">
               About My Journey & Myself
             </h2>
-            
             <p style="margin-top: 16px; font-size: 1.1rem; color: #e2e8f0; font-weight: 400;">
               "The best way to predict the future is to create it"
               <br>
@@ -91,7 +84,6 @@
           </div>
 
           <div class="profile-body" style="text-align: left; margin-top: 40px; font-size: 1.05rem; line-height: 1.8; color: #cbd5e1;">
-            
             <p style="margin-bottom: 24px;">
               <span style="color: #a78bfa; font-weight: 600;">I am a developer focused on love.</span> hehe, (not literal love like in a relationship like how she forgot me) 
               I mean developing something I love and want to create that others might love too. 
@@ -268,6 +260,20 @@
 
   </main>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="liquid-ether.js"></script>
+  
   <script src="main.js"></script>
+  <script>
+    // Initialize the background
+    document.addEventListener('DOMContentLoaded', () => {
+      new LiquidEther(document.getElementById('liquid-ether-bg'), {
+        colors: ['#000000', '#1a1a1a', '#4338ca', '#3b0764'], // Dark/Purple Palette
+        mouseForce: 25,
+        cursorSize: 80,
+        autoDemo: true
+      });
+    });
+  </script>
 </body>
 </html>
