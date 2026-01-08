@@ -1,4 +1,4 @@
-/* -- Indicating what the script is for: Styles with Liquid Ether Background */
+/* -- Indicating what the script is for: Styles with Mobile UI Fixes & Optimization */
 
 :root {
   /* COLORS */
@@ -40,12 +40,9 @@ body {
   z-index: -1;
   width: 100vw;
   height: 100vh;
-  /* Ensure it captures mouse events if needed, but lets clicks through to buttons */
   pointer-events: auto; 
 }
-/* Ensure content sits above the background */
 main, header, footer { position: relative; z-index: 10; pointer-events: none; }
-/* Re-enable pointer events for interactive elements */
 a, button, .spotlight-card { pointer-events: auto; }
 
 /* --- SHINY TEXT --- */
@@ -73,11 +70,12 @@ a, button, .spotlight-card { pointer-events: auto; }
 /* --- UI COMPONENTS --- */
 .glass-nav {
   position: fixed; top: 0; width: 100%; height: var(--nav-height);
-  background: rgba(2, 6, 23, 0.6);
+  background: rgba(2, 6, 23, 0.85); /* Slightly darker for better mobile read */
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-light);
   z-index: 1000;
-  pointer-events: auto; /* Ensure nav is clickable */
+  pointer-events: auto;
 }
 
 .nav-container {
@@ -111,16 +109,13 @@ a, button, .spotlight-card { pointer-events: auto; }
   border: 1px solid rgba(255,255,255,0.1);
   transition: all 0.3s;
 }
-.btn-primary:hover { 
-  background: rgba(255,255,255,0.15); 
-  box-shadow: 0 0 20px rgba(255,255,255,0.1);
-}
 
 /* HERO */
 .hero-section {
   min-height: 100vh; display: flex; flex-direction: column;
   justify-content: center; align-items: center;
-  text-align: center; padding: 120px 24px 60px;
+  text-align: center; 
+  padding: 120px 24px 60px;
 }
 
 .status-badge {
@@ -130,17 +125,23 @@ a, button, .spotlight-card { pointer-events: auto; }
   border: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.8rem; color: #a5b4fc; margin-bottom: 32px;
   backdrop-filter: blur(4px);
+  max-width: 100%; /* Prevent overflow on small screens */
+  text-align: left;
 }
 .pulse-dot {
+  flex-shrink: 0; /* Prevent dot from squishing */
   width: 8px; height: 8px; background: #4ade80; border-radius: 50%;
   box-shadow: 0 0 12px #4ade80; animation: pulse 2s infinite;
 }
 
 h1 {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  line-height: 1.05; margin-bottom: 24px;
+  /* Adjusted clamp for mobile safety */
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  line-height: 1.1; 
+  margin-bottom: 24px;
   letter-spacing: -0.04em; font-weight: 700;
+  word-wrap: break-word; /* Prevent overflow */
 }
 
 .gradient-text {
@@ -179,12 +180,13 @@ h1 {
 
 /* CARDS */
 .glass-panel, .bento-card, .goal-item, .contact-box {
-  background: rgba(15, 23, 42, 0.3);
+  background: rgba(15, 23, 42, 0.4);
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease, border-color 0.3s ease;
+  will-change: transform, opacity; /* Mobile Optimization */
 }
 
 /* Spotlight Overlay */
@@ -193,8 +195,8 @@ h1 {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: radial-gradient(
-    800px circle at var(--mouse-x, 0) var(--mouse-y, 0),
-    rgba(255, 255, 255, 0.06),
+    800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+    rgba(255, 255, 255, 0.08),
     transparent 40%
   );
   z-index: 1;
@@ -202,8 +204,8 @@ h1 {
   opacity: 0;
   transition: opacity 0.5s;
 }
-
-.spotlight-card:hover::before { opacity: 1; }
+/* Ensure spotlight is visible on hover OR when active class is added by JS */
+.spotlight-card:hover::before, .spotlight-card.touch-active::before { opacity: 1; }
 .spotlight-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-4px); }
 
 /* BENTO GRID */
@@ -223,14 +225,6 @@ h1 {
   border: 1px solid rgba(255,255,255,0.05);
 }
 .bento-card h3 { font-size: 1.5rem; margin-bottom: 12px; font-weight: 600; color: white; }
-.bento-card p { font-size: 1rem; color: var(--text-muted); line-height: 1.6; }
-.card-icon {
-  z-index: 2; margin-top: 32px;
-  width: 50px; height: 50px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 12px;
-  display: grid; place-items: center;
-}
 
 /* PROFILE */
 .profile-panel { padding: 60px; text-align: center; backdrop-filter: blur(20px); }
@@ -260,9 +254,6 @@ h1 {
   padding: 16px 32px; border-radius: 16px; text-decoration: none;
   transition: 0.3s;
 }
-.method-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
-.method-card .label { display: block; font-size: 0.75rem; color: var(--text-muted); text-align: left; }
-.method-card .value { font-size: 1rem; color: white; font-weight: 500; }
 
 /* ARCADE */
 .arcade-highlight {
@@ -284,7 +275,6 @@ h1 {
   box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
   transition: 0.3s;
 }
-.btn-surprise:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 20px 40px rgba(168, 85, 247, 0.5); }
 
 /* FOOTER */
 .footer-bottom { 
@@ -292,18 +282,51 @@ h1 {
   display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted);
 }
 
-/* RESPONSIVE */
+/* --- MOBILE OPTIMIZATION & RESPONSIVE FIXES --- */
 @media (max-width: 900px) {
-  h1 { font-size: 3rem; }
-  .stats-row { grid-template-columns: 1fr; }
+  /* Fix Typography Overlap */
+  h1 { font-size: 2.75rem; }
+  .section-header h2 { font-size: 2.2rem; }
+  
+  /* Layout Adjustments */
+  .section-padding { padding: 80px 0; }
+  .profile-panel { padding: 40px 24px; }
+  
+  /* Fix Grid Overlap */
+  .stats-row { grid-template-columns: 1fr; gap: 32px; }
+  .bento-grid, .goals-wrapper { grid-template-columns: 1fr; }
+  
+  /* Fix Navigation Overlap & Stacking */
   .nav-links {
-    position: fixed; top: var(--nav-height); left: 0; right: 0;
-    background: #020617; flex-direction: column; padding: 60px; gap: 32px;
+    position: fixed; 
+    top: var(--nav-height); 
+    left: 0; right: 0;
+    height: auto;
+    background: #020617; /* Solid background to prevent see-through mess */
+    flex-direction: column; 
+    padding: 40px 24px; 
+    gap: 24px;
     border-bottom: 1px solid var(--border-light);
-    transform: translateY(-150%); transition: 0.4s; z-index: -1;
+    transform: translateY(-150%); 
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+    z-index: 999; /* Ensure it is ABOVE main content */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
   }
   .nav-links.active { transform: translateY(0); }
-  .mobile-toggle { display: block; background: none; border: none; padding: 10px; }
-  .mobile-toggle span { display: block; width: 24px; height: 2px; background: white; margin: 6px 0; }
+  
+  /* Mobile Menu Button */
+  .mobile-toggle { display: block; background: none; border: none; padding: 10px; cursor: pointer; }
+  .mobile-toggle span { display: block; width: 24px; height: 2px; background: white; margin: 6px 0; transition: 0.3s; }
+  
+  /* Button Animation */
+  .mobile-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+  .mobile-toggle.open span:nth-child(2) { opacity: 0; }
+  .mobile-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+  /* Footer Fix */
   .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+  
+  /* Adjust method cards for small screens */
+  .contact-methods { flex-direction: column; }
+  .method-card { justify-content: flex-start; }
 }
