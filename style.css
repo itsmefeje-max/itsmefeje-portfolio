@@ -78,7 +78,6 @@ body {
 }
 
 /* --- 2. REACT BITS: SHINY TEXT (Ported) --- */
-/* Usage: Add class 'shiny-text' to h1 or spans */
 .shiny-text {
   color: #b5b5b5a4;
   background: linear-gradient(
