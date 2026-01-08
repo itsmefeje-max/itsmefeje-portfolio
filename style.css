@@ -1,16 +1,10 @@
-/* -- Indicating what the script is for: Implements the React Bits "Aurora" background, "Shiny Text" effect, and refined "Spotlight" UI architecture. */
+/* -- Indicating what the script is for: Styles with Liquid Ether Background */
 
 :root {
-  /* COLORS: Refined Aurora System */
-  --bg-dark: #020617; /* Slate 950 - Deeper, richer black */
+  /* COLORS */
+  --bg-dark: #020617; 
   --bg-panel: rgba(255, 255, 255, 0.03);
   --border-light: rgba(255, 255, 255, 0.1);
-  
-  /* AURORA GRADIENTS (Northern Lights) */
-  --color-1: #00d2ff; /* Cyan */
-  --color-2: #3a7bd5; /* Deep Blue */
-  --color-3: #8a2be2; /* Violet */
-  --color-4: #ff0080; /* Magenta accent */
   
   --primary: #a78bfa;
   --text-main: #f8fafc;
@@ -25,7 +19,7 @@
   --font-body: 'Inter', sans-serif;
 }
 
-/* RESET & BASE */
+/* RESET */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; }
 
@@ -39,45 +33,22 @@ body {
   position: relative;
 }
 
-/* --- 1. REACT BITS: AURORA BACKGROUND (Ported) --- */
-.aurora-container {
+/* --- LIQUID ETHER BACKGROUND --- */
+#liquid-ether-bg {
   position: fixed;
   inset: 0;
   z-index: -1;
-  overflow: hidden;
-  background: var(--bg-dark);
+  width: 100vw;
+  height: 100vh;
+  /* Ensure it captures mouse events if needed, but lets clicks through to buttons */
+  pointer-events: auto; 
 }
+/* Ensure content sits above the background */
+main, header, footer { position: relative; z-index: 10; pointer-events: none; }
+/* Re-enable pointer events for interactive elements */
+a, button, .spotlight-card { pointer-events: auto; }
 
-.aurora-blob {
-  position: absolute;
-  filter: blur(80px);
-  opacity: 0.5;
-  border-radius: 50%;
-  animation: aurora-move 20s infinite alternate ease-in-out;
-}
-
-.aurora-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--color-3); animation-delay: 0s; }
-.aurora-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--color-2); animation-delay: -5s; }
-.aurora-3 { bottom: 40%; left: 40%; width: 40vw; height: 40vw; background: var(--color-1); opacity: 0.3; animation-delay: -10s; }
-
-/* The "Shimmer" overlay for extra detail */
-.aurora-container::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-  opacity: 0.4;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
-
-@keyframes aurora-move {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(10%, 15%) scale(1.1); }
-  100% { transform: translate(-5%, 5%) scale(1); }
-}
-
-/* --- 2. REACT BITS: SHINY TEXT (Ported) --- */
+/* --- SHINY TEXT --- */
 .shiny-text {
   color: #b5b5b5a4;
   background: linear-gradient(
@@ -94,21 +65,19 @@ body {
   text-decoration: none;
 }
 
-.shiny-text.disabled { animation: none; }
-
 @keyframes shine {
   0% { background-position: 100%; }
   100% { background-position: -100%; }
 }
 
-/* --- 3. UI ARCHITECTURE (Glassmorphism Upgrade) --- */
+/* --- UI COMPONENTS --- */
 .glass-nav {
   position: fixed; top: 0; width: 100%; height: var(--nav-height);
-  background: rgba(2, 6, 23, 0.6); /* Darker glass */
+  background: rgba(2, 6, 23, 0.6);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-light);
   z-index: 1000;
-  transition: all 0.3s ease;
+  pointer-events: auto; /* Ensure nav is clickable */
 }
 
 .nav-container {
@@ -120,7 +89,6 @@ body {
 .logo { 
   display: flex; align-items: center; gap: 12px; 
   font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; 
-  letter-spacing: -0.5px;
 }
 .logo-mark {
   width: 32px; height: 32px;
@@ -132,27 +100,23 @@ body {
 .nav-links { display: flex; gap: 32px; align-items: center; }
 .nav-links a {
   text-decoration: none; color: var(--text-muted); font-size: 0.95rem; font-weight: 500;
-  transition: color 0.2s; position: relative;
+  transition: color 0.2s;
 }
 .nav-links a:hover { color: white; }
 
-/* React Bits "Spotlight" Button Style */
 .btn-primary {
-  position: relative;
   background: rgba(255,255,255,0.1);
   color: white !important;
   padding: 10px 24px; border-radius: 99px;
   border: 1px solid rgba(255,255,255,0.1);
-  overflow: hidden;
   transition: all 0.3s;
 }
 .btn-primary:hover { 
   background: rgba(255,255,255,0.15); 
-  border-color: rgba(255,255,255,0.3);
   box-shadow: 0 0 20px rgba(255,255,255,0.1);
 }
 
-/* --- HERO SECTION --- */
+/* HERO */
 .hero-section {
   min-height: 100vh; display: flex; flex-direction: column;
   justify-content: center; align-items: center;
@@ -172,7 +136,6 @@ body {
   box-shadow: 0 0 12px #4ade80; animation: pulse 2s infinite;
 }
 
-/* React Bits "Gradient Text" logic */
 h1 {
   font-family: var(--font-display);
   font-size: clamp(3rem, 6vw, 5.5rem);
@@ -205,7 +168,7 @@ h1 {
 .link-sub { color: var(--text-muted); text-decoration: none; font-size: 1rem; display: flex; gap: 10px; align-items: center; transition: 0.2s; }
 .link-sub:hover { color: white; }
 
-/* --- SECTIONS --- */
+/* SECTIONS */
 .section-padding { padding: 120px 0; }
 .container { max-width: var(--container-width); margin: 0 auto; padding: 0 24px; }
 .container.narrow { max-width: 900px; }
@@ -214,9 +177,9 @@ h1 {
 .section-header h2 { font-size: 3rem; font-family: var(--font-display); margin-bottom: 16px; letter-spacing: -0.02em; }
 .section-header p { color: var(--text-muted); font-size: 1.1rem; }
 
-/* --- 4. REACT BITS: SPOTLIGHT CARD (Refined) --- */
+/* CARDS */
 .glass-panel, .bento-card, .goal-item, .contact-box {
-  background: rgba(15, 23, 42, 0.3); /* Low opacity slate */
+  background: rgba(15, 23, 42, 0.3);
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   position: relative;
@@ -224,7 +187,7 @@ h1 {
   transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
-/* The Spotlight Overlay */
+/* Spotlight Overlay */
 .spotlight-card::before {
   content: "";
   position: absolute;
@@ -247,13 +210,11 @@ h1 {
 .bento-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;
 }
-
 .bento-card {
   padding: 40px; 
   display: flex; flex-direction: column; justify-content: space-between; 
   height: 100%; min-height: 320px;
 }
-
 .card-content { z-index: 2; position: relative; }
 .card-tags { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
 .card-tags span {
@@ -261,10 +222,8 @@ h1 {
   background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 99px; color: var(--text-muted);
   border: 1px solid rgba(255,255,255,0.05);
 }
-
 .bento-card h3 { font-size: 1.5rem; margin-bottom: 12px; font-weight: 600; color: white; }
 .bento-card p { font-size: 1rem; color: var(--text-muted); line-height: 1.6; }
-
 .card-icon {
   z-index: 2; margin-top: 32px;
   width: 50px; height: 50px;
@@ -273,7 +232,7 @@ h1 {
   display: grid; place-items: center;
 }
 
-/* PROFILE PANEL (About) */
+/* PROFILE */
 .profile-panel { padding: 60px; text-align: center; backdrop-filter: blur(20px); }
 .stats-row { 
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; 
@@ -305,7 +264,7 @@ h1 {
 .method-card .label { display: block; font-size: 0.75rem; color: var(--text-muted); text-align: left; }
 .method-card .value { font-size: 1rem; color: white; font-weight: 500; }
 
-/* ARCADE HIGHLIGHT */
+/* ARCADE */
 .arcade-highlight {
   margin: 60px auto 0; max-width: 500px;
   background: rgba(0,0,0,0.4); border: 1px solid var(--border-light);
