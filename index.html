@@ -8,14 +8,17 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   
-  <canvas id="network-canvas"></canvas>
-  <div class="vignette"></div>
+  <div class="aurora-container">
+    <div class="aurora-blob aurora-1"></div>
+    <div class="aurora-blob aurora-2"></div>
+    <div class="aurora-blob aurora-3"></div>
+  </div>
 
   <header class="glass-nav">
     <div class="container nav-container">
@@ -42,12 +45,12 @@
       <div class="hero-content reveal">
         <div class="status-badge">
           <span class="pulse-dot"></span>
-          <span>Welcome to my website. I am open for little to major commissions, I'm glad you visited Here</span>
+          <span>Open for Commissions</span>
         </div>
         
-        <h1 class="glitch-text" data-text="Building the Foundation">
+        <h1 class="glitch-text">
           Building the<br>
-          <span class="gradient-text">Foundation</span>
+          <span class="shiny-text">Foundation</span>
         </h1>
         
         <p class="hero-sub">
@@ -58,7 +61,7 @@
 
         <div class="cta-row">
           <a href="#about" class="btn-glow">
-            Get to know me (maybe you like me xD)
+            Get to know me
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
           </a>
           <a href="https://www.roblox.com/users/5512860740/profile" target="_blank" class="link-sub">
@@ -71,37 +74,31 @@
       
     <section id="about" class="section-padding">
       <div class="container narrow">
-        <div class="glass-panel profile-panel reveal">
+        <div class="glass-panel profile-panel reveal spotlight-card">
           
           <div class="profile-header">
-            <h2 style="background: linear-gradient(to right, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; letter-spacing: -0.02em;">
-              About My Journey & Myself
-            </h2>
+            <h2>About My Journey</h2>
             
             <p style="margin-top: 16px; font-size: 1.1rem; color: #e2e8f0; font-weight: 400;">
               "The best way to predict the future is to create it"
-              <br>
-              <span style="display: inline-block; margin-top: 8px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; font-weight: 700; color: #ff4d4d; text-shadow: 0 0 20px rgba(255, 77, 77, 0.4);">
-                 — IS MY MOTTO
-              </span>
             </p>
           </div>
 
-          <div class="profile-body" style="text-align: left; margin-top: 40px; font-size: 1.05rem; line-height: 1.8; color: #cbd5e1;">
+          <div class="profile-body" style="text-align: left; margin-top: 40px; font-size: 1.1rem; line-height: 1.8; color: #cbd5e1;">
             
             <p style="margin-bottom: 24px;">
-              <span style="color: #a78bfa; font-weight: 600;">I am a developer focused on love.</span> hehe, (not literal love like in a relationship like how she forgot me) 
-              I mean developing something I love and want to create that others might love too. 
+              <span style="color: #a78bfa; font-weight: 600;">I am a developer focused on passion.</span> 
+              I develop things I love and want to create experiences that others might love too. 
             </p>
 
             <p style="margin-bottom: 24px;">
               I am currently in the <strong style="color: white;">learning phase</strong>, dedicating my time to understand the fundamentals and logic of Software and Game Development. 
-              And, honestly, it's more understandable than understanding a girl. LOL, and of course I'm also understanding the core principles of programming before rushing into building massive projects. xD
+              I believe in understanding the core principles of programming before rushing into building massive projects.
             </p>
             
-            <div style="background: rgba(255,255,255,0.03); border-left: 3px solid #ff4d4d; padding: 20px 24px; border-radius: 0 12px 12px 0; margin: 32px 0;">
+            <div style="background: rgba(255,255,255,0.03); border-left: 3px solid #6366f1; padding: 20px 24px; border-radius: 0 12px 12px 0; margin: 32px 0;">
               <p style="margin: 0; font-style: italic; color: #e2e8f0;">
-                "My philosophy is to build small stuff at these moments, and understand every line of code I write. AI exists but understanding it makes me even more handsome."
+                "My philosophy is to build small stuff at these moments, and understand every line of code I write."
               </p>
             </div>
             
@@ -111,12 +108,12 @@
                 <span>MY FOCUS</span>
               </div>
               <div class="stat">
-                <strong>MY GIRLFRIEND</strong>
-                <span>No ONE</span>
+                <strong>Roblox</strong>
+                <span>PLATFORM</span>
               </div>
               <div class="stat">
                 <strong>Systems</strong>
-                <span>WHAT I'M LEARNING</span>
+                <span>LEARNING</span>
               </div>
             </div>
           </div>
@@ -128,13 +125,11 @@
       <div class="container">
         <div class="section-header reveal">
           <h2>Current Curriculum</h2>
-          <p>The technologies and concepts I am currently Learning.
-            I might as well Read and Learn books in terms of understanding a girl.</p>
+          <p>The technologies and concepts I am currently Learning.</p>
         </div>
 
         <div class="bento-grid reveal">
           <article class="bento-card spotlight-card">
-            <div class="card-bg" style="background: linear-gradient(45deg, #1a1a1a, #2a2a2a);"></div>
             <div class="card-content">
               <div class="card-tags">
                 <span>Core Language</span>
@@ -144,7 +139,7 @@
               <p>I'm studying coding in this language so I can be good at it and truly know what I am doing. I'm learning to write clean, modular scripts.</p>
             </div>
             <div class="card-icon">
-              <img src="https://cdn.simpleicons.org/lua/white" width="40" height="40" alt="Lua">
+              <img src="https://cdn.simpleicons.org/lua/white" width="32" height="32" alt="Lua">
             </div>
           </article>
 
@@ -152,10 +147,10 @@
             <div class="card-content">
               <div class="card-tags"><span>Workflow</span><span>Tools</span></div>
               <h3>Professional Workflow</h3>
-              <p>I am gonna use professional tools soon, particularly <strong>VS Code</strong>, <strong>Rojo</strong>, and a more understanding of <strong>GitHub</strong>.</p>
+              <p>I am moving towards professional tools, particularly <strong>VS Code</strong>, <strong>Rojo</strong>, and a deeper understanding of <strong>GitHub</strong>.</p>
             </div>
             <div class="card-icon">
-              <img src="https://cdn.simpleicons.org/git/white" width="30" height="30" alt="Git">
+              <img src="https://cdn.simpleicons.org/git/white" width="28" height="28" alt="Git">
             </div>
           </article>
 
@@ -163,10 +158,10 @@
             <div class="card-content">
               <div class="card-tags"><span>User Interface</span><span>Design</span></div>
               <h3>UI Architecture</h3>
-              <p>I'm upgrading my skills in <strong>UI</strong> and making it even better.</p>
+              <p>I'm upgrading my skills in <strong>User Interface Design</strong> to create immersive experiences.</p>
             </div>
             <div class="card-icon">
-               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
             </div>
           </article>
         </div>
@@ -177,36 +172,36 @@
       <div class="container">
         <div class="section-header reveal">
           <h2>The Roadmap</h2>
-          <p>My Goals for the next upcoming Months / Years.</p>
+          <p>My Goals for the upcoming Months / Years.</p>
         </div>
 
         <div class="goals-wrapper reveal">
-          <div class="goal-item">
+          <div class="goal-item spotlight-card">
             <div class="goal-icon pending"></div>
             <div class="goal-content">
               <h3>Fully Learn LuaU</h3>
-              <p>Fully Learn LuaU so it's possible for me to make epic games ALONE.</p>
+              <p>Master LuaU to the point where I can architect complex game systems independently.</p>
             </div>
           </div>
 
-          <div class="goal-item">
+          <div class="goal-item spotlight-card">
             <div class="goal-icon" style="background: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);"></div>
             <div class="goal-content">
               <h3>
                 Build a Game Prototype 
-                <span style="color: #22c55e; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-left: 8px; vertical-align: middle;">
+                <span style="color: #22c55e; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-left: 8px;">
                   • Ongoing
                 </span>
               </h3>
-              <p>I am currently making my own game! Creating a basic functional prototype and working on passion projects.</p>
+              <p>Creating a basic functional prototype and working on passion projects to apply my knowledge.</p>
             </div>
           </div>
 
-          <div class="goal-item">
+          <div class="goal-item spotlight-card">
             <div class="goal-icon pending"></div>
             <div class="goal-content">
-              <h3>Contribute to other Developers</h3>
-              <p>One of my Goals is to do my First Commission and help other developers do their job.</p>
+              <h3>Contribute to Community</h3>
+              <p>One of my goals is to do my first commission and help other developers achieve their vision.</p>
             </div>
           </div>
         </div>
@@ -215,9 +210,9 @@
 
     <section id="contact" class="section-padding footer-section">
       <div class="container">
-        <div class="contact-box reveal">
-          <h2>Contact and Connect with me</h2>
-          <p>If you want to talk to me go ahead, it is okay. I am always open to make some cool developer friends too. hehe</p>
+        <div class="contact-box reveal spotlight-card">
+          <h2>Connect with me</h2>
+          <p>If you want to talk or collaborate, I am always open to making new developer friends.</p>
           
           <div class="contact-methods">
             <a href="mailto:itsmefeje@gmail.com" class="method-card">
@@ -241,13 +236,12 @@
             </div>
           </div>
 
-          <div class="arcade-highlight">
-             <h3 class="aura-text">Play Games</h3>
-             <p>I have also set up a place in this website where you can play the specific games I make. It's the Arcade.</p>
-          </div>
-
-          <div class="surprise-wrapper">
-             <a href="Arcade.html" class="btn-surprise"> Click me to play the games </a>
+          <div class="arcade-highlight spotlight-card">
+             <h3 class="aura-text">The Arcade</h3>
+             <p>I have set up a space where you can play the specific games I make.</p>
+             <div class="surprise-wrapper">
+                <a href="Arcade.html" class="btn-surprise">Enter Arcade</a>
+             </div>
           </div>
 
         </div>
@@ -256,7 +250,7 @@
           <div class="footer-bottom">
             <p>&copy; <span id="year"></span> Itsmefeje. Personal Website.</p>
             <div class="footer-links">
-              <a href=" https://www.fejelude.xyz/ " target="_blank">Website Updated Recently on 01/07/2026</a>
+              <a href="https://www.fejelude.xyz/" target="_blank">Updated: 01/08/2026</a>
             </div>
           </div>
         </footer>
