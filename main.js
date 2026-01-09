@@ -82,7 +82,7 @@ if (mobileBtn && navLinks) {
 const yearSpan = document.getElementById('year');
 if(yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-// 5. CLEAN URL ROUTER & MENU CLOSE (Standard Navigation)
+// 5. CLEAN URL ROUTER & MENU CLOSE
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', (e) => {
@@ -113,8 +113,8 @@ window.addEventListener('load', () => {
   // 1. Get the path (e.g., "learning" from "/learning")
   const path = window.location.pathname.replace('/', ''); 
   
-  // 2. Ignore 'index.html' or 'arcade' so we don't scroll weirdly on those
-  if (path && path !== 'index.html' && path !== 'Arcade.html') {
+  // 2. Ignore 'index.html' or 'arcade' paths so we don't break them
+  if (path && path !== 'index.html' && path.toLowerCase() !== 'arcade') {
     
     // 3. Try to find a section with that ID
     const targetSection = document.getElementById(path);
