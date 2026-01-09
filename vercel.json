@@ -1,8 +1,8 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/Arcade", "destination": "/Arcade.html" },
     { "source": "/arcade", "destination": "/Arcade.html" },
+    { "source": "/Arcade", "destination": "/Arcade.html" },
     { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
   ]
 }
