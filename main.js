@@ -1,4 +1,4 @@
-/* -- Indicating what the script is for: Logic for Text Shuffle, Mobile Interactions, and Animations */
+/* -- Indicating what the script is for: Logic for Text Shuffle, Mobile Interactions, Animations, and URL Routing */
 
 // 1. SHUFFLE TEXT (Logo) - Initialize safely
 document.addEventListener('DOMContentLoaded', () => {
@@ -91,7 +91,7 @@ if (mobileBtn && navLinks) {
 const yearSpan = document.getElementById('year');
 if(yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-// 5. CLEAN URL ROUTER & MENU CLOSE
+// 5. CLEAN URL ROUTER & MENU CLOSE (Click Handling)
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', (e) => {
@@ -109,9 +109,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (section) {
           e.preventDefault();
           section.scrollIntoView({ behavior: 'smooth' });
+          // Update URL without #
           history.pushState(null, '', `/${targetId}`);
         }
       }
     });
   });
+});
+
+// 6. INITIAL LOAD ROUTER (Fixes Refresh/Direct Access)
+// This checks if the user landed on /about, /goals, etc. and scrolls there automatically.
+window.addEventListener('load', () => {
+  const path = window.location.pathname.replace('/', ''); // Get "about" from "/about"
+  
+  if (path && path !== 'index.html') {
+    const targetSection = document.getElementById(path);
+    if (targetSection) {
+      // Small timeout ensures the layout is ready before scrolling
+      setTimeout(() => {
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }
 });
