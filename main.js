@@ -1,8 +1,9 @@
-/* -- Indicating what the script is for: Logic for Text Shuffle, Mobile Interactions, Animations, and Clean URLs */
+/* -- Indicating what the script is for: Logic for Text Shuffle, Mobile Interactions, Animations, and Static URL Scrolling */
 
 // 1. SHUFFLE TEXT (Logo)
 document.addEventListener('DOMContentLoaded', () => {
   const logoText = document.querySelector('#nav-logo-text');
+  // Only run if the element exists (e.g. might not exist on 404 page)
   if (logoText) {
     const shuffle = new ShuffleText(logoText, {
       text: "Itsmefeje", 
@@ -81,30 +82,30 @@ if (mobileBtn && navLinks) {
 const yearSpan = document.getElementById('year');
 if(yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-// 5. CLEAN URL HANDLING (Client-Side Only)
-// FIX: Updated selector to catch ALL hash links (like the CTA button), not just nav links.
+// 5. CLEAN URL HANDLING (Scroll Only, No URL Update)
 document.addEventListener('DOMContentLoaded', () => {
+  // Select ALL links that start with # (Nav links + Buttons)
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
       
-      // Close mobile menu if it's open (handles click from mobile nav)
+      // Close mobile menu if it's open
       if (navLinks && navLinks.classList.contains('active')) {
         navLinks.classList.remove('active');
         if (mobileBtn) mobileBtn.classList.remove('open');
       }
 
       // Handle Section Links (e.g. #about)
-      if (href && href.length > 1) { // Ensure it's not just "#"
+      if (href && href.length > 1) { 
         const targetId = href.substring(1); // Remove '#'
         const section = document.getElementById(targetId);
         
         if (section) {
-          e.preventDefault(); // Stop the browser from adding #about to URL
+          e.preventDefault(); // STOP the browser from changing URL
           section.scrollIntoView({ behavior: 'smooth' });
           
-          // Make URL pretty (/about) without reloading
-          history.pushState(null, '', `/${targetId}`);
+          // REMOVED: history.pushState line is deleted.
+          // The URL will now stay exactly as it is (e.g. fejelude.xyz).
         }
       }
     });
