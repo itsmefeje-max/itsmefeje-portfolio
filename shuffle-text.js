@@ -1,4 +1,4 @@
-/* -- Indicating what the script is for: GSAP-based Shuffle Text (Replicates React Component Logic) */
+/* -- Indicating what the script is for: GSAP-based Shuffle Text (Fixed Vertical Animation Logic) */
 
 class ShuffleText {
   constructor(elementOrSelector, options = {}) {
@@ -11,14 +11,14 @@ class ShuffleText {
       return;
     }
 
-    // Default Config (Matching React Props)
+    // Default Config
     this.config = Object.assign({
       text: this.element.textContent.trim(),
       shuffleDirection: 'right', // 'right', 'left', 'up', 'down'
       shuffleTimes: 3,
-      duration: 0.35, 
+      duration: 0.4, 
       ease: 'power3.out',
-      stagger: 0.03,
+      stagger: 0.04,
       animationMode: 'evenodd', // 'evenodd' or 'random'
       scrambleCharset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%',
       triggerOnHover: true,
@@ -27,7 +27,6 @@ class ShuffleText {
 
     this.isPlaying = false;
     this.wrappers = [];
-    this.splits = [];
     
     // Init when fonts are ready
     if (document.fonts && document.fonts.ready) {
@@ -48,7 +47,7 @@ class ShuffleText {
       });
     }
     
-    // Initial Play
+    // Play immediately on load
     this.play();
   }
 
@@ -75,7 +74,12 @@ class ShuffleText {
       const w = rect.width;
       const h = rect.height;
       
-      if (charSpan.textContent.trim() === '') return;
+      // Skip empty/invisible chars, but keep spaces
+      if (w === 0 && charSpan.textContent.trim() !== '') return;
+      if (charSpan.textContent.trim() === '') {
+          // If it's just a space, leave it as is, don't animate
+          return;
+      }
 
       const parent = charSpan.parentNode;
       
@@ -83,6 +87,7 @@ class ShuffleText {
       wrapper.style.display = 'inline-block';
       wrapper.style.overflow = 'hidden';
       wrapper.style.width = `${w}px`;
+      // Vertical modes need fixed height, horizontal can be auto
       wrapper.style.height = ['up', 'down'].includes(this.config.shuffleDirection) ? `${h}px` : 'auto';
       wrapper.style.verticalAlign = 'bottom';
       wrapper.style.position = 'relative';
@@ -96,6 +101,7 @@ class ShuffleText {
       parent.insertBefore(wrapper, charSpan);
       wrapper.appendChild(inner);
 
+      // --- CLONE LOGIC ---
       // 1. Original
       inner.appendChild(this.createClone(charSpan, w, h));
 
@@ -114,18 +120,42 @@ class ShuffleText {
 
       charSpan.remove();
 
+      // --- CALCULATE POSITIONS ---
       const steps = rolls + 1;
-      let startVars = {};
+      let startX = 0, startY = 0;
+      let finalX = 0, finalY = 0;
 
       switch (this.config.shuffleDirection) {
-        case 'right': startVars = { x: -steps * w }; break;
-        case 'left': startVars = { x: 0 }; break;
-        case 'down': startVars = { y: -steps * h }; break;
-        case 'up': startVars = { y: 0 }; break;
+        case 'right':
+            // Logic: Move from LEFT (-steps*w) to 0
+            startX = -steps * w; 
+            finalX = 0;
+            break;
+        case 'left':
+            // Logic: Move from 0 to LEFT (-steps*w)
+            startX = 0; 
+            finalX = -steps * w;
+            break;
+        case 'down':
+            // Logic: Move from TOP (-steps*h) to 0
+            startY = -steps * h; 
+            finalY = 0;
+            break;
+        case 'up':
+            // Logic: Move from 0 to TOP (-steps*h)
+            startY = 0; 
+            finalY = -steps * h;
+            break;
       }
 
-      gsap.set(inner, startVars);
-      this.wrappers.push({ inner, w, h });
+      // Set START position immediately
+      gsap.set(inner, { x: startX, y: startY });
+
+      // Save FINAL position to data attributes for the play function to read
+      inner.dataset.finalX = finalX;
+      inner.dataset.finalY = finalY;
+
+      this.wrappers.push(inner);
     });
   }
 
@@ -149,43 +179,32 @@ class ShuffleText {
     if (this.isPlaying || this.wrappers.length === 0) return;
     this.isPlaying = true;
 
-    const targets = this.wrappers.map(w => w.inner);
-    const odd = targets.filter((_, i) => i % 2 !== 0);
-    const even = targets.filter((_, i) => i % 2 === 0);
+    // Separate Even and Odd indexed wrappers
+    const odd = this.wrappers.filter((_, i) => i % 2 !== 0);
+    const even = this.wrappers.filter((_, i) => i % 2 === 0);
 
     const tl = gsap.timeline({
       onComplete: () => { this.isPlaying = false; }
     });
 
-    // "EvenOdd" Logic from React Code
+    // Helper to read the stored final position
+    const getVars = () => ({
+      x: (i, target) => parseFloat(target.dataset.finalX || 0),
+      y: (i, target) => parseFloat(target.dataset.finalY || 0),
+      duration: this.config.duration,
+      ease: this.config.ease,
+      stagger: this.config.stagger
+    });
+
     if (this.config.animationMode === 'evenodd') {
       const oddTotal = this.config.duration + Math.max(0, odd.length - 1) * this.config.stagger;
-      const evenStart = odd.length ? oddTotal * 0.7 : 0;
+      const evenStart = odd.length ? oddTotal * 0.7 : 0; // Overlap slightly
       
-      if (odd.length) {
-        tl.to(odd, {
-          x: 0, y: 0,
-          duration: this.config.duration,
-          ease: this.config.ease,
-          stagger: this.config.stagger
-        }, 0);
-      }
-      if (even.length) {
-        tl.to(even, {
-          x: 0, y: 0,
-          duration: this.config.duration,
-          ease: this.config.ease,
-          stagger: this.config.stagger
-        }, evenStart);
-      }
+      if (odd.length) tl.to(odd, getVars(), 0);
+      if (even.length) tl.to(even, getVars(), evenStart);
     } else {
-      // Fallback simple stagger
-      tl.to(targets, {
-        x: 0, y: 0,
-        duration: this.config.duration,
-        ease: this.config.ease,
-        stagger: this.config.stagger
-      }, 0);
+      // Standard Sequential
+      tl.to(this.wrappers, getVars(), 0);
     }
   }
 }
