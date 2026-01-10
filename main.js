@@ -1,16 +1,18 @@
-/* -- Indicating what the script is for: Logic for Text Shuffle, Mobile Interactions, Animations, and Static URL Scrolling */
+/* -- Indicating what the script is for: Logic for Text Shuffle, Mobile Interactions, Animations, and Clean URLs */
 
 // 1. SHUFFLE TEXT (Logo)
 document.addEventListener('DOMContentLoaded', () => {
+  // We now target the ID we added in index.html
   const logoText = document.querySelector('#nav-logo-text');
-  // Only run if the element exists (e.g. might not exist on 404 page)
+  
   if (logoText) {
     const shuffle = new ShuffleText(logoText, {
       text: "Itsmefeje", 
       shuffleTimes: 4,
-      shuffleDirection: 'up', 
-      duration: 0.6,
-      stagger: 0.05,
+      shuffleDirection: 'up',   // Matches the React vertical slot feel
+      duration: 0.5,            // Slightly customized for smoothness
+      stagger: 0.04,
+      animationMode: 'evenodd', // This is the feature you asked for
       triggerOnHover: true,
       scrambleCharset: '!<>-_\\/[]{}—=+*^?#________' 
     });
@@ -84,7 +86,6 @@ if(yearSpan) yearSpan.textContent = new Date().getFullYear();
 
 // 5. CLEAN URL HANDLING (Scroll Only, No URL Update)
 document.addEventListener('DOMContentLoaded', () => {
-  // Select ALL links that start with # (Nav links + Buttons)
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
@@ -97,15 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Handle Section Links (e.g. #about)
       if (href && href.length > 1) { 
-        const targetId = href.substring(1); // Remove '#'
+        const targetId = href.substring(1); 
         const section = document.getElementById(targetId);
         
         if (section) {
-          e.preventDefault(); // STOP the browser from changing URL
+          e.preventDefault(); 
           section.scrollIntoView({ behavior: 'smooth' });
-          
-          // REMOVED: history.pushState line is deleted.
-          // The URL will now stay exactly as it is (e.g. fejelude.xyz).
         }
       }
     });
