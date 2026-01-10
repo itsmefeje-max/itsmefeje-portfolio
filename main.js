@@ -100,8 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (section) {
           e.preventDefault();
           section.scrollIntoView({ behavior: 'smooth' });
-          // Make URL pretty (/about)
-          // If they refresh after this, Vercel sends them Home (Safe).
+          
+          // Make URL pretty (/about) without reloading.
+          // If they refresh AFTER this, vercel.json sends them Home.
           history.pushState(null, '', `/${targetId}`);
         }
       }
