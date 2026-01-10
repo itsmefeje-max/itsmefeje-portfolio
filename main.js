@@ -82,27 +82,28 @@ const yearSpan = document.getElementById('year');
 if(yearSpan) yearSpan.textContent = new Date().getFullYear();
 
 // 5. CLEAN URL HANDLING (Client-Side Only)
+// FIX: Updated selector to catch ALL hash links (like the CTA button), not just nav links.
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.nav-links a').forEach(link => {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
       
-      // Close mobile menu
-      if (navLinks) {
+      // Close mobile menu if it's open (handles click from mobile nav)
+      if (navLinks && navLinks.classList.contains('active')) {
         navLinks.classList.remove('active');
         if (mobileBtn) mobileBtn.classList.remove('open');
       }
 
       // Handle Section Links (e.g. #about)
-      if (href && href.includes('#')) {
-        const targetId = href.split('#')[1];
+      if (href && href.length > 1) { // Ensure it's not just "#"
+        const targetId = href.substring(1); // Remove '#'
         const section = document.getElementById(targetId);
+        
         if (section) {
-          e.preventDefault();
+          e.preventDefault(); // Stop the browser from adding #about to URL
           section.scrollIntoView({ behavior: 'smooth' });
           
-          // Make URL pretty (/about) without reloading.
-          // If they refresh AFTER this, vercel.json sends them Home.
+          // Make URL pretty (/about) without reloading
           history.pushState(null, '', `/${targetId}`);
         }
       }
