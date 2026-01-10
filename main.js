@@ -1,24 +1,16 @@
-/* -- Indicating what the script is for: Logic for Text Shuffle, Mobile Interactions, Animations, and Clean URLs */
+/* -- Indicating what the script is for: Logic for Shiny Text, Mobile Interactions, Animations, and Clean URLs */
 
-// 1. SHUFFLE TEXT (Logo)
+// 1. SHINY TEXT (Logo) - Replaces Shuffle
 document.addEventListener('DOMContentLoaded', () => {
-  // We now target the ID we added in index.html
   const logoText = document.querySelector('#nav-logo-text');
   
   if (logoText) {
-    const shuffle = new ShuffleText(logoText, {
+    new ShinyText(logoText, {
       text: "Itsmefeje", 
-      shuffleTimes: 4,
-      shuffleDirection: 'up',   // Matches the React vertical slot feel
-      duration: 0.5,            // Slightly customized for smoothness
-      stagger: 0.04,
-      animationMode: 'evenodd', // This is the feature you asked for
-      triggerOnHover: true,
-      scrambleCharset: '!<>-_\\/[]{}—=+*^?#________' 
-    });
-
-    logoText.addEventListener('click', () => {
-      shuffle.play();
+      speed: 3,
+      color: '#b5b5b5',
+      shineColor: '#ffffff',
+      pauseOnHover: true
     });
   }
 });
@@ -104,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (section) {
           e.preventDefault(); 
           section.scrollIntoView({ behavior: 'smooth' });
+          // URL update removed to keep address bar clean
         }
       }
     });
