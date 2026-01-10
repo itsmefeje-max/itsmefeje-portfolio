@@ -1,7 +1,12 @@
 {
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/arcade", "destination": "/Arcade.html" },
+    { "source": "/Arcade", "destination": "/Arcade.html" }
+  ],
   "redirects": [
     { 
-      "source": "/((?!.*\\.).*)", 
+      "source": "/((?!arcade|Arcade|.*\\.).+)", 
       "destination": "/", 
       "permanent": false 
     }
