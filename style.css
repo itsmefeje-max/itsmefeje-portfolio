@@ -85,14 +85,17 @@ a, button, .spotlight-card { pointer-events: auto; }
 }
 
 .logo { 
-  display: flex; align-items: center; gap: 12px; 
-  font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; 
+  display: flex; align-items: center; gap: 0; 
+  font-family: var(--font-display); 
+  font-weight: 800; 
+  font-size: 1.8rem; /* Made bigger as requested */
+  letter-spacing: -0.03em;
+  line-height: 1;
 }
+
+/* SAFETY: Hide the logo-mark globally so it disappears from 404/Arcade automatically */
 .logo-mark {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, white, #94a3b8);
-  color: black; border-radius: 8px;
-  display: grid; place-items: center; font-weight: 800; font-size: 1rem;
+  display: none !important; 
 }
 
 .nav-links { display: flex; gap: 32px; align-items: center; }
