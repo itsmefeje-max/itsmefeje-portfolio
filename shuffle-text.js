@@ -1,4 +1,4 @@
-/* -- Indicating what the script is for: Robust Vanilla JS Shuffle Text Effect (Fixed Timing) */
+/* -- Indicating what the script is for: GSAP-based Shuffle Text (Replicates React Component Logic) */
 
 class ShuffleText {
   constructor(elementOrSelector, options = {}) {
@@ -7,67 +7,58 @@ class ShuffleText {
       : elementOrSelector;
 
     if (!this.element) {
-      console.warn('ShuffleText: Element not found:', elementOrSelector);
+      console.warn('ShuffleText: Element not found');
       return;
     }
 
-    // Default Config
+    // Default Config (Matching React Props)
     this.config = Object.assign({
       text: this.element.textContent.trim(),
       shuffleDirection: 'right', // 'right', 'left', 'up', 'down'
       shuffleTimes: 3,
-      duration: 0.4,
+      duration: 0.35, 
       ease: 'power3.out',
-      stagger: 0.05,
+      stagger: 0.03,
+      animationMode: 'evenodd', // 'evenodd' or 'random'
       scrambleCharset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%',
       triggerOnHover: true,
-      triggerOnce: true,
+      triggerOnce: true
     }, options);
 
     this.isPlaying = false;
     this.wrappers = [];
+    this.splits = [];
     
-    // CRITICAL FIX: Wait for fonts to be ready before measuring
+    // Init when fonts are ready
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => {
-        // Double safety: Wait one frame for layout paint
-        requestAnimationFrame(() => this.init());
-      });
+      document.fonts.ready.then(() => this.init());
     } else {
-      setTimeout(() => this.init(), 100); // Fallback for older browsers
+      setTimeout(() => this.init(), 100);
     }
   }
 
   init() {
-    // 1. Prepare Text
     this.splitText();
-    
-    // 2. Build DOM (Slot Machine Structure)
     this.buildDOM();
     
-    // 3. Play Initial Animation
-    if (window.gsap) {
-      this.play();
-    } else {
-      console.error('ShuffleText: GSAP not found. Please include GSAP in your HTML.');
-    }
-
-    // 4. Bind Hover
+    // Bind Hover
     if (this.config.triggerOnHover) {
       this.element.addEventListener('mouseenter', () => {
         if (!this.isPlaying) this.play();
       });
     }
+    
+    // Initial Play
+    this.play();
   }
 
   splitText() {
     this.element.innerHTML = '';
     const chars = this.config.text.split('');
     
-    this.chars = chars.map(char => {
+    this.splits = chars.map(char => {
       const span = document.createElement('span');
       span.textContent = char;
-      // Important for measurement
       span.style.opacity = '1'; 
       span.style.display = 'inline-block';
       span.style.whiteSpace = 'pre';
@@ -79,23 +70,15 @@ class ShuffleText {
   buildDOM() {
     this.wrappers = [];
     
-    this.chars.forEach((charSpan) => {
-      // Precise measurement
+    this.splits.forEach((charSpan) => {
       const rect = charSpan.getBoundingClientRect();
       const w = rect.width;
       const h = rect.height;
       
-      // Skip invisible/empty chars (like spaces that collapsed)
-      if (w === 0 && charSpan.textContent.trim() !== '') return;
-      
-      // Preserve spaces without animating them if needed, or animate them as blockers
-      if (charSpan.textContent.trim() === '') {
-        return; // Leave spaces as simple spans
-      }
+      if (charSpan.textContent.trim() === '') return;
 
       const parent = charSpan.parentNode;
       
-      // Wrapper (The "Window")
       const wrapper = document.createElement('span');
       wrapper.style.display = 'inline-block';
       wrapper.style.overflow = 'hidden';
@@ -103,24 +86,20 @@ class ShuffleText {
       wrapper.style.height = ['up', 'down'].includes(this.config.shuffleDirection) ? `${h}px` : 'auto';
       wrapper.style.verticalAlign = 'bottom';
       wrapper.style.position = 'relative';
-      wrapper.style.lineHeight = '1'; // Fix vertical alignment issues
+      wrapper.style.lineHeight = '1'; 
 
-      // Inner (The "Strip")
       const inner = document.createElement('span');
       inner.style.display = 'inline-block';
       inner.style.whiteSpace = ['up', 'down'].includes(this.config.shuffleDirection) ? 'normal' : 'nowrap';
       inner.style.willChange = 'transform';
-      inner.style.lineHeight = '1';
-
+      
       parent.insertBefore(wrapper, charSpan);
       wrapper.appendChild(inner);
 
-      // --- CLONES ---
-      // 1. Top Original
-      const startNode = this.createClone(charSpan, w, h);
-      inner.appendChild(startNode);
+      // 1. Original
+      inner.appendChild(this.createClone(charSpan, w, h));
 
-      // 2. Scramble Clones
+      // 2. Scrambles
       const rolls = Math.max(1, Math.floor(this.config.shuffleTimes));
       for (let i = 0; i < rolls; i++) {
         const clone = this.createClone(charSpan, w, h);
@@ -130,22 +109,32 @@ class ShuffleText {
         inner.appendChild(clone);
       }
 
-      // 3. Bottom Original
-      const endNode = this.createClone(charSpan, w, h);
-      inner.appendChild(endNode);
+      // 3. Target
+      inner.appendChild(this.createClone(charSpan, w, h));
 
-      // Remove original simple span
       charSpan.remove();
 
-      this.wrappers.push({ inner, w, h, rolls });
+      const steps = rolls + 1;
+      let startVars = {};
+
+      switch (this.config.shuffleDirection) {
+        case 'right': startVars = { x: -steps * w }; break;
+        case 'left': startVars = { x: 0 }; break;
+        case 'down': startVars = { y: -steps * h }; break;
+        case 'up': startVars = { y: 0 }; break;
+      }
+
+      gsap.set(inner, startVars);
+      this.wrappers.push({ inner, w, h });
     });
   }
 
   createClone(original, w, h) {
     const clone = original.cloneNode(true);
-    clone.style.display = ['up', 'down'].includes(this.config.shuffleDirection) ? 'block' : 'inline-block';
+    const isVertical = ['up', 'down'].includes(this.config.shuffleDirection);
+    clone.style.display = isVertical ? 'block' : 'inline-block';
     clone.style.width = `${w}px`;
-    clone.style.height = `${h}px`; // Force height to match for vertical scroll
+    clone.style.height = `${h}px`;
     clone.style.textAlign = 'center';
     clone.style.boxSizing = 'border-box';
     return clone;
@@ -160,46 +149,43 @@ class ShuffleText {
     if (this.isPlaying || this.wrappers.length === 0) return;
     this.isPlaying = true;
 
+    const targets = this.wrappers.map(w => w.inner);
+    const odd = targets.filter((_, i) => i % 2 !== 0);
+    const even = targets.filter((_, i) => i % 2 === 0);
+
     const tl = gsap.timeline({
-      onComplete: () => {
-        this.isPlaying = false;
-      }
+      onComplete: () => { this.isPlaying = false; }
     });
 
-    this.wrappers.forEach((item, index) => {
-      const { inner, w, h, rolls } = item;
-      const steps = rolls + 1;
+    // "EvenOdd" Logic from React Code
+    if (this.config.animationMode === 'evenodd') {
+      const oddTotal = this.config.duration + Math.max(0, odd.length - 1) * this.config.stagger;
+      const evenStart = odd.length ? oddTotal * 0.7 : 0;
       
-      let startVars = {};
-      let endVars = {};
-
-      switch (this.config.shuffleDirection) {
-        case 'right':
-          startVars = { x: -steps * w };
-          endVars = { x: 0 };
-          break;
-        case 'left':
-          startVars = { x: 0 };
-          endVars = { x: -steps * w };
-          break;
-        case 'down':
-          startVars = { y: -steps * h };
-          endVars = { y: 0 };
-          break;
-        case 'up':
-          startVars = { y: 0 };
-          endVars = { y: -steps * h };
-          break;
+      if (odd.length) {
+        tl.to(odd, {
+          x: 0, y: 0,
+          duration: this.config.duration,
+          ease: this.config.ease,
+          stagger: this.config.stagger
+        }, 0);
       }
-
-      gsap.set(inner, startVars);
-
-      tl.to(inner, {
-        ...endVars,
+      if (even.length) {
+        tl.to(even, {
+          x: 0, y: 0,
+          duration: this.config.duration,
+          ease: this.config.ease,
+          stagger: this.config.stagger
+        }, evenStart);
+      }
+    } else {
+      // Fallback simple stagger
+      tl.to(targets, {
+        x: 0, y: 0,
         duration: this.config.duration,
         ease: this.config.ease,
-        delay: index * this.config.stagger
+        stagger: this.config.stagger
       }, 0);
-    });
+    }
   }
 }
