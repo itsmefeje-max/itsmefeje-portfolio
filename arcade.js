@@ -7,8 +7,38 @@ const GAME_SETTINGS = {
 };
 
 const activeGames = {};
+const inputState = {
+  left: false,
+  right: false,
+  up: false,
+  down: false,
+  activeGame: null
+};
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+const setActiveGame = (gameId) => {
+  inputState.activeGame = gameId;
+  Object.entries(activeGames).forEach(([key, game]) => {
+    if (game && typeof game.setActive === 'function') {
+      game.setActive(key === gameId);
+    }
+  });
+};
+
+const handleKeyState = (event, isPressed) => {
+  const key = event.key.toLowerCase();
+  const isArrow = event.key.startsWith('Arrow');
+  const isControlKey = isArrow || ['w', 'a', 's', 'd'].includes(key);
+  if (!isControlKey) return;
+  if (inputState.activeGame) {
+    event.preventDefault();
+  }
+  if (event.key === 'ArrowLeft' || key === 'a') inputState.left = isPressed;
+  if (event.key === 'ArrowRight' || key === 'd') inputState.right = isPressed;
+  if (event.key === 'ArrowUp' || key === 'w') inputState.up = isPressed;
+  if (event.key === 'ArrowDown' || key === 's') inputState.down = isPressed;
+};
 
 const createCanvasController = (canvas) => {
   const ctx = canvas.getContext('2d');
@@ -38,7 +68,7 @@ class BreakoutGame {
       running: false,
       score: 0,
       lives: 3,
-      keys: { left: false, right: false }
+      isActive: false
     };
     this.lastTime = 0;
     this.pointerActive = false;
@@ -48,23 +78,8 @@ class BreakoutGame {
   }
 
   bindControls() {
-    window.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
-        this.state.keys.left = true;
-      }
-      if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
-        this.state.keys.right = true;
-      }
-    });
-    window.addEventListener('keyup', (event) => {
-      if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
-        this.state.keys.left = false;
-      }
-      if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') {
-        this.state.keys.right = false;
-      }
-    });
     this.canvas.addEventListener('pointerdown', () => {
+      this.setActive(true);
       this.pointerActive = true;
     });
     this.canvas.addEventListener('pointerup', () => {
@@ -79,6 +94,10 @@ class BreakoutGame {
       const x = event.clientX - rect.left;
       this.paddle.x = clamp(x - this.paddle.width / 2, 0, this.size.width - this.paddle.width);
     });
+  }
+
+  setActive(isActive) {
+    this.state.isActive = isActive;
   }
 
   resize() {
@@ -174,10 +193,10 @@ class BreakoutGame {
     this.ball.x += speedX * delta;
     this.ball.y += speedY * delta;
 
-    if (this.state.keys.left) {
+    if (this.state.isActive && inputState.left) {
       this.paddle.x -= 360 * delta;
     }
-    if (this.state.keys.right) {
+    if (this.state.isActive && inputState.right) {
       this.paddle.x += 360 * delta;
     }
     this.paddle.x = clamp(this.paddle.x, 0, this.size.width - this.paddle.width);
@@ -267,7 +286,7 @@ class DodgerGame {
       running: false,
       score: 0,
       lives: 3,
-      keys: { left: false, right: false, up: false, down: false }
+      isActive: false
     };
     this.lastTime = 0;
     this.spawnTimer = 0;
@@ -277,26 +296,17 @@ class DodgerGame {
   }
 
   bindControls() {
-    window.addEventListener('keydown', (event) => {
-      const key = event.key.toLowerCase();
-      if (event.key === 'ArrowLeft' || key === 'a') this.state.keys.left = true;
-      if (event.key === 'ArrowRight' || key === 'd') this.state.keys.right = true;
-      if (event.key === 'ArrowUp' || key === 'w') this.state.keys.up = true;
-      if (event.key === 'ArrowDown' || key === 's') this.state.keys.down = true;
-    });
-    window.addEventListener('keyup', (event) => {
-      const key = event.key.toLowerCase();
-      if (event.key === 'ArrowLeft' || key === 'a') this.state.keys.left = false;
-      if (event.key === 'ArrowRight' || key === 'd') this.state.keys.right = false;
-      if (event.key === 'ArrowUp' || key === 'w') this.state.keys.up = false;
-      if (event.key === 'ArrowDown' || key === 's') this.state.keys.down = false;
-    });
     this.canvas.addEventListener('pointermove', (event) => {
       if (!this.state.running) return;
+      this.setActive(true);
       const rect = this.canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       this.player.x = clamp(x, this.player.radius, this.size.width - this.player.radius);
     });
+  }
+
+  setActive(isActive) {
+    this.state.isActive = isActive;
   }
 
   resize() {
@@ -352,10 +362,10 @@ class DodgerGame {
   }
 
   update(delta) {
-    if (this.state.keys.left) this.player.x -= this.player.speed * delta;
-    if (this.state.keys.right) this.player.x += this.player.speed * delta;
-    if (this.state.keys.up) this.player.y -= this.player.speed * delta;
-    if (this.state.keys.down) this.player.y += this.player.speed * delta;
+    if (this.state.isActive && inputState.left) this.player.x -= this.player.speed * delta;
+    if (this.state.isActive && inputState.right) this.player.x += this.player.speed * delta;
+    if (this.state.isActive && inputState.up) this.player.y -= this.player.speed * delta;
+    if (this.state.isActive && inputState.down) this.player.y += this.player.speed * delta;
 
     this.player.x = clamp(this.player.x, this.player.radius, this.size.width - this.player.radius);
     this.player.y = clamp(this.player.y, this.player.radius, this.size.height - this.player.radius);
@@ -451,6 +461,12 @@ const setupArcade = () => {
     document.querySelector('[data-overlay="dodger"]')
   );
 
+  window.addEventListener('keydown', (event) => handleKeyState(event, true));
+  window.addEventListener('keyup', (event) => handleKeyState(event, false));
+
+  breakoutCanvas.addEventListener('pointerdown', () => setActiveGame('breakout'));
+  dodgerCanvas.addEventListener('pointerdown', () => setActiveGame('dodger'));
+
   document.querySelectorAll('[data-action]').forEach((button) => {
     button.addEventListener('click', () => {
       const action = button.getAttribute('data-action');
@@ -463,6 +479,7 @@ const setupArcade = () => {
           if (game.overlay.textContent.includes('Game Over') || game.overlay.textContent.includes('Victory')) {
             game.reset();
           }
+          setActiveGame(target);
           game.start();
         }
       }
