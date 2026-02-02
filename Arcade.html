@@ -34,17 +34,16 @@
       <div class="hero-content reveal">
         <div class="status-badge">
           <span class="pulse-dot"></span>
-          <span>COMING SOON</span>
+          <span>ENGINEERING LIVE</span>
         </div>
-        
+
         <h1 class="glitch-text" data-text="The Arcade">
           The <span class="gradient-text">Arcade</span>
         </h1>
-        
+
         <p class="hero-sub">
-          This area is currently under development.
-          I am working on integrating playable game prototypes and experiments directly into this website.
-          Stay tuned for updates.
+          Welcome to the control room. I am building a space for playable prototypes,
+          small-batch experiments, and interactive worlds that live directly inside this site.
         </p>
 
         <div class="cta-row">
@@ -52,11 +51,207 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Return Home
           </a>
+          <a class="link-sub" href="mailto:hello@itsmefeje.com">
+            Get launch updates
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9-9"/><path d="M7 7h10v10"/></svg>
+          </a>
         </div>
+      </div>
+    </section>
+
+    <section class="arcade-section section-padding arcade-playable" id="playable-arcade">
+      <div class="container">
+        <div class="section-header">
+          <h2>Playable Now</h2>
+          <p>Two full games are live inside the Arcade. Launch, play, and chase high scores.</p>
+        </div>
+        <div class="playable-grid">
+          <article class="game-card" data-game="breakout">
+            <div class="game-card-header">
+              <div>
+                <h3>Neon Breaker</h3>
+                <p>Shatter every block with tight paddle control and momentum chaining.</p>
+              </div>
+              <span class="status-pill status-playable">Live</span>
+            </div>
+            <div class="game-canvas-wrap">
+              <canvas id="breakout-canvas" width="640" height="360" aria-label="Neon Breaker game"></canvas>
+              <div class="game-overlay" data-overlay="breakout">Press Start to launch</div>
+            </div>
+            <div class="game-controls">
+              <div class="game-buttons">
+                <button class="game-button" type="button" data-action="start" data-target="breakout">Start</button>
+                <button class="game-button" type="button" data-action="pause" data-target="breakout">Pause</button>
+                <button class="game-button ghost" type="button" data-action="reset" data-target="breakout">Reset</button>
+              </div>
+              <div class="game-stats">
+                <span>Score <strong id="breakout-score">0</strong></span>
+                <span>Lives <strong id="breakout-lives">3</strong></span>
+              </div>
+            </div>
+            <p class="game-hint">Controls: Arrow keys / A+D or drag on the canvas.</p>
+          </article>
+
+          <article class="game-card" data-game="dodger">
+            <div class="game-card-header">
+              <div>
+                <h3>Orbit Dodger</h3>
+                <p>Stay in the safe lane while asteroid storms intensify.</p>
+              </div>
+              <span class="status-pill status-build">Challenge Mode</span>
+            </div>
+            <div class="game-canvas-wrap">
+              <canvas id="dodger-canvas" width="640" height="360" aria-label="Orbit Dodger game"></canvas>
+              <div class="game-overlay" data-overlay="dodger">Press Start to deploy</div>
+            </div>
+            <div class="game-controls">
+              <div class="game-buttons">
+                <button class="game-button" type="button" data-action="start" data-target="dodger">Start</button>
+                <button class="game-button" type="button" data-action="pause" data-target="dodger">Pause</button>
+                <button class="game-button ghost" type="button" data-action="reset" data-target="dodger">Reset</button>
+              </div>
+              <div class="game-stats">
+                <span>Score <strong id="dodger-score">0</strong></span>
+                <span>Shields <strong id="dodger-lives">3</strong></span>
+              </div>
+            </div>
+            <p class="game-hint">Controls: Arrow keys / WASD. Survive as long as you can.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="arcade-section section-padding">
+      <div class="container">
+        <div class="section-header">
+          <h2>Prototype Bays</h2>
+          <p>Playable modules in rotation. Each bay tracks progress, mechanics, and release plans.</p>
+        </div>
+        <div class="arcade-grid">
+          <article class="arcade-card">
+            <div class="arcade-card-header">
+              <h3>Neon Drift Circuit</h3>
+              <span class="status-pill status-build">In Build</span>
+            </div>
+            <p>
+              A synthwave racer with tight steering, reactive lighting, and a track editor for
+              community layouts.
+            </p>
+            <div class="chip-row">
+              <span>Racing</span>
+              <span>Editor Tools</span>
+              <span>Multiplayer</span>
+            </div>
+            <ul class="arcade-meta">
+              <li><strong>Focus:</strong> Drift physics &amp; boost chaining</li>
+              <li><strong>Target:</strong> Winter launch</li>
+            </ul>
+          </article>
+
+          <article class="arcade-card">
+            <div class="arcade-card-header">
+              <h3>Signal Siege</h3>
+              <span class="status-pill status-playable">Playable Soon</span>
+            </div>
+            <p>
+              A tactical tower-defense loop where you route energy beams, overclock circuits,
+              and defend a floating city core.
+            </p>
+            <div class="chip-row">
+              <span>Strategy</span>
+              <span>Wave Defense</span>
+              <span>Co-op</span>
+            </div>
+            <ul class="arcade-meta">
+              <li><strong>Focus:</strong> Co-op pathing &amp; turret synergy</li>
+              <li><strong>Target:</strong> Prototype drop in 4-6 weeks</li>
+            </ul>
+          </article>
+
+          <article class="arcade-card">
+            <div class="arcade-card-header">
+              <h3>Orbit Reverie</h3>
+              <span class="status-pill status-concept">Concept</span>
+            </div>
+            <p>
+              A contemplative exploration game for drifting between orbital sanctuaries,
+              collecting stories, and mapping constellations.
+            </p>
+            <div class="chip-row">
+              <span>Exploration</span>
+              <span>Story</span>
+              <span>Ambient</span>
+            </div>
+            <ul class="arcade-meta">
+              <li><strong>Focus:</strong> Narrative fragments &amp; soundtrack design</li>
+              <li><strong>Target:</strong> Early 2025 exploration slice</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="arcade-section section-padding arcade-systems">
+      <div class="container">
+        <div class="section-header">
+          <h2>Arcade Systems</h2>
+          <p>Building the infrastructure that makes every experience feel cohesive.</p>
+        </div>
+        <div class="system-grid">
+          <div class="system-card">
+            <h3>Unified Save Slots</h3>
+            <p>Seamless progress tracking across every prototype and device.</p>
+          </div>
+          <div class="system-card">
+            <h3>Dynamic Soundscapes</h3>
+            <p>Adaptive music layers that react to player rhythm and momentum.</p>
+          </div>
+          <div class="system-card">
+            <h3>Challenge Boards</h3>
+            <p>Weekly objectives, time trials, and unlockable experiments.</p>
+          </div>
+          <div class="system-card">
+            <h3>Community Signals</h3>
+            <p>Live drop-ins for feedback, bug reports, and collaborative tuning.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="arcade-section section-padding">
+      <div class="container">
+        <div class="section-header">
+          <h2>Launch Protocol</h2>
+          <p>Phased release plan for bringing the Arcade online.</p>
+        </div>
+        <ol class="protocol-list">
+          <li>
+            <span class="protocol-step">01</span>
+            <div>
+              <h3>Prototype Flight Checks</h3>
+              <p>Finalize input tuning, load times, and accessibility controls.</p>
+            </div>
+          </li>
+          <li>
+            <span class="protocol-step">02</span>
+            <div>
+              <h3>Closed Player Pods</h3>
+              <p>Invite a small crew for bug hunting and balance feedback.</p>
+            </div>
+          </li>
+          <li>
+            <span class="protocol-step">03</span>
+            <div>
+              <h3>Arcade Opening Night</h3>
+              <p>Public launch with curated content drops and a live scoreboard.</p>
+            </div>
+          </li>
+        </ol>
       </div>
     </section>
   </main>
 
+  <script src="arcade.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
