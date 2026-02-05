@@ -1,153 +1,127 @@
-// Purpose: Core logic for Arcade prototypes (Drift, Siege, Orbit)
-// Runs on: Client (Browser)
-// Dependencies: None (Vanilla JS)
-
 (() => {
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-
-  // --- GLOBAL INPUT HANDLING ---
   const keys = new Set();
-  // Track if any game is currently running to prevent unnecessary scroll blocking
+
   let activeGame = null;
 
-  const clearKeys = () => keys.clear();
+  const shouldPreventScroll = (key) => [
+    'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'w', 'a', 's', 'd'
+  ].includes(key);
 
   window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     keys.add(key);
-    
-    // FIX: Prevent browser scrolling if a game is active and using direction keys
-    if (activeGame && ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'w', 'a', 's', 'd'].includes(key)) {
-      event.preventDefault();
-    }
+    if (activeGame && shouldPreventScroll(key)) event.preventDefault();
   });
 
   window.addEventListener('keyup', (event) => {
     keys.delete(event.key.toLowerCase());
   });
 
-  window.addEventListener('blur', clearKeys);
+  window.addEventListener('blur', () => keys.clear());
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        clearKeys();
-        // Optional: Pause active game here if desired
-    }
+    if (document.hidden) keys.clear();
   });
 
-  // --- NEON DRIFT CIRCUIT ---
-  class NeonDriftCircuit {
+  class FlappyBirthd {
     constructor(canvas, statusEl) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       this.statusEl = statusEl;
       this.running = false;
+
+      this.canvas.addEventListener('pointerdown', () => this.flap());
       this.reset();
     }
 
     reset() {
-      this.player = { x: 90, y: this.canvas.height / 2, r: 12, speed: 2.8, boost: 1 };
+      this.bird = { x: 120, y: this.canvas.height / 2, vy: 0, r: 12 };
+      this.gravity = 0.34;
+      this.jump = -5.8;
+      this.pipes = [];
+      this.spawnTimer = 0;
       this.score = 0;
-      this.timeLeft = 45;
-      this.gates = [];
-      this.spawnGate(true);
       this.lastTick = performance.now();
-      this.countdownAccumulator = 0;
       this.running = false;
-      this.updateStatus('Ready to launch.');
+      this.statusEl.textContent = 'Ready to launch.';
       this.draw();
-    }
-
-    spawnGate(initial = false) {
-      this.gates.push({
-        x: initial ? this.canvas.width * 0.5 : this.canvas.width + 40,
-        y: 40 + Math.random() * (this.canvas.height - 80),
-        size: 32 + Math.random() * 22,
-        active: true
-      });
-    }
-
-    updateStatus(text) {
-      this.statusEl.textContent = text;
     }
 
     start() {
       if (this.running) return;
-      if (this.timeLeft <= 0) this.reset();
+      activeGame = 'flappy';
       this.running = true;
-      activeGame = 'drift'; // Lock scroll
       this.lastTick = performance.now();
-      this.updateStatus('Race live — hit as many gates as possible.');
+      this.statusEl.textContent = 'Tap to flap. Avoid the pipes.';
       requestAnimationFrame((t) => this.loop(t));
     }
 
-    end() {
+    stop(message) {
       this.running = false;
-      if (activeGame === 'drift') activeGame = null; // Release scroll
-      this.updateStatus(`Run complete. Final score: ${this.score}`);
+      if (activeGame === 'flappy') activeGame = null;
+      this.statusEl.textContent = message;
+    }
+
+    flap() {
+      if (!this.running) {
+        this.start();
+      }
+      this.bird.vy = this.jump;
+    }
+
+    spawnPipe() {
+      const gap = 92;
+      const minTop = 34;
+      const maxTop = this.canvas.height - gap - 34;
+      const topHeight = minTop + Math.random() * (maxTop - minTop);
+      this.pipes.push({
+        x: this.canvas.width + 36,
+        w: 40,
+        topHeight,
+        gap,
+        passed: false
+      });
     }
 
     update(deltaMs) {
       const delta = deltaMs / 16.67;
-      const up = keys.has('arrowup') || keys.has('w');
-      const down = keys.has('arrowdown') || keys.has('s');
-      const left = keys.has('arrowleft') || keys.has('a');
-      const right = keys.has('arrowright') || keys.has('d');
-      const boosting = keys.has('shift');
+      if (keys.has(' ') || keys.has('arrowup') || keys.has('w')) {
+        keys.delete(' ');
+        keys.delete('arrowup');
+        keys.delete('w');
+        this.flap();
+      }
 
-      this.player.boost = boosting ? 1.7 : 1;
-      const velocity = this.player.speed * this.player.boost * delta;
-      
-      if (up) this.player.y -= velocity;
-      if (down) this.player.y += velocity;
-      if (left) this.player.x -= velocity;
-      if (right) this.player.x += velocity;
+      this.bird.vy += this.gravity * delta;
+      this.bird.y += this.bird.vy * delta;
 
-      // Keep player bounds
-      this.player.x = clamp(this.player.x, 12, this.canvas.width - 12);
-      this.player.y = clamp(this.player.y, 12, this.canvas.height - 12);
+      this.spawnTimer += deltaMs;
+      if (this.spawnTimer > 1300) {
+        this.spawnPipe();
+        this.spawnTimer = 0;
+      }
 
-      this.gates.forEach((gate) => {
-        const moveSpeed = 3.2 * delta;
-        
-        // FIX: Improved Collision Detection (Swept / Wider)
-        // Check if gate passed the player in this frame
-        const playerLeft = this.player.x - this.player.r;
-        const playerRight = this.player.x + this.player.r;
-        const gatePrevX = gate.x;
-        const gateNextX = gate.x - moveSpeed;
-
-        // Update Position
-        gate.x = gateNextX;
-
-        if (gate.active) {
-            // Check horizontal overlap (did we cross the gate?)
-            const crossedGate = (gatePrevX >= playerLeft && gateNextX <= playerRight) || 
-                                (Math.abs(gate.x - this.player.x) < 20); // Fallback proximity
-
-            // Check vertical alignment (are we inside the gate?)
-            const verticalAlign = Math.abs(this.player.y - gate.y) < (gate.size + this.player.r);
-
-            if (crossedGate && verticalAlign) {
-                gate.active = false;
-                this.score += boosting ? 15 : 10;
-            }
+      const speed = 2.1 * delta;
+      this.pipes.forEach((pipe) => {
+        pipe.x -= speed;
+        if (!pipe.passed && pipe.x + pipe.w < this.bird.x) {
+          pipe.passed = true;
+          this.score += 1;
         }
       });
+      this.pipes = this.pipes.filter((pipe) => pipe.x + pipe.w > -10);
 
-      // Spawn/Cull logic
-      if (this.gates.length < 4 && this.gates[this.gates.length - 1].x < this.canvas.width - 120) {
-        this.spawnGate();
+      if (this.bird.y - this.bird.r < 0 || this.bird.y + this.bird.r > this.canvas.height) {
+        this.stop(`Game over. Score ${this.score}. Tap launch to retry.`);
       }
-      this.gates = this.gates.filter((gate) => gate.x > -60);
 
-      // Timer Logic
-      this.countdownAccumulator += deltaMs;
-      if (this.countdownAccumulator >= 1000) {
-        this.countdownAccumulator -= 1000;
-        this.timeLeft -= 1;
-        if (this.timeLeft <= 0) {
-          this.timeLeft = 0;
-          this.end();
+      for (const pipe of this.pipes) {
+        const hitX = this.bird.x + this.bird.r > pipe.x && this.bird.x - this.bird.r < pipe.x + pipe.w;
+        const hitTop = this.bird.y - this.bird.r < pipe.topHeight;
+        const hitBottom = this.bird.y + this.bird.r > pipe.topHeight + pipe.gap;
+        if (hitX && (hitTop || hitBottom)) {
+          this.stop(`Game over. Score ${this.score}. Tap launch to retry.`);
+          break;
         }
       }
     }
@@ -155,49 +129,26 @@
     draw() {
       const ctx = this.ctx;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // Background
-      const gradient = ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
-      gradient.addColorStop(0, '#050b1e');
-      gradient.addColorStop(1, '#170a2b');
+      const gradient = ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+      gradient.addColorStop(0, '#0ea5e9');
+      gradient.addColorStop(1, '#082f49');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-      // Grid Lines
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.24)';
-      for (let i = 1; i < 10; i += 1) {
-        const y = (this.canvas.height / 10) * i;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(this.canvas.width, y);
-        ctx.stroke();
-      }
-
-      // Draw Gates
-      this.gates.forEach((gate) => {
-        ctx.strokeStyle = gate.active ? '#22d3ee' : 'rgba(34, 211, 238, 0.2)';
-        ctx.lineWidth = 6;
-        ctx.beginPath();
-        ctx.moveTo(gate.x, gate.y - gate.size);
-        ctx.lineTo(gate.x, gate.y + gate.size);
-        ctx.stroke();
+      ctx.fillStyle = '#16a34a';
+      this.pipes.forEach((pipe) => {
+        ctx.fillRect(pipe.x, 0, pipe.w, pipe.topHeight);
+        ctx.fillRect(pipe.x, pipe.topHeight + pipe.gap, pipe.w, this.canvas.height - (pipe.topHeight + pipe.gap));
       });
 
-      // Draw Player
-      ctx.fillStyle = '#f0abfc';
+      ctx.fillStyle = '#fef08a';
       ctx.beginPath();
-      ctx.arc(this.player.x, this.player.y, this.player.r, 0, Math.PI * 2);
+      ctx.arc(this.bird.x, this.bird.y, this.bird.r, 0, Math.PI * 2);
       ctx.fill();
 
-      // UI
-      ctx.fillStyle = '#e2e8f0';
-      ctx.font = '600 14px Inter, sans-serif';
-      ctx.fillText(`Score: ${this.score}`, 14, 24);
-      ctx.fillText(`Time: ${this.timeLeft}s`, 14, 46);
-      if (this.player.boost > 1) {
-        ctx.fillStyle = '#a78bfa';
-        ctx.fillText('BOOST', 14, 68);
-      }
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '700 16px Inter, sans-serif';
+      ctx.fillText(`Score: ${this.score}`, 14, 26);
     }
 
     loop(timestamp) {
@@ -205,7 +156,7 @@
         this.draw();
         return;
       }
-      const deltaMs = Math.min(33, timestamp - this.lastTick); // Cap at ~30fps min to prevent huge jumps
+      const deltaMs = Math.min(40, timestamp - this.lastTick);
       this.lastTick = timestamp;
       this.update(deltaMs);
       this.draw();
@@ -213,210 +164,158 @@
     }
   }
 
-  // --- SIGNAL SIEGE ---
-  class SignalSiege {
+  class SnakeGame {
     constructor(canvas, statusEl) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       this.statusEl = statusEl;
-      
-      // Define path and turrets
-      this.path = [
-        { x: 0, y: 150 }, { x: 90, y: 150 }, { x: 90, y: 70 }, { x: 220, y: 70 },
-        { x: 220, y: 220 }, { x: 350, y: 220 }, { x: 350, y: 120 }, { x: 520, y: 120 }
-      ];
-      this.turrets = [
-        { x: 135, y: 118, online: true },
-        { x: 265, y: 158, online: true },
-        { x: 308, y: 84, online: true }
-      ];
+      this.gridSize = 20;
 
-      this.canvas.addEventListener('click', (event) => this.toggleTurret(event));
-      this.running = false;
+      this.swipeStart = null;
+      this.canvas.addEventListener('touchstart', (e) => {
+        const touch = e.changedTouches[0];
+        this.swipeStart = { x: touch.clientX, y: touch.clientY };
+      }, { passive: true });
+
+      this.canvas.addEventListener('touchend', (e) => {
+        if (!this.swipeStart) return;
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - this.swipeStart.x;
+        const dy = touch.clientY - this.swipeStart.y;
+        if (Math.abs(dx) + Math.abs(dy) < 18) return;
+        if (Math.abs(dx) > Math.abs(dy)) this.setDirection(dx > 0 ? 'right' : 'left');
+        else this.setDirection(dy > 0 ? 'down' : 'up');
+      }, { passive: true });
+
       this.reset();
     }
 
     reset() {
-      this.enemies = [];
-      this.lives = 12;
-      this.energy = 100;
-      this.wave = 1;
+      this.cellsX = Math.floor(this.canvas.width / this.gridSize);
+      this.cellsY = Math.floor(this.canvas.height / this.gridSize);
+      this.snake = [{ x: 6, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 7 }];
+      this.direction = 'right';
+      this.pendingDirection = 'right';
+      this.food = this.makeFood();
       this.score = 0;
-      this.turrets.forEach((turret) => {
-        turret.online = true;
-      });
-      this.spawnInterval = 1400;
-      this.lastSpawn = performance.now();
-      this.lastTick = performance.now();
+      this.stepAccumulator = 0;
+      this.stepMs = 120;
       this.running = false;
+      this.lastTick = performance.now();
       this.statusEl.textContent = 'Ready to launch.';
       this.draw();
     }
 
     start() {
       if (this.running) return;
-      if (this.energy <= 0 || this.lives <= 0) this.reset();
+      activeGame = 'snake';
       this.running = true;
-      // Note: Siege doesn't need to lock scroll as it's mouse based, 
-      // but we set it just in case we add keys later.
-      activeGame = 'siege';
-      this.lastSpawn = performance.now();
       this.lastTick = performance.now();
-      this.statusEl.textContent = 'Defend the core — toggle turrets strategically.';
+      this.statusEl.textContent = 'Eat food. Avoid walls and tail.';
       requestAnimationFrame((t) => this.loop(t));
     }
 
-    stop() {
-        this.running = false;
-        if(activeGame === 'siege') activeGame = null;
+    stop(message) {
+      this.running = false;
+      if (activeGame === 'snake') activeGame = null;
+      this.statusEl.textContent = message;
     }
 
-    toggleTurret(event) {
-      // FIX: Coordinate Scaling for Responsive Canvas
-      const rect = this.canvas.getBoundingClientRect();
-      
-      // Calculate scale ratio (Canvas Resolution / CSS Display Size)
-      const scaleX = this.canvas.width / rect.width;
-      const scaleY = this.canvas.height / rect.height;
-
-      const clickX = (event.clientX - rect.left) * scaleX;
-      const clickY = (event.clientY - rect.top) * scaleY;
-
-      // Find target with a generous click radius
-      const target = this.turrets.find((turret) => Math.hypot(turret.x - clickX, turret.y - clickY) <= 30);
-      
-      if (!target) return;
-      
-      target.online = !target.online;
-      if (this.running) {
-        this.statusEl.textContent = `${target.online ? 'Turret online' : 'Turret offline'} — energy ${Math.floor(this.energy)}%.`;
-      }
-      this.draw();
+    setDirection(next) {
+      const opposite = {
+        up: 'down',
+        down: 'up',
+        left: 'right',
+        right: 'left'
+      };
+      if (opposite[this.direction] === next) return;
+      this.pendingDirection = next;
     }
 
-    // ... (Remainder of Siege logic is mostly fine, just ensuring loop uses stop()) ...
-
-    spawnEnemy() {
-      this.enemies.push({ progress: 0, speed: 0.00012 + this.wave * 0.000015, hp: 26 + this.wave * 7 });
+    makeFood() {
+      let point;
+      do {
+        point = {
+          x: Math.floor(Math.random() * this.cellsX),
+          y: Math.floor(Math.random() * this.cellsY)
+        };
+      } while (this.snake?.some((part) => part.x === point.x && part.y === point.y));
+      return point;
     }
 
-    getPoint(progress) {
-      const totalSegments = this.path.length - 1;
-      const scaled = progress * totalSegments;
-      const segment = Math.min(totalSegments - 1, Math.floor(scaled));
-      const t = scaled - segment;
-      const a = this.path[segment];
-      const b = this.path[segment + 1];
-      return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+    readKeys() {
+      if (keys.has('arrowup') || keys.has('w')) this.setDirection('up');
+      else if (keys.has('arrowdown') || keys.has('s')) this.setDirection('down');
+      else if (keys.has('arrowleft') || keys.has('a')) this.setDirection('left');
+      else if (keys.has('arrowright') || keys.has('d')) this.setDirection('right');
     }
 
-    update(deltaMs) {
-      if (this.energy <= 0 || this.lives <= 0) {
-        this.statusEl.textContent = `Simulation failed. Wave ${this.wave}, score ${this.score}.`;
-        this.stop();
+    moveOneStep() {
+      this.direction = this.pendingDirection;
+      const head = { ...this.snake[0] };
+
+      if (this.direction === 'up') head.y -= 1;
+      if (this.direction === 'down') head.y += 1;
+      if (this.direction === 'left') head.x -= 1;
+      if (this.direction === 'right') head.x += 1;
+
+      const outOfBounds = head.x < 0 || head.y < 0 || head.x >= this.cellsX || head.y >= this.cellsY;
+      const hitBody = this.snake.some((part) => part.x === head.x && part.y === head.y);
+      if (outOfBounds || hitBody) {
+        this.stop(`Game over. Score ${this.score}.`);
         return;
       }
 
-      if (performance.now() - this.lastSpawn > this.spawnInterval) {
-        this.spawnEnemy();
-        this.lastSpawn = performance.now();
+      this.snake.unshift(head);
+      const ate = head.x === this.food.x && head.y === this.food.y;
+      if (ate) {
+        this.score += 1;
+        this.food = this.makeFood();
+        this.stepMs = Math.max(70, this.stepMs - 2);
+      } else {
+        this.snake.pop();
       }
 
-      const onlineTurrets = this.turrets.filter((turret) => turret.online);
-      this.energy = clamp(this.energy + (onlineTurrets.length === 0 ? 0.1 : -0.025 * onlineTurrets.length) * (deltaMs / 16.67), 0, 100);
-
-      this.enemies.forEach((enemy) => {
-        enemy.progress += enemy.speed * deltaMs;
-      });
-
-      onlineTurrets.forEach((turret) => {
-        const target = this.enemies.find((enemy) => {
-          const point = this.getPoint(enemy.progress);
-          return Math.hypot(point.x - turret.x, point.y - turret.y) < 95;
-        });
-        if (target) {
-          target.hp -= 0.19 * deltaMs;
-        }
-      });
-
-      const remaining = [];
-      this.enemies.forEach((enemy) => {
-        if (enemy.hp <= 0) {
-          this.score += 10;
-          return;
-        }
-        if (enemy.progress >= 1) {
-          this.lives -= 1;
-          return;
-        }
-        remaining.push(enemy);
-      });
-      this.enemies = remaining;
-
-      if (this.score >= this.wave * 120) {
-        this.wave += 1;
-        this.spawnInterval = Math.max(520, this.spawnInterval - 100);
-      }
-
-      this.statusEl.textContent = `Wave ${this.wave} · Lives ${this.lives} · Energy ${Math.floor(this.energy)}% · Score ${this.score}`;
+      this.statusEl.textContent = `Score ${this.score} · Speed ${Math.round(1000 / this.stepMs)} TPS`;
     }
 
-    drawPath() {
-        // ... (Same as original)
-        const ctx = this.ctx;
-        ctx.beginPath();
-        ctx.moveTo(this.path[0].x, this.path[0].y);
-        for (let i = 1; i < this.path.length; i += 1) {
-            ctx.lineTo(this.path[i].x, this.path[i].y);
-        }
-        ctx.lineWidth = 24;
-        ctx.strokeStyle = 'rgba(59, 130, 246, 0.35)';
-        ctx.stroke();
-
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = 'rgba(125, 211, 252, 0.9)';
-        ctx.stroke();
+    update(deltaMs) {
+      this.readKeys();
+      this.stepAccumulator += deltaMs;
+      while (this.stepAccumulator >= this.stepMs && this.running) {
+        this.stepAccumulator -= this.stepMs;
+        this.moveOneStep();
+      }
     }
 
     draw() {
-        // ... (Same as original)
-        const ctx = this.ctx;
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        const gradient = ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-        gradient.addColorStop(0, '#071124');
-        gradient.addColorStop(1, '#0f172a');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      const ctx = this.ctx;
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      ctx.fillStyle = '#020617';
+      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.drawPath();
+      ctx.strokeStyle = 'rgba(148,163,184,0.16)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= this.cellsX; x += 1) {
+        ctx.beginPath();
+        ctx.moveTo(x * this.gridSize, 0);
+        ctx.lineTo(x * this.gridSize, this.canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= this.cellsY; y += 1) {
+        ctx.beginPath();
+        ctx.moveTo(0, y * this.gridSize);
+        ctx.lineTo(this.canvas.width, y * this.gridSize);
+        ctx.stroke();
+      }
 
-        this.turrets.forEach((turret) => {
-            ctx.fillStyle = turret.online ? '#22c55e' : '#475569';
-            ctx.beginPath();
-            ctx.arc(turret.x, turret.y, 16, 0, Math.PI * 2);
-            ctx.fill();
-            if (turret.online) {
-            ctx.strokeStyle = 'rgba(34, 197, 94, 0.5)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(turret.x, turret.y, 34, 0, Math.PI * 2);
-            ctx.stroke();
-            }
-        });
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(this.food.x * this.gridSize + 2, this.food.y * this.gridSize + 2, this.gridSize - 4, this.gridSize - 4);
 
-        this.enemies.forEach((enemy) => {
-            const point = this.getPoint(enemy.progress);
-            ctx.fillStyle = '#fb7185';
-            ctx.beginPath();
-            ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
-            ctx.fill();
-        });
-
-        ctx.fillStyle = '#e2e8f0';
-        ctx.font = '600 14px Inter, sans-serif';
-        ctx.fillText(`Core Integrity: ${this.lives}`, 14, 24);
-        ctx.fillText(`Energy: ${Math.floor(this.energy)}%`, 14, 46);
-        ctx.fillText(`Score: ${this.score}`, 14, 68);
+      this.snake.forEach((part, index) => {
+        ctx.fillStyle = index === 0 ? '#22d3ee' : '#14b8a6';
+        ctx.fillRect(part.x * this.gridSize + 2, part.y * this.gridSize + 2, this.gridSize - 4, this.gridSize - 4);
+      });
     }
 
     loop(timestamp) {
@@ -424,7 +323,7 @@
         this.draw();
         return;
       }
-      const deltaMs = Math.min(33, timestamp - this.lastTick);
+      const deltaMs = Math.min(40, timestamp - this.lastTick);
       this.lastTick = timestamp;
       this.update(deltaMs);
       this.draw();
@@ -432,151 +331,183 @@
     }
   }
 
-  // --- ORBIT REVERIE ---
-  class OrbitReverie {
+  class BlockPuzzle {
     constructor(canvas, statusEl) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       this.statusEl = statusEl;
-      this.running = false;
+      this.size = 8;
+      this.cell = 34;
+      this.boardX = 24;
+      this.boardY = 24;
+
+      this.shapes = [
+        [{ x: 0, y: 0 }],
+        [{ x: 0, y: 0 }, { x: 1, y: 0 }],
+        [{ x: 0, y: 0 }, { x: 0, y: 1 }],
+        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }],
+        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }],
+        [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }],
+        [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }],
+        [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 1, y: 0 }]
+      ];
+
+      this.canvas.addEventListener('click', (event) => this.handleClick(event));
       this.reset();
     }
 
     reset() {
-      this.ship = { x: this.canvas.width / 2, y: this.canvas.height / 2, r: 11 };
-      this.stars = Array.from({ length: 40 }, () => ({
-        x: Math.random() * this.canvas.width,
-        y: Math.random() * this.canvas.height,
-        r: 0.6 + Math.random() * 1.8
-      }));
-      this.nodes = Array.from({ length: 5 }, () => this.newNode());
-      this.energy = 100;
-      this.memory = 0;
-      this.time = 60;
+      this.board = Array.from({ length: this.size }, () => Array(this.size).fill(0));
+      this.queue = [this.randomShape(), this.randomShape(), this.randomShape()];
+      this.selected = 0;
+      this.score = 0;
       this.running = false;
-      this.lastTick = performance.now();
-      this.countdownAccumulator = 0;
       this.statusEl.textContent = 'Ready to launch.';
       this.draw();
     }
 
-    newNode() {
+    randomShape() {
+      return this.shapes[Math.floor(Math.random() * this.shapes.length)];
+    }
+
+    start() {
+      activeGame = 'block';
+      this.running = true;
+      this.statusEl.textContent = 'Select a piece below, then tap board to place.';
+      this.draw();
+    }
+
+    stop(message) {
+      this.running = false;
+      if (activeGame === 'block') activeGame = null;
+      this.statusEl.textContent = message;
+      this.draw();
+    }
+
+    getPointer(event) {
+      const rect = this.canvas.getBoundingClientRect();
+      const scaleX = this.canvas.width / rect.width;
+      const scaleY = this.canvas.height / rect.height;
       return {
-        x: 30 + Math.random() * (this.canvas.width - 60),
-        y: 30 + Math.random() * (this.canvas.height - 60),
-        r: 7 + Math.random() * 6
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY
       };
     }
 
-    start() {
-      if (this.running) return;
-      if (this.time <= 0 || this.energy <= 0) this.reset();
-      this.running = true;
-      activeGame = 'orbit'; // Lock scroll
-      this.lastTick = performance.now();
-      this.statusEl.textContent = 'Exploration active — collect memory nodes.';
-      requestAnimationFrame((t) => this.loop(t));
+    canPlace(shape, gridX, gridY) {
+      return shape.every((cell) => {
+        const x = gridX + cell.x;
+        const y = gridY + cell.y;
+        return x >= 0 && y >= 0 && x < this.size && y < this.size && this.board[y][x] === 0;
+      });
     }
 
-    stop() {
-        this.running = false;
-        if(activeGame === 'orbit') activeGame = null; // Release scroll
-    }
+    place(shape, gridX, gridY) {
+      shape.forEach((cell) => {
+        this.board[gridY + cell.y][gridX + cell.x] = 1;
+      });
+      this.score += shape.length;
 
-    update(deltaMs) {
-      const delta = deltaMs / 16.67;
-      const up = keys.has('arrowup') || keys.has('w');
-      const down = keys.has('arrowdown') || keys.has('s');
-      const left = keys.has('arrowleft') || keys.has('a');
-      const right = keys.has('arrowright') || keys.has('d');
-
-      const speed = 2.1 * delta;
-      if (up) this.ship.y -= speed;
-      if (down) this.ship.y += speed;
-      if (left) this.ship.x -= speed;
-      if (right) this.ship.x += speed;
-
-      this.ship.x = clamp(this.ship.x, 12, this.canvas.width - 12);
-      this.ship.y = clamp(this.ship.y, 12, this.canvas.height - 12);
-
-      if (up || down || left || right) {
-        this.energy = clamp(this.energy - 0.045 * deltaMs, 0, 100);
-      } else {
-        this.energy = clamp(this.energy + 0.02 * deltaMs, 0, 100);
+      const fullRows = [];
+      const fullCols = [];
+      for (let y = 0; y < this.size; y += 1) {
+        if (this.board[y].every((cell) => cell === 1)) fullRows.push(y);
+      }
+      for (let x = 0; x < this.size; x += 1) {
+        if (this.board.every((row) => row[x] === 1)) fullCols.push(x);
       }
 
-      this.nodes = this.nodes.map((node) => {
-        if (Math.hypot(node.x - this.ship.x, node.y - this.ship.y) <= node.r + this.ship.r) {
-          this.memory += 1;
-          this.energy = clamp(this.energy + 9, 0, 100);
-          return this.newNode();
-        }
-        return node;
+      fullRows.forEach((y) => {
+        for (let x = 0; x < this.size; x += 1) this.board[y][x] = 0;
+      });
+      fullCols.forEach((x) => {
+        for (let y = 0; y < this.size; y += 1) this.board[y][x] = 0;
       });
 
-      this.countdownAccumulator += deltaMs;
-      if (this.countdownAccumulator >= 1000) {
-        this.countdownAccumulator -= 1000;
-        this.time -= 1;
+      this.score += (fullRows.length + fullCols.length) * 8;
+      this.queue[this.selected] = this.randomShape();
+    }
+
+    anyMoveAvailable() {
+      return this.queue.some((shape) => {
+        for (let y = 0; y < this.size; y += 1) {
+          for (let x = 0; x < this.size; x += 1) {
+            if (this.canPlace(shape, x, y)) return true;
+          }
+        }
+        return false;
+      });
+    }
+
+    handleClick(event) {
+      if (!this.running) return;
+      const pointer = this.getPointer(event);
+
+      const queueY = 320;
+      for (let i = 0; i < this.queue.length; i += 1) {
+        const cardX = 28 + i * 160;
+        if (pointer.x >= cardX && pointer.x <= cardX + 130 && pointer.y >= queueY - 18 && pointer.y <= queueY + 36) {
+          this.selected = i;
+          this.draw();
+          return;
+        }
       }
 
-      if (this.time <= 0 || this.energy <= 0) {
-        this.statusEl.textContent = `Session complete. Memory nodes: ${this.memory}`;
-        this.stop();
-      } else {
-        this.statusEl.textContent = `Energy ${Math.floor(this.energy)}% · Memory ${this.memory} · Time ${this.time}s`;
+      const gridX = Math.floor((pointer.x - this.boardX) / this.cell);
+      const gridY = Math.floor((pointer.y - this.boardY) / this.cell);
+      if (gridX < 0 || gridY < 0 || gridX >= this.size || gridY >= this.size) return;
+
+      const shape = this.queue[this.selected];
+      if (!this.canPlace(shape, gridX, gridY)) {
+        this.statusEl.textContent = 'Cannot place there.';
+        return;
       }
+
+      this.place(shape, gridX, gridY);
+      if (!this.anyMoveAvailable()) {
+        this.stop(`No moves left. Final score ${this.score}.`);
+        return;
+      }
+
+      this.statusEl.textContent = `Score ${this.score} · Keep clearing lines.`;
+      this.draw();
+    }
+
+    drawShape(shape, x, y, color) {
+      this.ctx.fillStyle = color;
+      shape.forEach((cell) => {
+        this.ctx.fillRect(x + cell.x * 16, y + cell.y * 16, 14, 14);
+      });
     }
 
     draw() {
-        // ... (Same as original)
       const ctx = this.ctx;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      ctx.fillStyle = '#040711';
+      ctx.fillStyle = '#030712';
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-      this.stars.forEach((star) => {
-        ctx.globalAlpha = 0.4 + Math.random() * 0.6;
-        ctx.fillStyle = '#dbeafe';
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-
-      this.nodes.forEach((node) => {
-        ctx.fillStyle = 'rgba(192, 132, 252, 0.25)';
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.r + 6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#c084fc';
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.fillStyle = '#38bdf8';
-      ctx.beginPath();
-      ctx.arc(this.ship.x, this.ship.y, this.ship.r, 0, Math.PI * 2);
-      ctx.fill();
+      for (let y = 0; y < this.size; y += 1) {
+        for (let x = 0; x < this.size; x += 1) {
+          ctx.fillStyle = this.board[y][x] ? '#22c55e' : 'rgba(148,163,184,0.22)';
+          ctx.fillRect(this.boardX + x * this.cell, this.boardY + y * this.cell, this.cell - 2, this.cell - 2);
+        }
+      }
 
       ctx.fillStyle = '#e2e8f0';
-      ctx.font = '600 14px Inter, sans-serif';
-      ctx.fillText(`Energy: ${Math.floor(this.energy)}%`, 14, 24);
-      ctx.fillText(`Memory: ${this.memory}`, 14, 46);
-      ctx.fillText(`Time: ${this.time}s`, 14, 68);
-    }
+      ctx.font = '600 15px Inter, sans-serif';
+      ctx.fillText(`Score: ${this.score}`, 24, 16);
+      ctx.fillText('Pieces', 24, 308);
 
-    loop(timestamp) {
-      if (!this.running) {
-        this.draw();
-        return;
-      }
-      const deltaMs = Math.min(33, timestamp - this.lastTick);
-      this.lastTick = timestamp;
-      this.update(deltaMs);
-      this.draw();
-      if (this.running) requestAnimationFrame((t) => this.loop(t));
+      this.queue.forEach((shape, index) => {
+        const x = 28 + index * 160;
+        const selected = index === this.selected;
+        ctx.fillStyle = selected ? 'rgba(14,165,233,0.24)' : 'rgba(15,23,42,0.95)';
+        ctx.strokeStyle = selected ? '#38bdf8' : 'rgba(148,163,184,0.45)';
+        ctx.lineWidth = 2;
+        ctx.fillRect(x, 302, 130, 46);
+        ctx.strokeRect(x, 302, 130, 46);
+        this.drawShape(shape, x + 14, 316, '#a78bfa');
+      });
     }
   }
 
@@ -587,23 +518,27 @@
         const action = button.dataset.action;
         if (action === 'start') instance.start();
         if (action === 'reset') instance.reset();
+        if (action === 'tap' && typeof instance.flap === 'function') instance.flap();
+        if (typeof instance.setDirection === 'function' && ['up', 'down', 'left', 'right'].includes(action)) {
+          instance.setDirection(action);
+        }
       });
     });
   }
 
   window.addEventListener('DOMContentLoaded', () => {
-    const driftCanvas = document.getElementById('drift-game');
-    const siegeCanvas = document.getElementById('siege-game');
-    const orbitCanvas = document.getElementById('orbit-game');
+    const flappyCanvas = document.getElementById('flappy-game');
+    const snakeCanvas = document.getElementById('snake-game');
+    const blockCanvas = document.getElementById('block-game');
 
-    if (!driftCanvas || !siegeCanvas || !orbitCanvas) return;
+    if (!flappyCanvas || !snakeCanvas || !blockCanvas) return;
 
-    const drift = new NeonDriftCircuit(driftCanvas, document.getElementById('drift-status'));
-    const siege = new SignalSiege(siegeCanvas, document.getElementById('siege-status'));
-    const orbit = new OrbitReverie(orbitCanvas, document.getElementById('orbit-status'));
+    const flappy = new FlappyBirthd(flappyCanvas, document.getElementById('flappy-status'));
+    const snake = new SnakeGame(snakeCanvas, document.getElementById('snake-status'));
+    const block = new BlockPuzzle(blockCanvas, document.getElementById('block-status'));
 
-    wireGame('drift', drift);
-    wireGame('siege', siege);
-    wireGame('orbit', orbit);
+    wireGame('flappy', flappy);
+    wireGame('snake', snake);
+    wireGame('block', block);
   });
 })();

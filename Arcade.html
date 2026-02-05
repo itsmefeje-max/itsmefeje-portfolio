@@ -4,16 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arcade | Itsmefeje</title>
-  <meta name="description" content="The Arcade - Playable prototypes and games by Itsmefeje. Coming Soon."/>
-  
+  <meta name="description" content="The Arcade - Play simple browser games by Itsmefeje."/>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
+
   <canvas id="network-canvas"></canvas>
   <div class="vignette"></div>
 
@@ -25,7 +25,7 @@
             <span>Itsmefeje</span>
         </a>
       </div>
-      
+
       </div>
   </header>
 
@@ -34,7 +34,7 @@
       <div class="hero-content reveal">
         <div class="status-badge">
           <span class="pulse-dot"></span>
-          <span>ENGINEERING LIVE</span>
+          <span>ARCADE LIVE</span>
         </div>
 
         <h1 class="glitch-text" data-text="The Arcade">
@@ -42,8 +42,8 @@
         </h1>
 
         <p class="hero-sub">
-          Welcome to the control room. I am building a space for playable prototypes,
-          small-batch experiments, and interactive worlds that live directly inside this site.
+          Clean, lightweight browser games built to run smoothly on mobile and desktop.
+          Tap or click in instantly and play.
         </p>
 
         <div class="cta-row">
@@ -51,10 +51,6 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Return Home
           </a>
-          <a class="link-sub" href="mailto:hello@itsmefeje.com">
-            Get launch updates
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9-9"/><path d="M7 7h10v10"/></svg>
-          </a>
         </div>
       </div>
     </section>
@@ -62,150 +58,83 @@
     <section class="arcade-section section-padding">
       <div class="container">
         <div class="section-header">
-          <h2>Prototype Bays</h2>
-          <p>Fully playable browser builds. Click launch on any bay and start playing instantly.</p>
+          <h2>Playable Games</h2>
+          <p>Three stable mini-games: Flappy Birthd, Snake, and Block Puzzle.</p>
         </div>
         <div class="arcade-grid">
           <article class="arcade-card">
             <div class="arcade-card-header">
-              <h3>Neon Drift Circuit</h3>
+              <h3>Flappy Birthd</h3>
               <span class="status-pill status-playable">Playable</span>
             </div>
             <p>
-              Thread through neon gates before the timer expires. Missing gates costs momentum and points.
+              Tap, click, or press space to flap through the pipe gaps.
             </p>
-            <div class="chip-row">
-              <span>Racing</span>
-              <span>Editor Tools</span>
-              <span>Multiplayer</span>
-            </div>
             <ul class="arcade-meta">
-              <li><strong>Controls:</strong> Arrow keys / WASD + Shift boost</li>
-              <li><strong>Goal:</strong> Score as many gates as possible in 45 seconds</li>
+              <li><strong>Controls:</strong> Tap/click/space to jump</li>
+              <li><strong>Goal:</strong> Survive and stack score</li>
             </ul>
             <div class="game-shell">
               <div class="game-toolbar">
-                <button class="game-btn" data-game="drift" data-action="start">Launch</button>
-                <button class="game-btn ghost" data-game="drift" data-action="reset">Reset</button>
-                <p id="drift-status" class="game-status">Ready to launch.</p>
+                <button class="game-btn" data-game="flappy" data-action="start">Launch</button>
+                <button class="game-btn ghost" data-game="flappy" data-action="reset">Reset</button>
+                <button class="game-btn ghost" data-game="flappy" data-action="tap">Flap</button>
+                <p id="flappy-status" class="game-status">Ready to launch.</p>
               </div>
-              <canvas id="drift-game" width="520" height="300" aria-label="Neon Drift Circuit game"></canvas>
+              <canvas id="flappy-game" width="520" height="300" aria-label="Flappy Birthd game"></canvas>
             </div>
           </article>
 
           <article class="arcade-card">
             <div class="arcade-card-header">
-              <h3>Signal Siege</h3>
+              <h3>Snake</h3>
               <span class="status-pill status-playable">Playable</span>
             </div>
             <p>
-              Route power to your turrets and stop enemy packets from reaching the city core.
+              Fast and clean snake with keyboard and touch controls.
             </p>
-            <div class="chip-row">
-              <span>Strategy</span>
-              <span>Wave Defense</span>
-              <span>Co-op</span>
-            </div>
             <ul class="arcade-meta">
-              <li><strong>Controls:</strong> Click a turret tile to toggle online/offline</li>
-              <li><strong>Goal:</strong> Survive as many waves as possible</li>
+              <li><strong>Controls:</strong> Arrow keys / WASD / touch buttons / swipe</li>
+              <li><strong>Goal:</strong> Eat food and avoid walls or your tail</li>
             </ul>
             <div class="game-shell">
               <div class="game-toolbar">
-                <button class="game-btn" data-game="siege" data-action="start">Launch</button>
-                <button class="game-btn ghost" data-game="siege" data-action="reset">Reset</button>
-                <p id="siege-status" class="game-status">Ready to launch.</p>
+                <button class="game-btn" data-game="snake" data-action="start">Launch</button>
+                <button class="game-btn ghost" data-game="snake" data-action="reset">Reset</button>
+                <div class="touch-dpad" role="group" aria-label="Snake touch controls">
+                  <button class="game-btn ghost" data-game="snake" data-action="up">↑</button>
+                  <button class="game-btn ghost" data-game="snake" data-action="left">←</button>
+                  <button class="game-btn ghost" data-game="snake" data-action="down">↓</button>
+                  <button class="game-btn ghost" data-game="snake" data-action="right">→</button>
+                </div>
+                <p id="snake-status" class="game-status">Ready to launch.</p>
               </div>
-              <canvas id="siege-game" width="520" height="300" aria-label="Signal Siege game"></canvas>
+              <canvas id="snake-game" width="520" height="300" aria-label="Snake game"></canvas>
             </div>
           </article>
 
           <article class="arcade-card">
             <div class="arcade-card-header">
-              <h3>Orbit Reverie</h3>
+              <h3>Block Puzzle</h3>
               <span class="status-pill status-playable">Playable</span>
             </div>
             <p>
-              Drift through a calm starfield, harvest memory nodes, and keep your stabilizers charged.
+              Place blocks on an 8x8 board. Fill full rows or columns to clear.
             </p>
-            <div class="chip-row">
-              <span>Exploration</span>
-              <span>Story</span>
-              <span>Ambient</span>
-            </div>
             <ul class="arcade-meta">
-              <li><strong>Controls:</strong> Arrow keys / WASD</li>
-              <li><strong>Goal:</strong> Gather memory nodes while conserving energy</li>
+              <li><strong>Controls:</strong> Select a piece, then tap/click a grid cell</li>
+              <li><strong>Goal:</strong> Keep placing blocks and clear lines</li>
             </ul>
             <div class="game-shell">
               <div class="game-toolbar">
-                <button class="game-btn" data-game="orbit" data-action="start">Launch</button>
-                <button class="game-btn ghost" data-game="orbit" data-action="reset">Reset</button>
-                <p id="orbit-status" class="game-status">Ready to launch.</p>
+                <button class="game-btn" data-game="block" data-action="start">Launch</button>
+                <button class="game-btn ghost" data-game="block" data-action="reset">Reset</button>
+                <p id="block-status" class="game-status">Ready to launch.</p>
               </div>
-              <canvas id="orbit-game" width="520" height="300" aria-label="Orbit Reverie game"></canvas>
+              <canvas id="block-game" width="520" height="360" aria-label="Block Puzzle game"></canvas>
             </div>
           </article>
         </div>
-      </div>
-    </section>
-
-    <section class="arcade-section section-padding arcade-systems">
-      <div class="container">
-        <div class="section-header">
-          <h2>Arcade Systems</h2>
-          <p>Building the infrastructure that makes every experience feel cohesive.</p>
-        </div>
-        <div class="system-grid">
-          <div class="system-card">
-            <h3>Unified Save Slots</h3>
-            <p>Seamless progress tracking across every prototype and device.</p>
-          </div>
-          <div class="system-card">
-            <h3>Dynamic Soundscapes</h3>
-            <p>Adaptive music layers that react to player rhythm and momentum.</p>
-          </div>
-          <div class="system-card">
-            <h3>Challenge Boards</h3>
-            <p>Weekly objectives, time trials, and unlockable experiments.</p>
-          </div>
-          <div class="system-card">
-            <h3>Community Signals</h3>
-            <p>Live drop-ins for feedback, bug reports, and collaborative tuning.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="arcade-section section-padding">
-      <div class="container">
-        <div class="section-header">
-          <h2>Launch Protocol</h2>
-          <p>Phased release plan for bringing the Arcade online.</p>
-        </div>
-        <ol class="protocol-list">
-          <li>
-            <span class="protocol-step">01</span>
-            <div>
-              <h3>Prototype Flight Checks</h3>
-              <p>Finalize input tuning, load times, and accessibility controls.</p>
-            </div>
-          </li>
-          <li>
-            <span class="protocol-step">02</span>
-            <div>
-              <h3>Closed Player Pods</h3>
-              <p>Invite a small crew for bug hunting and balance feedback.</p>
-            </div>
-          </li>
-          <li>
-            <span class="protocol-step">03</span>
-            <div>
-              <h3>Arcade Opening Night</h3>
-              <p>Public launch with curated content drops and a live scoreboard.</p>
-            </div>
-          </li>
-        </ol>
       </div>
     </section>
   </main>

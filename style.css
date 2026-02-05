@@ -518,10 +518,41 @@ h1 {
   font-size: 0.84rem;
 }
 
+
+.touch-dpad {
+  display: inline-flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.touch-dpad .game-btn {
+  min-width: 38px;
+  padding: 8px 10px;
+}
+
 .game-shell canvas {
   width: 100%;
   height: auto;
   display: block;
   aspect-ratio: 52 / 30;
   background: #020617;
+}
+
+
+@media (max-width: 640px) {
+  .game-toolbar {
+    gap: 8px;
+  }
+
+  .game-btn {
+    padding: 8px 12px;
+  }
+
+  .game-status {
+    flex-basis: 100%;
+  }
+
+  .touch-dpad {
+    flex-basis: 100%;
+  }
 }
