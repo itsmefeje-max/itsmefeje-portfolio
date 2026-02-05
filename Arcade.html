@@ -63,17 +63,16 @@
       <div class="container">
         <div class="section-header">
           <h2>Prototype Bays</h2>
-          <p>Playable modules in rotation. Each bay tracks progress, mechanics, and release plans.</p>
+          <p>Fully playable browser builds. Click launch on any bay and start playing instantly.</p>
         </div>
         <div class="arcade-grid">
           <article class="arcade-card">
             <div class="arcade-card-header">
               <h3>Neon Drift Circuit</h3>
-              <span class="status-pill status-build">In Build</span>
+              <span class="status-pill status-playable">Playable</span>
             </div>
             <p>
-              A synthwave racer with tight steering, reactive lighting, and a track editor for
-              community layouts.
+              Thread through neon gates before the timer expires. Missing gates costs momentum and points.
             </p>
             <div class="chip-row">
               <span>Racing</span>
@@ -81,19 +80,26 @@
               <span>Multiplayer</span>
             </div>
             <ul class="arcade-meta">
-              <li><strong>Focus:</strong> Drift physics &amp; boost chaining</li>
-              <li><strong>Target:</strong> Winter launch</li>
+              <li><strong>Controls:</strong> Arrow keys / WASD + Shift boost</li>
+              <li><strong>Goal:</strong> Score as many gates as possible in 45 seconds</li>
             </ul>
+            <div class="game-shell">
+              <div class="game-toolbar">
+                <button class="game-btn" data-game="drift" data-action="start">Launch</button>
+                <button class="game-btn ghost" data-game="drift" data-action="reset">Reset</button>
+                <p id="drift-status" class="game-status">Ready to launch.</p>
+              </div>
+              <canvas id="drift-game" width="520" height="300" aria-label="Neon Drift Circuit game"></canvas>
+            </div>
           </article>
 
           <article class="arcade-card">
             <div class="arcade-card-header">
               <h3>Signal Siege</h3>
-              <span class="status-pill status-playable">Playable Soon</span>
+              <span class="status-pill status-playable">Playable</span>
             </div>
             <p>
-              A tactical tower-defense loop where you route energy beams, overclock circuits,
-              and defend a floating city core.
+              Route power to your turrets and stop enemy packets from reaching the city core.
             </p>
             <div class="chip-row">
               <span>Strategy</span>
@@ -101,19 +107,26 @@
               <span>Co-op</span>
             </div>
             <ul class="arcade-meta">
-              <li><strong>Focus:</strong> Co-op pathing &amp; turret synergy</li>
-              <li><strong>Target:</strong> Prototype drop in 4-6 weeks</li>
+              <li><strong>Controls:</strong> Click a turret tile to toggle online/offline</li>
+              <li><strong>Goal:</strong> Survive as many waves as possible</li>
             </ul>
+            <div class="game-shell">
+              <div class="game-toolbar">
+                <button class="game-btn" data-game="siege" data-action="start">Launch</button>
+                <button class="game-btn ghost" data-game="siege" data-action="reset">Reset</button>
+                <p id="siege-status" class="game-status">Ready to launch.</p>
+              </div>
+              <canvas id="siege-game" width="520" height="300" aria-label="Signal Siege game"></canvas>
+            </div>
           </article>
 
           <article class="arcade-card">
             <div class="arcade-card-header">
               <h3>Orbit Reverie</h3>
-              <span class="status-pill status-concept">Concept</span>
+              <span class="status-pill status-playable">Playable</span>
             </div>
             <p>
-              A contemplative exploration game for drifting between orbital sanctuaries,
-              collecting stories, and mapping constellations.
+              Drift through a calm starfield, harvest memory nodes, and keep your stabilizers charged.
             </p>
             <div class="chip-row">
               <span>Exploration</span>
@@ -121,9 +134,17 @@
               <span>Ambient</span>
             </div>
             <ul class="arcade-meta">
-              <li><strong>Focus:</strong> Narrative fragments &amp; soundtrack design</li>
-              <li><strong>Target:</strong> Early 2025 exploration slice</li>
+              <li><strong>Controls:</strong> Arrow keys / WASD</li>
+              <li><strong>Goal:</strong> Gather memory nodes while conserving energy</li>
             </ul>
+            <div class="game-shell">
+              <div class="game-toolbar">
+                <button class="game-btn" data-game="orbit" data-action="start">Launch</button>
+                <button class="game-btn ghost" data-game="orbit" data-action="reset">Reset</button>
+                <p id="orbit-status" class="game-status">Ready to launch.</p>
+              </div>
+              <canvas id="orbit-game" width="520" height="300" aria-label="Orbit Reverie game"></canvas>
+            </div>
           </article>
         </div>
       </div>
@@ -190,5 +211,6 @@
   </main>
 
   <script src="main.js"></script>
+  <script src="arcade-games.js"></script>
 </body>
 </html>
