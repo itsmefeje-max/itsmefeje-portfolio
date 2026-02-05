@@ -2,11 +2,16 @@
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
   const keys = new Set();
+  const clearKeys = () => keys.clear();
   window.addEventListener('keydown', (event) => {
     keys.add(event.key.toLowerCase());
   });
   window.addEventListener('keyup', (event) => {
     keys.delete(event.key.toLowerCase());
+  });
+  window.addEventListener('blur', clearKeys);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) clearKeys();
   });
 
   class NeonDriftCircuit {
@@ -46,6 +51,7 @@
 
     start() {
       if (this.running) return;
+      if (this.timeLeft <= 0) this.reset();
       this.running = true;
       this.lastTick = performance.now();
       this.updateStatus('Race live — hit as many gates as possible.');
@@ -185,6 +191,9 @@
       this.energy = 100;
       this.wave = 1;
       this.score = 0;
+      this.turrets.forEach((turret) => {
+        turret.online = true;
+      });
       this.spawnInterval = 1400;
       this.lastSpawn = performance.now();
       this.lastTick = performance.now();
@@ -195,6 +204,7 @@
 
     start() {
       if (this.running) return;
+      if (this.energy <= 0 || this.lives <= 0) this.reset();
       this.running = true;
       this.lastSpawn = performance.now();
       this.lastTick = performance.now();
@@ -386,6 +396,7 @@
 
     start() {
       if (this.running) return;
+      if (this.time <= 0 || this.energy <= 0) this.reset();
       this.running = true;
       this.lastTick = performance.now();
       this.statusEl.textContent = 'Exploration active — collect memory nodes.';
