@@ -1,19 +1,40 @@
+// Purpose: Core logic for Arcade prototypes (Drift, Siege, Orbit)
+// Runs on: Client (Browser)
+// Dependencies: None (Vanilla JS)
+
 (() => {
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
+  // --- GLOBAL INPUT HANDLING ---
   const keys = new Set();
+  // Track if any game is currently running to prevent unnecessary scroll blocking
+  let activeGame = null;
+
   const clearKeys = () => keys.clear();
+
   window.addEventListener('keydown', (event) => {
-    keys.add(event.key.toLowerCase());
+    const key = event.key.toLowerCase();
+    keys.add(key);
+    
+    // FIX: Prevent browser scrolling if a game is active and using direction keys
+    if (activeGame && ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'w', 'a', 's', 'd'].includes(key)) {
+      event.preventDefault();
+    }
   });
+
   window.addEventListener('keyup', (event) => {
     keys.delete(event.key.toLowerCase());
   });
+
   window.addEventListener('blur', clearKeys);
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) clearKeys();
+    if (document.hidden) {
+        clearKeys();
+        // Optional: Pause active game here if desired
+    }
   });
 
+  // --- NEON DRIFT CIRCUIT ---
   class NeonDriftCircuit {
     constructor(canvas, statusEl) {
       this.canvas = canvas;
@@ -53,6 +74,7 @@
       if (this.running) return;
       if (this.timeLeft <= 0) this.reset();
       this.running = true;
+      activeGame = 'drift'; // Lock scroll
       this.lastTick = performance.now();
       this.updateStatus('Race live — hit as many gates as possible.');
       requestAnimationFrame((t) => this.loop(t));
@@ -60,6 +82,7 @@
 
     end() {
       this.running = false;
+      if (activeGame === 'drift') activeGame = null; // Release scroll
       this.updateStatus(`Run complete. Final score: ${this.score}`);
     }
 
@@ -73,31 +96,51 @@
 
       this.player.boost = boosting ? 1.7 : 1;
       const velocity = this.player.speed * this.player.boost * delta;
+      
       if (up) this.player.y -= velocity;
       if (down) this.player.y += velocity;
       if (left) this.player.x -= velocity;
       if (right) this.player.x += velocity;
 
+      // Keep player bounds
       this.player.x = clamp(this.player.x, 12, this.canvas.width - 12);
       this.player.y = clamp(this.player.y, 12, this.canvas.height - 12);
 
       this.gates.forEach((gate) => {
-        gate.x -= 3.2 * delta;
+        const moveSpeed = 3.2 * delta;
+        
+        // FIX: Improved Collision Detection (Swept / Wider)
+        // Check if gate passed the player in this frame
+        const playerLeft = this.player.x - this.player.r;
+        const playerRight = this.player.x + this.player.r;
+        const gatePrevX = gate.x;
+        const gateNextX = gate.x - moveSpeed;
+
+        // Update Position
+        gate.x = gateNextX;
+
         if (gate.active) {
-          const inX = this.player.x > gate.x - 8 && this.player.x < gate.x + 8;
-          const inY = Math.abs(this.player.y - gate.y) < gate.size;
-          if (inX && inY) {
-            gate.active = false;
-            this.score += boosting ? 15 : 10;
-          }
+            // Check horizontal overlap (did we cross the gate?)
+            const crossedGate = (gatePrevX >= playerLeft && gateNextX <= playerRight) || 
+                                (Math.abs(gate.x - this.player.x) < 20); // Fallback proximity
+
+            // Check vertical alignment (are we inside the gate?)
+            const verticalAlign = Math.abs(this.player.y - gate.y) < (gate.size + this.player.r);
+
+            if (crossedGate && verticalAlign) {
+                gate.active = false;
+                this.score += boosting ? 15 : 10;
+            }
         }
       });
 
+      // Spawn/Cull logic
       if (this.gates.length < 4 && this.gates[this.gates.length - 1].x < this.canvas.width - 120) {
         this.spawnGate();
       }
       this.gates = this.gates.filter((gate) => gate.x > -60);
 
+      // Timer Logic
       this.countdownAccumulator += deltaMs;
       if (this.countdownAccumulator >= 1000) {
         this.countdownAccumulator -= 1000;
@@ -113,12 +156,14 @@
       const ctx = this.ctx;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+      // Background
       const gradient = ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
       gradient.addColorStop(0, '#050b1e');
       gradient.addColorStop(1, '#170a2b');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
+      // Grid Lines
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.24)';
       for (let i = 1; i < 10; i += 1) {
         const y = (this.canvas.height / 10) * i;
@@ -128,6 +173,7 @@
         ctx.stroke();
       }
 
+      // Draw Gates
       this.gates.forEach((gate) => {
         ctx.strokeStyle = gate.active ? '#22d3ee' : 'rgba(34, 211, 238, 0.2)';
         ctx.lineWidth = 6;
@@ -137,11 +183,13 @@
         ctx.stroke();
       });
 
+      // Draw Player
       ctx.fillStyle = '#f0abfc';
       ctx.beginPath();
       ctx.arc(this.player.x, this.player.y, this.player.r, 0, Math.PI * 2);
       ctx.fill();
 
+      // UI
       ctx.fillStyle = '#e2e8f0';
       ctx.font = '600 14px Inter, sans-serif';
       ctx.fillText(`Score: ${this.score}`, 14, 24);
@@ -157,7 +205,7 @@
         this.draw();
         return;
       }
-      const deltaMs = Math.min(33, timestamp - this.lastTick);
+      const deltaMs = Math.min(33, timestamp - this.lastTick); // Cap at ~30fps min to prevent huge jumps
       this.lastTick = timestamp;
       this.update(deltaMs);
       this.draw();
@@ -165,11 +213,14 @@
     }
   }
 
+  // --- SIGNAL SIEGE ---
   class SignalSiege {
     constructor(canvas, statusEl) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       this.statusEl = statusEl;
+      
+      // Define path and turrets
       this.path = [
         { x: 0, y: 150 }, { x: 90, y: 150 }, { x: 90, y: 70 }, { x: 220, y: 70 },
         { x: 220, y: 220 }, { x: 350, y: 220 }, { x: 350, y: 120 }, { x: 520, y: 120 }
@@ -206,11 +257,44 @@
       if (this.running) return;
       if (this.energy <= 0 || this.lives <= 0) this.reset();
       this.running = true;
+      // Note: Siege doesn't need to lock scroll as it's mouse based, 
+      // but we set it just in case we add keys later.
+      activeGame = 'siege';
       this.lastSpawn = performance.now();
       this.lastTick = performance.now();
       this.statusEl.textContent = 'Defend the core — toggle turrets strategically.';
       requestAnimationFrame((t) => this.loop(t));
     }
+
+    stop() {
+        this.running = false;
+        if(activeGame === 'siege') activeGame = null;
+    }
+
+    toggleTurret(event) {
+      // FIX: Coordinate Scaling for Responsive Canvas
+      const rect = this.canvas.getBoundingClientRect();
+      
+      // Calculate scale ratio (Canvas Resolution / CSS Display Size)
+      const scaleX = this.canvas.width / rect.width;
+      const scaleY = this.canvas.height / rect.height;
+
+      const clickX = (event.clientX - rect.left) * scaleX;
+      const clickY = (event.clientY - rect.top) * scaleY;
+
+      // Find target with a generous click radius
+      const target = this.turrets.find((turret) => Math.hypot(turret.x - clickX, turret.y - clickY) <= 30);
+      
+      if (!target) return;
+      
+      target.online = !target.online;
+      if (this.running) {
+        this.statusEl.textContent = `${target.online ? 'Turret online' : 'Turret offline'} — energy ${Math.floor(this.energy)}%.`;
+      }
+      this.draw();
+    }
+
+    // ... (Remainder of Siege logic is mostly fine, just ensuring loop uses stop()) ...
 
     spawnEnemy() {
       this.enemies.push({ progress: 0, speed: 0.00012 + this.wave * 0.000015, hp: 26 + this.wave * 7 });
@@ -226,23 +310,10 @@
       return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
     }
 
-    toggleTurret(event) {
-      const rect = this.canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      const target = this.turrets.find((turret) => Math.hypot(turret.x - x, turret.y - y) <= 22);
-      if (!target) return;
-      target.online = !target.online;
-      if (this.running) {
-        this.statusEl.textContent = `${target.online ? 'Turret online' : 'Turret offline'} — energy ${Math.floor(this.energy)}%.`;
-      }
-      this.draw();
-    }
-
     update(deltaMs) {
       if (this.energy <= 0 || this.lives <= 0) {
-        this.running = false;
         this.statusEl.textContent = `Simulation failed. Wave ${this.wave}, score ${this.score}.`;
+        this.stop();
         return;
       }
 
@@ -291,59 +362,61 @@
     }
 
     drawPath() {
-      const ctx = this.ctx;
-      ctx.beginPath();
-      ctx.moveTo(this.path[0].x, this.path[0].y);
-      for (let i = 1; i < this.path.length; i += 1) {
-        ctx.lineTo(this.path[i].x, this.path[i].y);
-      }
-      ctx.lineWidth = 24;
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.35)';
-      ctx.stroke();
+        // ... (Same as original)
+        const ctx = this.ctx;
+        ctx.beginPath();
+        ctx.moveTo(this.path[0].x, this.path[0].y);
+        for (let i = 1; i < this.path.length; i += 1) {
+            ctx.lineTo(this.path[i].x, this.path[i].y);
+        }
+        ctx.lineWidth = 24;
+        ctx.strokeStyle = 'rgba(59, 130, 246, 0.35)';
+        ctx.stroke();
 
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = 'rgba(125, 211, 252, 0.9)';
-      ctx.stroke();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgba(125, 211, 252, 0.9)';
+        ctx.stroke();
     }
 
     draw() {
-      const ctx = this.ctx;
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      const gradient = ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-      gradient.addColorStop(0, '#071124');
-      gradient.addColorStop(1, '#0f172a');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // ... (Same as original)
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        const gradient = ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+        gradient.addColorStop(0, '#071124');
+        gradient.addColorStop(1, '#0f172a');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-      this.drawPath();
+        this.drawPath();
 
-      this.turrets.forEach((turret) => {
-        ctx.fillStyle = turret.online ? '#22c55e' : '#475569';
-        ctx.beginPath();
-        ctx.arc(turret.x, turret.y, 16, 0, Math.PI * 2);
-        ctx.fill();
-        if (turret.online) {
-          ctx.strokeStyle = 'rgba(34, 197, 94, 0.5)';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.arc(turret.x, turret.y, 34, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-      });
+        this.turrets.forEach((turret) => {
+            ctx.fillStyle = turret.online ? '#22c55e' : '#475569';
+            ctx.beginPath();
+            ctx.arc(turret.x, turret.y, 16, 0, Math.PI * 2);
+            ctx.fill();
+            if (turret.online) {
+            ctx.strokeStyle = 'rgba(34, 197, 94, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(turret.x, turret.y, 34, 0, Math.PI * 2);
+            ctx.stroke();
+            }
+        });
 
-      this.enemies.forEach((enemy) => {
-        const point = this.getPoint(enemy.progress);
-        ctx.fillStyle = '#fb7185';
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
-        ctx.fill();
-      });
+        this.enemies.forEach((enemy) => {
+            const point = this.getPoint(enemy.progress);
+            ctx.fillStyle = '#fb7185';
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+        });
 
-      ctx.fillStyle = '#e2e8f0';
-      ctx.font = '600 14px Inter, sans-serif';
-      ctx.fillText(`Core Integrity: ${this.lives}`, 14, 24);
-      ctx.fillText(`Energy: ${Math.floor(this.energy)}%`, 14, 46);
-      ctx.fillText(`Score: ${this.score}`, 14, 68);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '600 14px Inter, sans-serif';
+        ctx.fillText(`Core Integrity: ${this.lives}`, 14, 24);
+        ctx.fillText(`Energy: ${Math.floor(this.energy)}%`, 14, 46);
+        ctx.fillText(`Score: ${this.score}`, 14, 68);
     }
 
     loop(timestamp) {
@@ -359,6 +432,7 @@
     }
   }
 
+  // --- ORBIT REVERIE ---
   class OrbitReverie {
     constructor(canvas, statusEl) {
       this.canvas = canvas;
@@ -398,9 +472,15 @@
       if (this.running) return;
       if (this.time <= 0 || this.energy <= 0) this.reset();
       this.running = true;
+      activeGame = 'orbit'; // Lock scroll
       this.lastTick = performance.now();
       this.statusEl.textContent = 'Exploration active — collect memory nodes.';
       requestAnimationFrame((t) => this.loop(t));
+    }
+
+    stop() {
+        this.running = false;
+        if(activeGame === 'orbit') activeGame = null; // Release scroll
     }
 
     update(deltaMs) {
@@ -441,14 +521,15 @@
       }
 
       if (this.time <= 0 || this.energy <= 0) {
-        this.running = false;
         this.statusEl.textContent = `Session complete. Memory nodes: ${this.memory}`;
+        this.stop();
       } else {
         this.statusEl.textContent = `Energy ${Math.floor(this.energy)}% · Memory ${this.memory} · Time ${this.time}s`;
       }
     }
 
     draw() {
+        // ... (Same as original)
       const ctx = this.ctx;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       ctx.fillStyle = '#040711';
