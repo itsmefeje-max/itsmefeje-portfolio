@@ -352,7 +352,15 @@
         [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 1, y: 0 }]
       ];
 
-      this.canvas.addEventListener('click', (event) => this.handleClick(event));
+      this.canvas.addEventListener('pointerdown', (event) => this.handleClick(event));
+      this.canvas.addEventListener(
+        'touchstart',
+        (event) => {
+          event.preventDefault();
+          this.handleClick(event);
+        },
+        { passive: false }
+      );
       this.reset();
     }
 
@@ -385,12 +393,15 @@
     }
 
     getPointer(event) {
+      const touch = event.touches ? event.touches[0] : null;
+      const clientX = touch ? touch.clientX : event.clientX;
+      const clientY = touch ? touch.clientY : event.clientY;
       const rect = this.canvas.getBoundingClientRect();
       const scaleX = this.canvas.width / rect.width;
       const scaleY = this.canvas.height / rect.height;
       return {
-        x: (event.clientX - rect.left) * scaleX,
-        y: (event.clientY - rect.top) * scaleY
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
       };
     }
 

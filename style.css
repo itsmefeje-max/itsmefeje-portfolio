@@ -536,6 +536,7 @@ h1 {
   display: block;
   aspect-ratio: 52 / 30;
   background: #020617;
+  touch-action: none;
 }
 
 
