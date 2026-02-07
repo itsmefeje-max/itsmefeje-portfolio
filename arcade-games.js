@@ -1,3 +1,7 @@
+/* -- Purpose: Game logic for Arcade games (Flappy Bird, Snake, Block Puzzle) */
+/* -- Runs on: Client */
+/* -- Dependencies: None (Vanilla JS) */
+
 (() => {
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const keys = new Set();
@@ -23,14 +27,18 @@
     if (document.hidden) keys.clear();
   });
 
-  class FlappyBirthd {
+  // FIXED: Renamed from FlappyBirthd to FlappyBird
+  class FlappyBird {
     constructor(canvas, statusEl) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       this.statusEl = statusEl;
       this.running = false;
 
-      this.canvas.addEventListener('pointerdown', () => this.flap());
+      this.canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); // Prevent default touch actions
+        this.flap();
+      });
       this.reset();
     }
 
@@ -236,12 +244,19 @@
 
     makeFood() {
       let point;
+      let attempts = 0;
+      // FIXED: Added loop safety to prevent infinite loop if board is full
       do {
         point = {
           x: Math.floor(Math.random() * this.cellsX),
           y: Math.floor(Math.random() * this.cellsY)
         };
-      } while (this.snake?.some((part) => part.x === point.x && part.y === point.y));
+        attempts++;
+      } while (
+        this.snake?.some((part) => part.x === point.x && part.y === point.y) && 
+        attempts < 100
+      );
+      
       return point;
     }
 
@@ -389,9 +404,10 @@
     }
 
     getPointer(event) {
-      const touch = event.touches ? event.touches[0] : null;
-      const clientX = touch ? touch.clientX : event.clientX;
-      const clientY = touch ? touch.clientY : event.clientY;
+      // FIXED: PointerEvent does not have 'touches'. Use clientX/Y directly.
+      const clientX = event.clientX;
+      const clientY = event.clientY;
+      
       const rect = this.canvas.getBoundingClientRect();
       const scaleX = this.canvas.width / rect.width;
       const scaleY = this.canvas.height / rect.height;
@@ -448,6 +464,7 @@
 
     handleClick(event) {
       if (!this.running) return;
+      event.preventDefault(); // Prevent default touch behavior
       const pointer = this.getPointer(event);
 
       const queueY = 320;
@@ -540,7 +557,8 @@
 
     if (!flappyCanvas || !snakeCanvas || !blockCanvas) return;
 
-    const flappy = new FlappyBirthd(flappyCanvas, document.getElementById('flappy-status'));
+    // Fixed: Updated class name here
+    const flappy = new FlappyBird(flappyCanvas, document.getElementById('flappy-status'));
     const snake = new SnakeGame(snakeCanvas, document.getElementById('snake-status'));
     const block = new BlockPuzzle(blockCanvas, document.getElementById('block-status'));
 
