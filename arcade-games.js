@@ -43,6 +43,7 @@
       this.score = 0;
       this.lastTick = performance.now();
       this.running = false;
+      if (activeGame === 'flappy') activeGame = null;
       this.statusEl.textContent = 'Ready to launch.';
       this.draw();
     }
@@ -202,6 +203,7 @@
       this.stepMs = 120;
       this.running = false;
       this.lastTick = performance.now();
+      if (activeGame === 'snake') activeGame = null;
       this.statusEl.textContent = 'Ready to launch.';
       this.draw();
     }
@@ -353,14 +355,6 @@
       ];
 
       this.canvas.addEventListener('pointerdown', (event) => this.handleClick(event));
-      this.canvas.addEventListener(
-        'touchstart',
-        (event) => {
-          event.preventDefault();
-          this.handleClick(event);
-        },
-        { passive: false }
-      );
       this.reset();
     }
 
@@ -370,6 +364,7 @@
       this.selected = 0;
       this.score = 0;
       this.running = false;
+      if (activeGame === 'block') activeGame = null;
       this.statusEl.textContent = 'Ready to launch.';
       this.draw();
     }
@@ -379,6 +374,7 @@
     }
 
     start() {
+      if (this.running) return;
       activeGame = 'block';
       this.running = true;
       this.statusEl.textContent = 'Select a piece below, then tap board to place.';
