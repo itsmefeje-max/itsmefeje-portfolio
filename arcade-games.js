@@ -43,12 +43,15 @@
       this.score = 0;
       this.lastTick = performance.now();
       this.running = false;
+      this.gameOver = false;
+      if (activeGame === 'flappy') activeGame = null;
       this.statusEl.textContent = 'Ready to launch.';
       this.draw();
     }
 
     start() {
       if (this.running) return;
+      if (this.gameOver) this.reset();
       activeGame = 'flappy';
       this.running = true;
       this.lastTick = performance.now();
@@ -59,6 +62,7 @@
     stop(message) {
       this.running = false;
       if (activeGame === 'flappy') activeGame = null;
+      this.gameOver = true;
       this.statusEl.textContent = message;
     }
 
@@ -182,9 +186,14 @@
         const touch = e.changedTouches[0];
         const dx = touch.clientX - this.swipeStart.x;
         const dy = touch.clientY - this.swipeStart.y;
-        if (Math.abs(dx) + Math.abs(dy) < 18) return;
+        if (Math.abs(dx) + Math.abs(dy) < 18) {
+          this.swipeStart = null;
+          return;
+        }
+        if (!this.running) this.start();
         if (Math.abs(dx) > Math.abs(dy)) this.setDirection(dx > 0 ? 'right' : 'left');
         else this.setDirection(dy > 0 ? 'down' : 'up');
+        this.swipeStart = null;
       }, { passive: true });
 
       this.reset();
@@ -202,12 +211,15 @@
       this.stepMs = 120;
       this.running = false;
       this.lastTick = performance.now();
+      this.gameOver = false;
+      if (activeGame === 'snake') activeGame = null;
       this.statusEl.textContent = 'Ready to launch.';
       this.draw();
     }
 
     start() {
       if (this.running) return;
+      if (this.gameOver) this.reset();
       activeGame = 'snake';
       this.running = true;
       this.lastTick = performance.now();
@@ -218,6 +230,7 @@
     stop(message) {
       this.running = false;
       if (activeGame === 'snake') activeGame = null;
+      this.gameOver = true;
       this.statusEl.textContent = message;
     }
 
@@ -340,6 +353,13 @@
       this.cell = 34;
       this.boardX = 24;
       this.boardY = 24;
+      this.queueY = 320;
+      this.queueX = 28;
+      this.queueGap = 16;
+      this.queueCardWidth = 130;
+      this.queueCardHeight = 46;
+      this.previewCell = 16;
+      this.previewSize = 14;
 
       this.shapes = [
         [{ x: 0, y: 0 }],
@@ -353,23 +373,45 @@
       ];
 
       this.canvas.addEventListener('pointerdown', (event) => this.handleClick(event));
-      this.canvas.addEventListener(
-        'touchstart',
-        (event) => {
-          event.preventDefault();
-          this.handleClick(event);
-        },
-        { passive: false }
-      );
+      window.addEventListener('resize', () => {
+        this.updateLayout();
+        this.draw();
+      });
       this.reset();
     }
 
+    updateLayout() {
+      const padding = 24;
+      const queueGap = 16;
+      const queueCardHeight = 48;
+      const queueArea = queueCardHeight + 32;
+      const boardAvailable = Math.min(
+        this.canvas.width - padding * 2,
+        this.canvas.height - queueArea - padding * 2
+      );
+      this.cell = Math.max(24, Math.floor(boardAvailable / this.size));
+      const boardSize = this.cell * this.size;
+      this.boardX = Math.round((this.canvas.width - boardSize) / 2);
+      this.boardY = padding + 12;
+      this.queueY = this.boardY + boardSize + 24;
+      this.queueX = padding;
+      this.queueGap = queueGap;
+      const queueWidth = this.canvas.width - padding * 2;
+      this.queueCardWidth = Math.floor((queueWidth - queueGap * 2) / 3);
+      this.queueCardHeight = queueCardHeight;
+      this.previewCell = Math.max(10, Math.floor(this.queueCardHeight / 3));
+      this.previewSize = Math.max(8, this.previewCell - 2);
+    }
+
     reset() {
+      this.updateLayout();
       this.board = Array.from({ length: this.size }, () => Array(this.size).fill(0));
       this.queue = [this.randomShape(), this.randomShape(), this.randomShape()];
       this.selected = 0;
       this.score = 0;
       this.running = false;
+      this.gameOver = false;
+      if (activeGame === 'block') activeGame = null;
       this.statusEl.textContent = 'Ready to launch.';
       this.draw();
     }
@@ -379,6 +421,8 @@
     }
 
     start() {
+      if (this.running) return;
+      if (this.gameOver) this.reset();
       activeGame = 'block';
       this.running = true;
       this.statusEl.textContent = 'Select a piece below, then tap board to place.';
@@ -388,6 +432,7 @@
     stop(message) {
       this.running = false;
       if (activeGame === 'block') activeGame = null;
+      this.gameOver = true;
       this.statusEl.textContent = message;
       this.draw();
     }
@@ -454,10 +499,14 @@
       if (!this.running) return;
       const pointer = this.getPointer(event);
 
-      const queueY = 320;
       for (let i = 0; i < this.queue.length; i += 1) {
-        const cardX = 28 + i * 160;
-        if (pointer.x >= cardX && pointer.x <= cardX + 130 && pointer.y >= queueY - 18 && pointer.y <= queueY + 36) {
+        const cardX = this.queueX + i * (this.queueCardWidth + this.queueGap);
+        if (
+          pointer.x >= cardX
+          && pointer.x <= cardX + this.queueCardWidth
+          && pointer.y >= this.queueY - 16
+          && pointer.y <= this.queueY + this.queueCardHeight
+        ) {
           this.selected = i;
           this.draw();
           return;
@@ -487,7 +536,12 @@
     drawShape(shape, x, y, color) {
       this.ctx.fillStyle = color;
       shape.forEach((cell) => {
-        this.ctx.fillRect(x + cell.x * 16, y + cell.y * 16, 14, 14);
+        this.ctx.fillRect(
+          x + cell.x * this.previewCell,
+          y + cell.y * this.previewCell,
+          this.previewSize,
+          this.previewSize
+        );
       });
     }
 
@@ -507,17 +561,17 @@
       ctx.fillStyle = '#e2e8f0';
       ctx.font = '600 15px Inter, sans-serif';
       ctx.fillText(`Score: ${this.score}`, 24, 16);
-      ctx.fillText('Pieces', 24, 308);
+      ctx.fillText('Pieces', 24, this.queueY - 10);
 
       this.queue.forEach((shape, index) => {
-        const x = 28 + index * 160;
+        const x = this.queueX + index * (this.queueCardWidth + this.queueGap);
         const selected = index === this.selected;
         ctx.fillStyle = selected ? 'rgba(14,165,233,0.24)' : 'rgba(15,23,42,0.95)';
         ctx.strokeStyle = selected ? '#38bdf8' : 'rgba(148,163,184,0.45)';
         ctx.lineWidth = 2;
-        ctx.fillRect(x, 302, 130, 46);
-        ctx.strokeRect(x, 302, 130, 46);
-        this.drawShape(shape, x + 14, 316, '#a78bfa');
+        ctx.fillRect(x, this.queueY, this.queueCardWidth, this.queueCardHeight);
+        ctx.strokeRect(x, this.queueY, this.queueCardWidth, this.queueCardHeight);
+        this.drawShape(shape, x + 12, this.queueY + 14, '#a78bfa');
       });
     }
   }
